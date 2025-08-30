@@ -21,6 +21,17 @@ interface PresetScenario {
 // Competition scenarios with dramatic visual differences
 const competitionScenarios: PresetScenario[] = [
   {
+    name: "Classic Lotka-Volterra",
+    description: "Textbook competitive exclusion principle",
+    outcome: "Competitive Exclusion",
+    parameters: {
+      r1: 1.0, r2: 1.0, K1: 100, K2: 100,
+      a12: 1.0, a21: 1.0, N1_0: 50, N2_0: 50
+    },
+    explanation: "The original 1925 competition model with symmetric parameters. Equal growth rates and competition coefficients create competitive exclusion - one species will randomly win based on small fluctuations, demonstrating that complete competitors cannot coexist.",
+    biologicalExample: "Two nearly identical species competing for the exact same resources - classic example of Gause's competitive exclusion principle where only one species survives."
+  },
+  {
     name: "Rapid Exclusion",
     description: "Lightning-fast competitive dominance",
     outcome: "Species 2 Wins",
@@ -68,6 +79,17 @@ const competitionScenarios: PresetScenario[] = [
 
 // Predator-prey scenarios with extreme visual differences
 const predatorPreyScenarios: PresetScenario[] = [
+  {
+    name: "Classic Lotka-Volterra",
+    description: "Perfect neutral oscillations - the textbook model",
+    outcome: "Perfect Cycles",
+    parameters: {
+      r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
+      N1_0: 1.0, N2_0: 1.0
+    },
+    explanation: "The original 1925 equations with perfectly balanced parameters (all = 1.0). Creates mathematically pure oscillations around equilibrium (N1*=1.0, N2*=1.0) with period ≈ 6.28 time units.",
+    biologicalExample: "The theoretical foundation for all predator-prey models - represents idealized conditions with perfect balance between growth, predation, and efficiency."
+  },
   {
     name: "Explosive Cycles",
     description: "Massive population booms and crashes with recovery",
@@ -122,17 +144,6 @@ const predatorPreyScenarios: PresetScenario[] = [
     },
     explanation: "Moderate prey growth (1.8) just barely outpaces high predator efficiency (2.2) during recovery phases. Populations crash to extremely low levels but mathematical equilibrium ensures they don't go extinct.",
     biologicalExample: "Specialist predators like lynx and snowshoe hares in harsh environments - cycles crash to near-extinction levels where just a few individuals survive to restart the cycle."
-  },
-  {
-    name: "Classic Lotka-Volterra",
-    description: "Perfect neutral oscillations - the textbook model",
-    outcome: "Perfect Cycles",
-    parameters: {
-      r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
-      N1_0: 1.0, N2_0: 1.0
-    },
-    explanation: "The original 1925 equations with perfectly balanced parameters (all = 1.0). Creates mathematically pure oscillations around equilibrium (N1*=1.0, N2*=1.0) with period ≈ 6.28 time units.",
-    biologicalExample: "The theoretical foundation for all predator-prey models - represents idealized conditions with perfect balance between growth, predation, and efficiency."
   }
 ];
 
