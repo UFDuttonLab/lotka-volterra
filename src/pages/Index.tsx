@@ -1,78 +1,77 @@
-import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
-import HistoricalTimeline from "@/components/HistoricalTimeline";
-import MathematicalFoundations from "@/components/MathematicalFoundations";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EnhancedSimulation from "@/components/EnhancedSimulation";
+import MathematicalFoundations from "@/components/MathematicalFoundations";
+import HistoricalTimeline from "@/components/HistoricalTimeline";
 import LearningResources from "@/components/LearningResources";
 import EquationDisplay from "@/components/EquationDisplay";
-import { BookOpen, Calculator, TrendingUp, GraduationCap } from "lucide-react";
+import { useLotkaVolterra } from "@/hooks/useLotkaVolterra";
+import { Calculator, History, BookOpen, Activity } from "lucide-react";
 
-const Index = () => {
+export default function Index() {
+  const { modelType, switchModel } = useLotkaVolterra();
+
   return (
-    <div className="min-h-screen bg-gradient-background">
-      {/* Header */}
-      <header className="bg-gradient-hero text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Lotka-Volterra Competition Explorer
+    <div className="min-h-screen bg-gradient-background p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-hero bg-clip-text text-transparent">
+            Lotka-Volterra Model Explorer
           </h1>
-          <p className="text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
-            Comprehensive educational platform for learning species competition dynamics through 
-            interactive simulations, historical context, and mathematical foundations
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Discover the mathematical beauty of ecological dynamics through interactive simulations
+            of both competition and predator-prey models, with historical insights and comprehensive educational resources.
           </p>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+        {/* Model Equation Display */}
+        <EquationDisplay modelType={modelType} onModelChange={switchModel} />
+
+        {/* Main Navigation */}
         <Tabs defaultValue="simulate" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            <TabsTrigger value="simulate" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <TrendingUp className="h-4 w-4" />
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="simulate" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
               <span className="hidden sm:inline">Simulate</span>
             </TabsTrigger>
-            <TabsTrigger value="learn" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="learn" className="flex items-center gap-2">
               <Calculator className="h-4 w-4" />
               <span className="hidden sm:inline">Learn Math</span>
             </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <BookOpen className="h-4 w-4" />
+            <TabsTrigger value="history" className="flex items-center gap-2">
+              <History className="h-4 w-4" />
               <span className="hidden sm:inline">History</span>
             </TabsTrigger>
-            <TabsTrigger value="resources" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <GraduationCap className="h-4 w-4" />
+            <TabsTrigger value="resources" className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4" />
               <span className="hidden sm:inline">Resources</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="simulate" className="space-y-8">
+          <TabsContent value="simulate" className="mt-8">
             <EnhancedSimulation />
-            <EquationDisplay />
           </TabsContent>
 
-          <TabsContent value="learn" className="space-y-8">
+          <TabsContent value="learn" className="mt-8">
             <MathematicalFoundations />
           </TabsContent>
 
-          <TabsContent value="history" className="space-y-8">
+          <TabsContent value="history" className="mt-8">
             <HistoricalTimeline />
           </TabsContent>
 
-          <TabsContent value="resources" className="space-y-8">
+          <TabsContent value="resources" className="mt-8">
             <LearningResources />
           </TabsContent>
         </Tabs>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-card border-t mt-16 py-8">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p className="text-sm">
-            Educational tool for exploring species competition dynamics through mathematical modeling
+        {/* Footer */}
+        <footer className="text-center py-8 border-t border-border">
+          <p className="text-sm text-muted-foreground">
+            Educational tool for exploring ecological dynamics through mathematical modeling
           </p>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
-};
-
-export default Index;
+}

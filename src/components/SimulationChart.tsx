@@ -27,7 +27,7 @@ export default function SimulationChart({ data, isRunning }: SimulationChartProp
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-semibold">Population Dynamics</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Real-time visualization of competing species populations over time
+          Real-time visualization of population dynamics over time
         </p>
       </CardHeader>
       <CardContent>

@@ -98,12 +98,14 @@ const presetScenarios: PresetScenario[] = [
 
 export default function EnhancedSimulation() {
   const {
+    modelType,
     parameters,
     data,
     isRunning,
     currentPopulations,
     currentTime,
     updateParameter,
+    switchModel,
     toggleSimulation,
     resetSimulation,
   } = useLotkaVolterra();
@@ -192,6 +194,7 @@ export default function EnhancedSimulation() {
           <div className="hidden lg:grid lg:grid-cols-3 gap-6">
             <div className="space-y-6">
               <SimulationControls
+                modelType={modelType}
                 parameters={parameters}
                 onParameterChange={updateParameter}
                 isRunning={isRunning}
@@ -242,6 +245,7 @@ export default function EnhancedSimulation() {
           <div className="lg:hidden space-y-6">
             <SimulationChart data={data} isRunning={isRunning} />
             <SimulationControls
+              modelType={modelType}
               parameters={parameters}
               onParameterChange={updateParameter}
               isRunning={isRunning}
