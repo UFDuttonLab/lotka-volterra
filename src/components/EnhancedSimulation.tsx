@@ -288,7 +288,7 @@ export default function EnhancedSimulation() {
                 <CardContent className="space-y-4">
                   {modelType === 'predator-prey' ? (
                     <div className="text-sm space-y-2">
-                      <p><strong>Current Pattern:</strong> {outcome.type}</p>
+                      <p><strong>{loadedScenario ? 'Active Scenario:' : 'Current Pattern:'}</strong> {loadedScenario || outcome.type}</p>
                       <p className="text-muted-foreground leading-relaxed">
                         {outcome.type === "Stable Cycles" && "The system shows stable oscillations where predator peaks follow prey peaks with a natural delay."}
                         {outcome.type === "Large Oscillations" && "High amplitude cycles suggest strong predator-prey interactions that could risk population crashes."}
@@ -312,7 +312,7 @@ export default function EnhancedSimulation() {
                     </div>
                   ) : (
                     <div className="text-sm space-y-2">
-                      <p><strong>Current Parameters Predict:</strong> {outcome.type}</p>
+                      <p><strong>{loadedScenario ? 'Active Scenario:' : 'Current Parameters Predict:'}</strong> {loadedScenario || outcome.type}</p>
                       <p className="text-muted-foreground leading-relaxed">
                         {outcome.type === "Coexistence" && "Both species can persist because interspecific competition is weaker than intraspecific competition for both species."}
                         {outcome.type === "Species 1 Wins" && "Species 1 will exclude Species 2 because it has a competitive advantage."}

@@ -68,7 +68,7 @@ export default function SimulationChart({ data, isRunning, modelType = "competit
               <Line
                 type="monotone"
                 dataKey="species1"
-                stroke="hsl(var(--primary))"
+                stroke="hsl(var(--chart-species1))"
                 strokeWidth={2}
                 dot={false}
                 name={modelType === 'predator-prey' ? 'Prey' : 'Species 1'}
@@ -77,7 +77,7 @@ export default function SimulationChart({ data, isRunning, modelType = "competit
               <Line
                 type="monotone"
                 dataKey="species2"
-                stroke="hsl(var(--secondary))"
+                stroke="hsl(var(--chart-species2))"
                 strokeWidth={2}
                 dot={false}
                 name={modelType === 'predator-prey' ? 'Predator' : 'Species 2'}
