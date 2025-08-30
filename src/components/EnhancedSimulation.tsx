@@ -81,14 +81,14 @@ const predatorPreyScenarios: PresetScenario[] = [
   },
   {
     name: "Gentle Waves",
-    description: "Smooth, small amplitude oscillations",
+    description: "Smooth, sustained population oscillations",
     outcome: "Stable Cycles",
     parameters: {
-      r1: 0.3, r2: 0.3, a: 0.2, b: 0.3,
-      N1_0: 4, N2_0: 2
+      r1: 1.0, r2: 0.8, a: 0.6, b: 0.8,
+      N1_0: 1.5, N2_0: 1.2
     },
-    explanation: "All parameters 5-10x smaller than explosive scenario create gentle, barely visible oscillations around equilibrium points.",
-    biologicalExample: "Large whales and their krill prey - massive organisms with slow, gentle population fluctuations."
+    explanation: "Moderate prey growth (1.0) with balanced predation (0.6) and efficiency (0.8) creates sustained, gentle oscillations around equilibrium. Starting near equilibrium ensures small but visible cycles.",
+    biologicalExample: "Stable predator-prey relationships in mature ecosystems like wolves and deer in protected areas with clear but gentle population cycles."
   },
   {
     name: "Lightning Fast",
