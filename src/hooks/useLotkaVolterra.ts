@@ -31,7 +31,7 @@ interface DataPoint {
 }
 
 export function useLotkaVolterra() {
-  const [modelType, setModelType] = useState<ModelType>('competition');
+  const [modelType, setModelType] = useState<ModelType>('predator-prey');
   const [parameters, setParameters] = useState<Parameters>({
     // Competition parameters
     r1: 1.0,
@@ -40,11 +40,11 @@ export function useLotkaVolterra() {
     K2: 180,
     a12: 0.5,
     a21: 0.6,
-    N1_0: 50,
-    N2_0: 40,
-    // Predator-prey parameters
+    // Predator-prey parameters (default)
     a: 0.1,
     b: 0.075,
+    N1_0: 100,
+    N2_0: 20,
   });
 
   const [data, setData] = useState<DataPoint[]>([]);

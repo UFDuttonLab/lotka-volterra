@@ -19,9 +19,10 @@ interface DataPoint {
 interface SimulationChartProps {
   data: DataPoint[];
   isRunning: boolean;
+  modelType?: "competition" | "predator-prey";
 }
 
-export default function SimulationChart({ data, isRunning }: SimulationChartProps) {
+export default function SimulationChart({ data, isRunning, modelType = "competition" }: SimulationChartProps) {
   return (
     <Card className="w-full shadow-card">
       <CardHeader className="pb-4">
@@ -70,7 +71,7 @@ export default function SimulationChart({ data, isRunning }: SimulationChartProp
                 stroke="hsl(var(--primary))"
                 strokeWidth={2}
                 dot={false}
-                name="Species 1"
+                name={modelType === 'predator-prey' ? 'Prey' : 'Species 1'}
                 connectNulls={false}
               />
               <Line
@@ -79,7 +80,7 @@ export default function SimulationChart({ data, isRunning }: SimulationChartProp
                 stroke="hsl(var(--secondary))"
                 strokeWidth={2}
                 dot={false}
-                name="Species 2"
+                name={modelType === 'predator-prey' ? 'Predator' : 'Species 2'}
                 connectNulls={false}
               />
             </LineChart>

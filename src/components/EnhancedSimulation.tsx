@@ -11,34 +11,20 @@ interface PresetScenario {
   name: string;
   description: string;
   outcome: string;
-  parameters: {
-    r1: number;
-    r2: number;
-    K1: number;
-    K2: number;
-    a12: number;
-    a21: number;
-    N1_0: number;
-    N2_0: number;
-  };
+  parameters: Record<string, number>;
   explanation: string;
   biologicalExample: string;
 }
 
-const presetScenarios: PresetScenario[] = [
+// Competition scenarios
+const competitionScenarios: PresetScenario[] = [
   {
     name: "Competitive Exclusion",
     description: "Strong competitor excludes weaker species",
     outcome: "Species 2 Wins",
     parameters: {
-      r1: 1.0,
-      r2: 0.9,
-      K1: 200,
-      K2: 180,
-      a12: 1.2,
-      a21: 0.4,
-      N1_0: 50,
-      N2_0: 40
+      r1: 1.0, r2: 0.9, K1: 200, K2: 180,
+      a12: 1.2, a21: 0.4, N1_0: 50, N2_0: 40
     },
     explanation: "Species 2 has a strong competitive advantage (α₁₂ > K₁/K₂ while α₂₁ < K₂/K₁). Species 1 cannot persist when Species 2 is present at equilibrium.",
     biologicalExample: "Large ground finches excluding medium ground finches during drought years when large seeds are abundant."
@@ -48,51 +34,59 @@ const presetScenarios: PresetScenario[] = [
     description: "Both species coexist at equilibrium",
     outcome: "Coexistence",
     parameters: {
-      r1: 1.0,
-      r2: 0.8,
-      K1: 200,
-      K2: 180,
-      a12: 0.4,
-      a21: 0.3,
-      N1_0: 50,
-      N2_0: 40
+      r1: 1.0, r2: 0.8, K1: 200, K2: 180,
+      a12: 0.4, a21: 0.3, N1_0: 50, N2_0: 40
     },
     explanation: "Interspecific competition is weaker than intraspecific competition for both species (α₁₂ < K₁/K₂ and α₂₁ < K₂/K₁). Both species reach a stable equilibrium.",
     biologicalExample: "Tree species in a forest with different shade tolerances and resource requirements can stably coexist."
   },
+];
+
+// Predator-prey scenarios
+const predatorPreyScenarios: PresetScenario[] = [
   {
-    name: "Founder Control",
-    description: "Initial conditions determine the winner",
-    outcome: "Bistable",
+    name: "Classic Oscillations",
+    description: "Stable predator-prey cycles",
+    outcome: "Stable Cycles",
     parameters: {
-      r1: 1.0,
-      r2: 0.9,
-      K1: 200,
-      K2: 180,
-      a12: 1.4,
-      a21: 1.5,
-      N1_0: 50,
-      N2_0: 40
+      r1: 1.0, r2: 0.5, a: 0.1, b: 0.075,
+      N1_0: 100, N2_0: 20
     },
-    explanation: "Strong interspecific competition for both species (α₁₂ > K₁/K₂ and α₂₁ > K₂/K₁). The species that gets established first excludes the other.",
-    biologicalExample: "Early-arriving bird species can monopolize nesting sites and prevent later arrivals from establishing."
+    explanation: "Balanced predation creates stable oscillations. Prey grow when predators are few, predators increase with abundant prey, then prey decline from predation pressure.",
+    biologicalExample: "Lynx and snowshoe hare populations in Canada show classic ~10-year cycles with predator peaks following prey peaks."
   },
   {
-    name: "Weak Competition",
-    description: "Minimal competitive effects",
-    outcome: "Near Independence",
+    name: "High Predation Rate",
+    description: "Aggressive predators drive system to extinction",
+    outcome: "Extinction Risk",
     parameters: {
-      r1: 1.0,
-      r2: 0.8,
-      K1: 200,
-      K2: 180,
-      a12: 0.1,
-      a21: 0.1,
-      N1_0: 50,
-      N2_0: 40
+      r1: 0.8, r2: 0.4, a: 0.25, b: 0.1,
+      N1_0: 80, N2_0: 30
     },
-    explanation: "Very weak competition coefficients mean species barely affect each other. Each grows nearly to its own carrying capacity.",
-    biologicalExample: "Species using completely different resources or habitats, like canopy vs. ground-dwelling birds."
+    explanation: "Very high predation rate (a = 0.25) creates unstable dynamics. Predators can drive prey to very low levels, risking system collapse.",
+    biologicalExample: "Introduction of aggressive predators like cats can drive island bird populations to extinction through overexploitation."
+  },
+  {
+    name: "Low Predation Efficiency",
+    description: "Inefficient predators cannot control prey",
+    outcome: "Predator Decline",
+    parameters: {
+      r1: 1.2, r2: 0.8, a: 0.05, b: 0.03,
+      N1_0: 120, N2_0: 15
+    },
+    explanation: "Low predator efficiency (b = 0.03) means predators cannot convert prey into offspring effectively. Prey populations grow while predators decline.",
+    biologicalExample: "Specialist predators may struggle when prey evolve better defenses, leading to predator population crashes."
+  },
+  {
+    name: "Rapid Prey Growth",
+    description: "Fast-breeding prey create large amplitude cycles",
+    outcome: "Large Oscillations",
+    parameters: {
+      r1: 2.0, r2: 0.6, a: 0.12, b: 0.08,
+      N1_0: 60, N2_0: 25
+    },
+    explanation: "High prey growth rate (r₁ = 2.0) creates dramatic boom-bust cycles with large amplitude oscillations as the system swings between prey abundance and scarcity.",
+    biologicalExample: "Small mammals with high reproductive rates (like voles) can create dramatic population cycles with their predators."
   }
 ];
 
@@ -117,22 +111,45 @@ export default function EnhancedSimulation() {
   };
 
   const getCurrentOutcome = () => {
-    const { K1, K2, a12, a21 } = parameters;
-    const alpha12_threshold = K1 / K2;
-    const alpha21_threshold = K2 / K1;
-    
-    if (a12 < alpha12_threshold && a21 < alpha21_threshold) {
-      return { type: "Coexistence", color: "bg-green-100 text-green-800 border-green-200" };
-    } else if (a12 > alpha12_threshold && a21 < alpha21_threshold) {
-      return { type: "Species 2 Wins", color: "bg-blue-100 text-blue-800 border-blue-200" };
-    } else if (a12 < alpha12_threshold && a21 > alpha21_threshold) {
-      return { type: "Species 1 Wins", color: "bg-purple-100 text-purple-800 border-purple-200" };
+    if (modelType === 'predator-prey') {
+      // For predator-prey, we can analyze cycle characteristics
+      if (data.length > 50) {
+        const recentData = data.slice(-30);
+        const preyValues = recentData.map(d => d.species1);
+        const avgPrey = preyValues.reduce((a, b) => a + b, 0) / preyValues.length;
+        const maxPrey = Math.max(...preyValues);
+        const minPrey = Math.min(...preyValues);
+        const amplitude = maxPrey - minPrey;
+        
+        if (amplitude < avgPrey * 0.1) {
+          return { type: "Near Equilibrium", color: "bg-green-100 text-green-800 border-green-200" };
+        } else if (amplitude > avgPrey * 0.8) {
+          return { type: "Large Oscillations", color: "bg-orange-100 text-orange-800 border-orange-200" };
+        } else {
+          return { type: "Stable Cycles", color: "bg-blue-100 text-blue-800 border-blue-200" };
+        }
+      }
+      return { type: "Analyzing...", color: "bg-gray-100 text-gray-800 border-gray-200" };
     } else {
-      return { type: "Bistable", color: "bg-orange-100 text-orange-800 border-orange-200" };
+      // Competition model logic
+      const { K1, K2, a12, a21 } = parameters;
+      const alpha12_threshold = K1! / K2!;
+      const alpha21_threshold = K2! / K1!;
+      
+      if (a12! < alpha12_threshold && a21! < alpha21_threshold) {
+        return { type: "Coexistence", color: "bg-green-100 text-green-800 border-green-200" };
+      } else if (a12! > alpha12_threshold && a21! < alpha21_threshold) {
+        return { type: "Species 2 Wins", color: "bg-blue-100 text-blue-800 border-blue-200" };
+      } else if (a12! < alpha12_threshold && a21! > alpha21_threshold) {
+        return { type: "Species 1 Wins", color: "bg-purple-100 text-purple-800 border-purple-200" };
+      } else {
+        return { type: "Bistable", color: "bg-orange-100 text-orange-800 border-orange-200" };
+      }
     }
   };
 
   const outcome = getCurrentOutcome();
+  const currentScenarios = modelType === 'predator-prey' ? predatorPreyScenarios : competitionScenarios;
 
   return (
     <div className="space-y-6">
@@ -140,10 +157,10 @@ export default function EnhancedSimulation() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-primary" />
-            Interactive Simulation Laboratory
+            Interactive {modelType === 'predator-prey' ? 'Predator-Prey' : 'Competition'} Laboratory
           </CardTitle>
           <p className="text-muted-foreground">
-            Explore competition dynamics with real-time simulation, preset scenarios, and guided analysis.
+            Explore {modelType === 'predator-prey' ? 'predator-prey dynamics with oscillating cycles' : 'competition dynamics with equilibrium states'} through real-time simulation and preset scenarios.
           </p>
         </CardHeader>
       </Card>
@@ -158,19 +175,19 @@ export default function EnhancedSimulation() {
                 <span className="font-mono font-medium">{currentTime.toFixed(1)}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">Species 1:</span>
+                <span className="text-muted-foreground">{modelType === 'predator-prey' ? 'Prey' : 'Species 1'}:</span>
                 <span className="font-mono font-medium text-primary">
                   {currentPopulations.N1.toFixed(1)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">Species 2:</span>
+                <span className="text-muted-foreground">{modelType === 'predator-prey' ? 'Predator' : 'Species 2'}:</span>
                 <span className="font-mono font-medium text-secondary">
                   {currentPopulations.N2.toFixed(1)}
                 </span>
               </div>
               <Badge className={`${outcome.color} border`}>
-                Predicted: {outcome.type}
+                {modelType === 'predator-prey' ? 'Pattern' : 'Predicted'}: {outcome.type}
               </Badge>
             </div>
           </div>
@@ -203,7 +220,7 @@ export default function EnhancedSimulation() {
               />
             </div>
             <div className="lg:col-span-2 space-y-6">
-              <SimulationChart data={data} isRunning={isRunning} />
+              <SimulationChart data={data} isRunning={isRunning} modelType={modelType} />
               {/* Interpretation Panel */}
               <Card className="shadow-card">
                 <CardHeader>
@@ -213,29 +230,55 @@ export default function EnhancedSimulation() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="text-sm space-y-2">
-                    <p><strong>Current Parameters Predict:</strong> {outcome.type}</p>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {outcome.type === "Coexistence" && "Both species can persist because interspecific competition is weaker than intraspecific competition for both species."}
-                      {outcome.type === "Species 1 Wins" && "Species 1 will exclude Species 2 because it has a competitive advantage."}
-                      {outcome.type === "Species 2 Wins" && "Species 2 will exclude Species 1 because it has a competitive advantage."}
-                      {outcome.type === "Bistable" && "The outcome depends on initial conditions - whichever species gets established first will exclude the other."}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 pt-2 border-t">
-                    <div className="text-center">
-                      <div className="text-lg font-mono font-bold text-primary">
-                        {(parameters.a12 / (parameters.K1 / parameters.K2)).toFixed(2)}
+                  {modelType === 'predator-prey' ? (
+                    <div className="text-sm space-y-2">
+                      <p><strong>Current Pattern:</strong> {outcome.type}</p>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {outcome.type === "Stable Cycles" && "The system shows stable oscillations where predator peaks follow prey peaks with a natural delay."}
+                        {outcome.type === "Large Oscillations" && "High amplitude cycles suggest strong predator-prey interactions that could risk population crashes."}
+                        {outcome.type === "Near Equilibrium" && "Populations are approaching steady states, suggesting weak predator-prey interactions."}
+                        {outcome.type === "Analyzing..." && "Run the simulation longer to analyze the cyclical patterns and stability."}
+                      </p>
+                      <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                        <div className="text-center">
+                          <div className="text-lg font-mono font-bold text-primary">
+                            {parameters.a!.toFixed(3)}
+                          </div>
+                          <div className="text-xs text-muted-foreground">Predation Rate</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-lg font-mono font-bold text-secondary">
+                            {parameters.b!.toFixed(3)}
+                          </div>
+                          <div className="text-xs text-muted-foreground">Pred. Efficiency</div>
+                        </div>
                       </div>
-                      <div className="text-xs text-muted-foreground">α₁₂ / (K₁/K₂)</div>
                     </div>
-                    <div className="text-center">
-                      <div className="text-lg font-mono font-bold text-secondary">
-                        {(parameters.a21 / (parameters.K2 / parameters.K1)).toFixed(2)}
+                  ) : (
+                    <div className="text-sm space-y-2">
+                      <p><strong>Current Parameters Predict:</strong> {outcome.type}</p>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {outcome.type === "Coexistence" && "Both species can persist because interspecific competition is weaker than intraspecific competition for both species."}
+                        {outcome.type === "Species 1 Wins" && "Species 1 will exclude Species 2 because it has a competitive advantage."}
+                        {outcome.type === "Species 2 Wins" && "Species 2 will exclude Species 1 because it has a competitive advantage."}
+                        {outcome.type === "Bistable" && "The outcome depends on initial conditions - whichever species gets established first will exclude the other."}
+                      </p>
+                      <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                        <div className="text-center">
+                          <div className="text-lg font-mono font-bold text-primary">
+                            {(parameters.a12! / (parameters.K1! / parameters.K2!)).toFixed(2)}
+                          </div>
+                          <div className="text-xs text-muted-foreground">α₁₂ / (K₁/K₂)</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-lg font-mono font-bold text-secondary">
+                            {(parameters.a21! / (parameters.K2! / parameters.K1!)).toFixed(2)}
+                          </div>
+                          <div className="text-xs text-muted-foreground">α₂₁ / (K₂/K₁)</div>
+                        </div>
                       </div>
-                      <div className="text-xs text-muted-foreground">α₂₁ / (K₂/K₁)</div>
                     </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -243,7 +286,7 @@ export default function EnhancedSimulation() {
 
           {/* Mobile Layout */}
           <div className="lg:hidden space-y-6">
-            <SimulationChart data={data} isRunning={isRunning} />
+            <SimulationChart data={data} isRunning={isRunning} modelType={modelType} />
             <SimulationControls
               modelType={modelType}
               parameters={parameters}
@@ -257,7 +300,7 @@ export default function EnhancedSimulation() {
 
         <TabsContent value="presets" className="space-y-4">
           <div className="grid gap-4">
-            {presetScenarios.map((scenario, idx) => (
+            {currentScenarios.map((scenario, idx) => (
               <Card key={idx} className="shadow-card hover:shadow-lg transition-all duration-300">
                 <CardHeader className="pb-3">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -295,22 +338,45 @@ export default function EnhancedSimulation() {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t text-xs">
-                    <div className="text-center">
-                      <div className="font-mono font-semibold">{scenario.parameters.r1}</div>
-                      <div className="text-muted-foreground">r₁</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="font-mono font-semibold">{scenario.parameters.r2}</div>
-                      <div className="text-muted-foreground">r₂</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="font-mono font-semibold">{scenario.parameters.a12}</div>
-                      <div className="text-muted-foreground">α₁₂</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="font-mono font-semibold">{scenario.parameters.a21}</div>
-                      <div className="text-muted-foreground">α₂₁</div>
-                    </div>
+                    {modelType === 'predator-prey' ? (
+                      <>
+                        <div className="text-center">
+                          <div className="font-mono font-semibold">{scenario.parameters.r1}</div>
+                          <div className="text-muted-foreground">r₁ (prey)</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-mono font-semibold">{scenario.parameters.r2}</div>
+                          <div className="text-muted-foreground">r₂ (pred)</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-mono font-semibold">{scenario.parameters.a}</div>
+                          <div className="text-muted-foreground">a (attack)</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-mono font-semibold">{scenario.parameters.b}</div>
+                          <div className="text-muted-foreground">b (efficiency)</div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-center">
+                          <div className="font-mono font-semibold">{scenario.parameters.r1}</div>
+                          <div className="text-muted-foreground">r₁</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-mono font-semibold">{scenario.parameters.r2}</div>
+                          <div className="text-muted-foreground">r₂</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-mono font-semibold">{scenario.parameters.a12}</div>
+                          <div className="text-muted-foreground">α₁₂</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-mono font-semibold">{scenario.parameters.a21}</div>
+                          <div className="text-muted-foreground">α₂₁</div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </CardContent>
               </Card>
