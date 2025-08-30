@@ -25,11 +25,11 @@ const competitionScenarios: PresetScenario[] = [
     description: "Textbook competitive exclusion principle",
     outcome: "Competitive Exclusion",
     parameters: {
-      r1: 1.2, r2: 1.0, K1: 150, K2: 120,
-      a12: 1.1, a21: 0.9, N1_0: 80, N2_0: 70
+      r1: 1.0, r2: 1.0, K1: 100, K2: 100,
+      a12: 1.0, a21: 1.0, N1_0: 50, N2_0: 50
     },
-    explanation: "The classic competition model demonstrating competitive exclusion. Species 1 has slightly higher growth rate and Species 2 has stronger competitive effect on Species 1. This asymmetry leads to Species 1 eventually excluding Species 2, showing that complete competitors cannot coexist.",
-    biologicalExample: "Two bird species competing for the same nesting sites and food sources - the species with even a slight advantage will eventually dominate and exclude the other."
+    explanation: "The original 1925 competition model with symmetric parameters. Equal growth rates and competition coefficients create competitive exclusion - one species will randomly win based on small fluctuations, demonstrating that complete competitors cannot coexist.",
+    biologicalExample: "Two nearly identical species competing for the exact same resources - classic example of Gause's competitive exclusion principle where only one species survives."
   },
   {
     name: "Rapid Exclusion",
@@ -262,9 +262,11 @@ export default function EnhancedSimulation() {
                   {currentPopulations.N2.toFixed(1)}
                 </span>
               </div>
-              <Badge className={`${outcome.color} border`}>
-                {loadedScenario ? `Scenario: ${loadedScenario}` : `${modelType === 'predator-prey' ? 'Pattern' : 'Predicted'}: ${outcome.type}`}
-              </Badge>
+              {loadedScenario && (
+                <Badge className={`${outcome.color} border`}>
+                  Scenario: {loadedScenario}
+                </Badge>
+              )}
             </div>
           </div>
         </CardContent>
