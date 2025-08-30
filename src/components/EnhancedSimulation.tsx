@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
 import { Play, RotateCcw, Lightbulb, Target, TrendingUp } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface PresetScenario {
   name: string;
@@ -114,11 +115,28 @@ export default function EnhancedSimulation() {
     toggleSimulation,
     resetSimulation,
   } = useLotkaVolterra();
+  
+  const { toast } = useToast();
 
   const loadPreset = (preset: PresetScenario) => {
+    // Stop simulation first
+    if (isRunning) {
+      toggleSimulation();
+    }
+    
+    // Load parameters
     Object.entries(preset.parameters).forEach(([param, value]) => {
       updateParameter(param, value);
     });
+    
+    // Show feedback
+    toast({
+      title: "Preset Loaded",
+      description: `${preset.name}: ${preset.description}`,
+    });
+    
+    // Reset simulation to show immediate effect
+    setTimeout(() => resetSimulation(), 100);
   };
 
   const getCurrentOutcome = () => {

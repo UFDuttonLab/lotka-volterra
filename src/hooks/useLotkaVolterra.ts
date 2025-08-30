@@ -99,10 +99,11 @@ export function useLotkaVolterra() {
     const newN1 = N1 + (timeStep / 6) * (k1.dN1dt + 2 * k2.dN1dt + 2 * k3.dN1dt + k4.dN1dt);
     const newN2 = N2 + (timeStep / 6) * (k1.dN2dt + 2 * k2.dN2dt + 2 * k3.dN2dt + k4.dN2dt);
 
-    // Natural bounds - populations stay positive with proper integration
+    // Natural bounds - use tiny epsilon instead of zero to preserve system properties
+    const epsilon = 1e-10;
     return {
-      N1: newN1 > 0 ? newN1 : 0,
-      N2: newN2 > 0 ? newN2 : 0,
+      N1: newN1 > 0 ? newN1 : epsilon,
+      N2: newN2 > 0 ? newN2 : epsilon,
     };
   }, [calculateDerivatives]);
 
@@ -113,8 +114,8 @@ export function useLotkaVolterra() {
       setCurrentPopulations(prevPops => {
         const newPops = integrate(prevPops.N1, prevPops.N2, parameters, modelType);
         
-        // Record data more frequently to capture oscillations
-        if (Math.round(newTime * 100) % 2 === 0) {
+        // Record data every step for maximum accuracy
+        if (true) {
           setData(prevData => {
             const newDataPoint = {
               time: Math.round(newTime * 100) / 100,
@@ -204,7 +205,7 @@ export function useLotkaVolterra() {
   // Initialize data on mount and parameter changes
   useEffect(() => {
     resetSimulation();
-  }, [parameters.N1_0, parameters.N2_0]);
+  }, [parameters, resetSimulation]);
 
   // Cleanup on unmount
   useEffect(() => {
