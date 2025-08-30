@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EnhancedSimulation from "@/components/EnhancedSimulation";
 import MathematicalFoundations from "@/components/MathematicalFoundations";
@@ -6,10 +7,51 @@ import LearningResources from "@/components/LearningResources";
 import EquationDisplay from "@/components/EquationDisplay";
 import { useLotkaVolterra } from "@/hooks/useLotkaVolterra";
 import { Calculator, History, BookOpen, Activity } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+type ModelType = 'competition' | 'predator-prey';
+
+interface Parameters {
+  r1: number;
+  r2: number;
+  K1: number;
+  K2: number;
+  a12: number;
+  a21: number;
+  a: number;
+  b: number;
+  N1_0: number;
+  N2_0: number;
+}
 
 export default function Index() {
   const hookValues = useLotkaVolterra();
-  const { modelType, switchModel } = hookValues;
+  const { modelType, switchModel, setAllParameters } = hookValues;
+  const [activeTab, setActiveTab] = useState("simulate");
+  const { toast } = useToast();
+
+  const handleLoadExercise = (
+    exerciseParams: Partial<Parameters>,
+    exerciseModel: ModelType,
+    exerciseTitle: string
+  ) => {
+    // Switch to the correct model first
+    if (modelType !== exerciseModel) {
+      switchModel(exerciseModel);
+    }
+    
+    // Load the exercise parameters
+    setAllParameters(exerciseParams);
+    
+    // Switch to simulation tab
+    setActiveTab("simulate");
+    
+    // Show toast notification
+    toast({
+      title: "Exercise Loaded",
+      description: `"${exerciseTitle}" parameters loaded in simulation`,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-background p-4 sm:p-6 lg:p-8">
@@ -29,7 +71,7 @@ export default function Index() {
         <EquationDisplay modelType={modelType} onModelChange={switchModel} />
 
         {/* Main Navigation */}
-        <Tabs defaultValue="simulate" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="simulate" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
@@ -62,7 +104,7 @@ export default function Index() {
           </TabsContent>
 
           <TabsContent value="resources" className="mt-8">
-            <LearningResources />
+            <LearningResources onLoadExercise={handleLoadExercise} />
           </TabsContent>
         </Tabs>
 
