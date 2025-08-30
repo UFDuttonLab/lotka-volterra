@@ -46,47 +46,47 @@ const competitionScenarios: PresetScenario[] = [
 const predatorPreyScenarios: PresetScenario[] = [
   {
     name: "Classic Oscillations",
-    description: "Stable predator-prey cycles",
+    description: "Standard predator-prey cycles showing clear population oscillations",
     outcome: "Stable Cycles",
     parameters: {
-      r1: 1.0, r2: 0.5, a: 0.1, b: 0.075,
-      N1_0: 100, N2_0: 20
+      r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
+      N1_0: 10, N2_0: 10
     },
-    explanation: "Balanced predation creates stable oscillations. Prey grow when predators are few, predators increase with abundant prey, then prey decline from predation pressure.",
-    biologicalExample: "Lynx and snowshoe hare populations in Canada show classic ~10-year cycles with predator peaks following prey peaks."
+    explanation: "Classic Lotka-Volterra parameters (all = 1.0) create perfect neutral oscillations that maintain constant amplitude and period.",
+    biologicalExample: "Idealized predator-prey relationship showing the fundamental cyclic dynamics described by Lotka and Volterra."
   },
   {
-    name: "High Predation Rate",
-    description: "Aggressive predators drive system to extinction",
-    outcome: "Extinction Risk",
-    parameters: {
-      r1: 0.8, r2: 0.4, a: 0.25, b: 0.1,
-      N1_0: 80, N2_0: 30
-    },
-    explanation: "Very high predation rate (a = 0.25) creates unstable dynamics. Predators can drive prey to very low levels, risking system collapse.",
-    biologicalExample: "Introduction of aggressive predators like cats can drive island bird populations to extinction through overexploitation."
-  },
-  {
-    name: "Low Predation Efficiency",
-    description: "Inefficient predators cannot control prey",
-    outcome: "Predator Decline",
-    parameters: {
-      r1: 1.2, r2: 0.8, a: 0.05, b: 0.03,
-      N1_0: 120, N2_0: 15
-    },
-    explanation: "Low predator efficiency (b = 0.03) means predators cannot convert prey into offspring effectively. Prey populations grow while predators decline.",
-    biologicalExample: "Specialist predators may struggle when prey evolve better defenses, leading to predator population crashes."
-  },
-  {
-    name: "Rapid Prey Growth",
-    description: "Fast-breeding prey create large amplitude cycles",
+    name: "Fast Prey Growth",
+    description: "Rapidly reproducing prey with moderate predation",
     outcome: "Large Oscillations",
     parameters: {
-      r1: 2.0, r2: 0.6, a: 0.12, b: 0.08,
-      N1_0: 60, N2_0: 25
+      r1: 2.0, r2: 1.0, a: 1.5, b: 1.0,
+      N1_0: 8, N2_0: 12
     },
-    explanation: "High prey growth rate (r₁ = 2.0) creates dramatic boom-bust cycles with large amplitude oscillations as the system swings between prey abundance and scarcity.",
-    biologicalExample: "Small mammals with high reproductive rates (like voles) can create dramatic population cycles with their predators."
+    explanation: "High prey growth rate (r₁ = 2.0) with strong predation (α = 1.5) creates rapid oscillations with higher prey peaks.",
+    biologicalExample: "Small mammals like voles or lemmings that reproduce quickly and support predator populations through boom-bust cycles."
+  },
+  {
+    name: "Efficient Predators",
+    description: "Highly efficient predators with strong conversion rates",
+    outcome: "Tight Cycles",
+    parameters: {
+      r1: 1.0, r2: 0.8, a: 0.8, b: 1.5,
+      N1_0: 12, N2_0: 8
+    },
+    explanation: "High predator efficiency (β = 1.5) means predators convert prey very effectively, leading to lower prey minima and higher predator peaks.",
+    biologicalExample: "Specialist predators like Arctic foxes feeding on lemmings, where high conversion efficiency drives tight population coupling."
+  },
+  {
+    name: "Slow Dynamics",
+    description: "Large organisms with slower population dynamics",
+    outcome: "Wide Oscillations",
+    parameters: {
+      r1: 0.5, r2: 0.4, a: 0.6, b: 0.7,
+      N1_0: 15, N2_0: 6
+    },
+    explanation: "Reduced rates across all parameters create slower, wider oscillations typical of larger organisms with longer generation times.",
+    biologicalExample: "Large herbivore-carnivore systems like caribou and wolves, where population changes occur over multiple years."
   }
 ];
 

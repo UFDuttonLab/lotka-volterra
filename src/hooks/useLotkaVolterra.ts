@@ -40,11 +40,11 @@ export function useLotkaVolterra() {
     K2: 180,
     a12: 0.5,
     a21: 0.6,
-    // Predator-prey parameters (default)
-    a: 0.1,
-    b: 0.075,
-    N1_0: 100,
-    N2_0: 20,
+    // Predator-prey parameters (default - tuned for stable oscillations)
+    a: 1.0,
+    b: 1.0,
+    N1_0: 10,
+    N2_0: 10,
   });
 
   const [data, setData] = useState<DataPoint[]>([]);
@@ -56,7 +56,7 @@ export function useLotkaVolterra() {
   });
 
   const intervalRef = useRef<NodeJS.Timeout>();
-  const timeStep = 0.1; // Integration time step
+  const timeStep = 0.01; // Smaller integration time step for accuracy
   const updateInterval = 50; // Update frequency in milliseconds
 
   // Lotka-Volterra equations (both competition and predator-prey)
@@ -73,12 +73,35 @@ export function useLotkaVolterra() {
     }
   }, []);
 
-  // Euler integration method
+  // Runge-Kutta 4th Order integration method
   const integrate = useCallback((N1: number, N2: number, params: Parameters, model: ModelType) => {
-    const { dN1dt, dN2dt } = calculateDerivatives(N1, N2, params, model);
+    // RK4 method for better accuracy with oscillatory systems
+    const k1 = calculateDerivatives(N1, N2, params, model);
+    const k2 = calculateDerivatives(
+      N1 + k1.dN1dt * timeStep / 2,
+      N2 + k1.dN2dt * timeStep / 2,
+      params,
+      model
+    );
+    const k3 = calculateDerivatives(
+      N1 + k2.dN1dt * timeStep / 2,
+      N2 + k2.dN2dt * timeStep / 2,
+      params,
+      model
+    );
+    const k4 = calculateDerivatives(
+      N1 + k3.dN1dt * timeStep,
+      N2 + k3.dN2dt * timeStep,
+      params,
+      model
+    );
+
+    const newN1 = N1 + (timeStep / 6) * (k1.dN1dt + 2 * k2.dN1dt + 2 * k3.dN1dt + k4.dN1dt);
+    const newN2 = N2 + (timeStep / 6) * (k1.dN2dt + 2 * k2.dN2dt + 2 * k3.dN2dt + k4.dN2dt);
+
     return {
-      N1: Math.max(0, N1 + dN1dt * timeStep),
-      N2: Math.max(0, N2 + dN2dt * timeStep),
+      N1: Math.max(0.001, newN1), // Small positive floor to prevent division by zero
+      N2: Math.max(0.001, newN2),
     };
   }, [calculateDerivatives]);
 
@@ -89,13 +112,13 @@ export function useLotkaVolterra() {
       setCurrentPopulations(prevPops => {
         const newPops = integrate(prevPops.N1, prevPops.N2, parameters, modelType);
         
-        // Add data point every few steps to avoid too many points
-        if (Math.round(newTime * 10) % 2 === 0) {
+        // Add data point every few steps to avoid too many points (adjusted for smaller time step)
+        if (Math.round(newTime * 100) % 5 === 0) {
           setData(prevData => {
             const newDataPoint = {
-              time: Math.round(newTime * 10) / 10,
-              species1: Math.round(newPops.N1 * 10) / 10,
-              species2: Math.round(newPops.N2 * 10) / 10,
+              time: Math.round(newTime * 100) / 100,
+              species1: Math.round(newPops.N1 * 100) / 100,
+              species2: Math.round(newPops.N2 * 100) / 100,
             };
             
             // Keep only last 200 points for performance
@@ -156,11 +179,11 @@ export function useLotkaVolterra() {
       setParameters(prev => ({
         ...prev,
         r1: 1.0, // prey growth rate
-        r2: 0.5, // predator death rate
-        a: 0.1,  // predation rate
-        b: 0.075, // predator efficiency
-        N1_0: 100, // initial prey
-        N2_0: 20,  // initial predators
+        r2: 1.0, // predator death rate
+        a: 1.0,  // predation rate
+        b: 1.0,  // predator efficiency
+        N1_0: 10, // initial prey
+        N2_0: 10,  // initial predators
       }));
     } else {
       setParameters(prev => ({
