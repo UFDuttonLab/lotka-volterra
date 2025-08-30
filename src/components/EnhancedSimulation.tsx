@@ -50,9 +50,9 @@ const predatorPreyScenarios: PresetScenario[] = [
     outcome: "Stable Cycles",
     parameters: {
       r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
-      N1_0: 10, N2_0: 10
+      N1_0: 2, N2_0: 1
     },
-    explanation: "Classic Lotka-Volterra parameters (all = 1.0) create perfect neutral oscillations that maintain constant amplitude and period.",
+    explanation: "Classic Lotka-Volterra parameters with small initial populations create clear oscillations that are easy to observe.",
     biologicalExample: "Idealized predator-prey relationship showing the fundamental cyclic dynamics described by Lotka and Volterra."
   },
   {
@@ -60,10 +60,10 @@ const predatorPreyScenarios: PresetScenario[] = [
     description: "Rapidly reproducing prey with moderate predation",
     outcome: "Large Oscillations",
     parameters: {
-      r1: 2.0, r2: 1.0, a: 1.5, b: 1.0,
-      N1_0: 8, N2_0: 12
+      r1: 1.5, r2: 1.0, a: 1.0, b: 1.0,
+      N1_0: 3, N2_0: 1
     },
-    explanation: "High prey growth rate (r₁ = 2.0) with strong predation (α = 1.5) creates rapid oscillations with higher prey peaks.",
+    explanation: "Higher prey growth rate creates wider amplitude oscillations with faster recovery from predation.",
     biologicalExample: "Small mammals like voles or lemmings that reproduce quickly and support predator populations through boom-bust cycles."
   },
   {
@@ -71,19 +71,19 @@ const predatorPreyScenarios: PresetScenario[] = [
     description: "Highly efficient predators with strong conversion rates",
     outcome: "Tight Cycles",
     parameters: {
-      r1: 1.0, r2: 0.8, a: 0.8, b: 1.5,
-      N1_0: 12, N2_0: 8
+      r1: 1.0, r2: 1.0, a: 1.5, b: 1.0,
+      N1_0: 4, N2_0: 1
     },
-    explanation: "High predator efficiency (β = 1.5) means predators convert prey very effectively, leading to lower prey minima and higher predator peaks.",
-    biologicalExample: "Specialist predators like Arctic foxes feeding on lemmings, where high conversion efficiency drives tight population coupling."
+    explanation: "Higher predation rate creates faster, tighter oscillations with more rapid predator response to prey abundance.",
+    biologicalExample: "Specialist predators like Arctic foxes feeding on lemmings, where high attack rates drive tight population coupling."
   },
   {
     name: "Slow Dynamics",
     description: "Large organisms with slower population dynamics",
     outcome: "Wide Oscillations",
     parameters: {
-      r1: 0.5, r2: 0.4, a: 0.6, b: 0.7,
-      N1_0: 15, N2_0: 6
+      r1: 0.8, r2: 0.8, a: 0.8, b: 0.8,
+      N1_0: 5, N2_0: 2
     },
     explanation: "Reduced rates across all parameters create slower, wider oscillations typical of larger organisms with longer generation times.",
     biologicalExample: "Large herbivore-carnivore systems like caribou and wolves, where population changes occur over multiple years."

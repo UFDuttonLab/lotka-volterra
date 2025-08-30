@@ -40,11 +40,11 @@ export function useLotkaVolterra() {
     K2: 180,
     a12: 0.5,
     a21: 0.6,
-    // Predator-prey parameters (default - tuned for stable oscillations)
+    // Predator-prey parameters - classic oscillating values
     a: 1.0,
     b: 1.0,
-    N1_0: 10,
-    N2_0: 10,
+    N1_0: 2,
+    N2_0: 1,
   });
 
   const [data, setData] = useState<DataPoint[]>([]);
@@ -99,9 +99,10 @@ export function useLotkaVolterra() {
     const newN1 = N1 + (timeStep / 6) * (k1.dN1dt + 2 * k2.dN1dt + 2 * k3.dN1dt + k4.dN1dt);
     const newN2 = N2 + (timeStep / 6) * (k1.dN2dt + 2 * k2.dN2dt + 2 * k3.dN2dt + k4.dN2dt);
 
+    // Natural bounds - populations stay positive with proper integration
     return {
-      N1: Math.max(0.001, newN1), // Small positive floor to prevent division by zero
-      N2: Math.max(0.001, newN2),
+      N1: newN1 > 0 ? newN1 : 0,
+      N2: newN2 > 0 ? newN2 : 0,
     };
   }, [calculateDerivatives]);
 
@@ -112,8 +113,8 @@ export function useLotkaVolterra() {
       setCurrentPopulations(prevPops => {
         const newPops = integrate(prevPops.N1, prevPops.N2, parameters, modelType);
         
-        // Add data point every few steps to avoid too many points (adjusted for smaller time step)
-        if (Math.round(newTime * 100) % 5 === 0) {
+        // Record data more frequently to capture oscillations
+        if (Math.round(newTime * 100) % 2 === 0) {
           setData(prevData => {
             const newDataPoint = {
               time: Math.round(newTime * 100) / 100,
@@ -121,9 +122,9 @@ export function useLotkaVolterra() {
               species2: Math.round(newPops.N2 * 100) / 100,
             };
             
-            // Keep only last 200 points for performance
+            // Keep more points to see full oscillation cycles
             const updatedData = [...prevData, newDataPoint];
-            return updatedData.length > 200 ? updatedData.slice(-200) : updatedData;
+            return updatedData.length > 500 ? updatedData.slice(-500) : updatedData;
           });
         }
         
@@ -182,8 +183,8 @@ export function useLotkaVolterra() {
         r2: 1.0, // predator death rate
         a: 1.0,  // predation rate
         b: 1.0,  // predator efficiency
-        N1_0: 10, // initial prey
-        N2_0: 10,  // initial predators
+        N1_0: 2, // initial prey - smaller for visible oscillations
+        N2_0: 1,  // initial predators - smaller for visible oscillations
       }));
     } else {
       setParameters(prev => ({
