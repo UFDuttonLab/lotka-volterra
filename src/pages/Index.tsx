@@ -1,87 +1,66 @@
-import { useLotkaVolterra } from "@/hooks/useLotkaVolterra";
-import SimulationControls from "@/components/SimulationControls";
-import SimulationChart from "@/components/SimulationChart";
+import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
+import HistoricalTimeline from "@/components/HistoricalTimeline";
+import MathematicalFoundations from "@/components/MathematicalFoundations";
+import EnhancedSimulation from "@/components/EnhancedSimulation";
+import LearningResources from "@/components/LearningResources";
 import EquationDisplay from "@/components/EquationDisplay";
+import { BookOpen, Calculator, TrendingUp, GraduationCap } from "lucide-react";
 
 const Index = () => {
-  const {
-    parameters,
-    data,
-    isRunning,
-    currentPopulations,
-    currentTime,
-    updateParameter,
-    toggleSimulation,
-    resetSimulation,
-  } = useLotkaVolterra();
-
   return (
     <div className="min-h-screen bg-gradient-background">
       {/* Header */}
-      <header className="bg-gradient-hero text-white py-8">
+      <header className="bg-gradient-hero text-white py-12">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Lotka-Volterra Competition Explorer
           </h1>
-          <p className="text-lg opacity-90">
-            Interactive simulation of species competition dynamics
+          <p className="text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
+            Comprehensive educational platform for learning species competition dynamics through 
+            interactive simulations, historical context, and mathematical foundations
           </p>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Current Status */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-6 bg-card px-6 py-3 rounded-lg shadow-card">
-            <div className="text-sm">
-              <span className="text-muted-foreground">Time:</span>
-              <span className="ml-2 font-mono font-medium">{currentTime.toFixed(1)}</span>
-            </div>
-            <div className="text-sm">
-              <span className="text-muted-foreground">Species 1:</span>
-              <span className="ml-2 font-mono font-medium text-primary">
-                {currentPopulations.N1.toFixed(1)}
-              </span>
-            </div>
-            <div className="text-sm">
-              <span className="text-muted-foreground">Species 2:</span>
-              <span className="ml-2 font-mono font-medium text-secondary">
-                {currentPopulations.N2.toFixed(1)}
-              </span>
-            </div>
-          </div>
-        </div>
+      <main className="container mx-auto px-4 py-8">
+        <Tabs defaultValue="simulate" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsTrigger value="simulate" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <TrendingUp className="h-4 w-4" />
+              <span className="hidden sm:inline">Simulate</span>
+            </TabsTrigger>
+            <TabsTrigger value="learn" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Calculator className="h-4 w-4" />
+              <span className="hidden sm:inline">Learn Math</span>
+            </TabsTrigger>
+            <TabsTrigger value="history" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <BookOpen className="h-4 w-4" />
+              <span className="hidden sm:inline">History</span>
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <GraduationCap className="h-4 w-4" />
+              <span className="hidden sm:inline">Resources</span>
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Desktop Layout */}
-        <div className="hidden lg:grid lg:grid-cols-3 gap-8">
-          <div className="space-y-8">
-            <SimulationControls
-              parameters={parameters}
-              onParameterChange={updateParameter}
-              isRunning={isRunning}
-              onPlayPause={toggleSimulation}
-              onReset={resetSimulation}
-            />
-          </div>
-          <div className="lg:col-span-2 space-y-8">
-            <SimulationChart data={data} isRunning={isRunning} />
+          <TabsContent value="simulate" className="space-y-8">
+            <EnhancedSimulation />
             <EquationDisplay />
-          </div>
-        </div>
+          </TabsContent>
 
-        {/* Mobile Layout */}
-        <div className="lg:hidden space-y-8">
-          <SimulationChart data={data} isRunning={isRunning} />
-          <SimulationControls
-            parameters={parameters}
-            onParameterChange={updateParameter}
-            isRunning={isRunning}
-            onPlayPause={toggleSimulation}
-            onReset={resetSimulation}
-          />
-          <EquationDisplay />
-        </div>
+          <TabsContent value="learn" className="space-y-8">
+            <MathematicalFoundations />
+          </TabsContent>
+
+          <TabsContent value="history" className="space-y-8">
+            <HistoricalTimeline />
+          </TabsContent>
+
+          <TabsContent value="resources" className="space-y-8">
+            <LearningResources />
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Footer */}
