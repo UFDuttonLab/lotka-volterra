@@ -17,88 +17,110 @@ interface PresetScenario {
   biologicalExample: string;
 }
 
-// Competition scenarios
+// Competition scenarios with dramatic visual differences
 const competitionScenarios: PresetScenario[] = [
   {
-    name: "Competitive Exclusion",
-    description: "Strong competitor excludes weaker species",
+    name: "Rapid Exclusion",
+    description: "Lightning-fast competitive dominance",
     outcome: "Species 2 Wins",
     parameters: {
-      r1: 1.0, r2: 0.9, K1: 200, K2: 180,
-      a12: 1.2, a21: 0.4, N1_0: 50, N2_0: 40
+      r1: 0.5, r2: 2.5, K1: 100, K2: 300,
+      a12: 2.0, a21: 0.2, N1_0: 80, N2_0: 20
     },
-    explanation: "Species 2 has a strong competitive advantage (α₁₂ > K₁/K₂ while α₂₁ < K₂/K₁). Species 1 cannot persist when Species 2 is present at equilibrium.",
-    biologicalExample: "Large ground finches excluding medium ground finches during drought years when large seeds are abundant."
+    explanation: "Species 2 has 5x higher growth rate and strong competitive advantage. The dramatic parameter differences create rapid, visible exclusion within seconds.",
+    biologicalExample: "Invasive kudzu vines rapidly outcompeting native plants with explosive growth rates and aggressive competition."
   },
   {
-    name: "Stable Coexistence",
-    description: "Both species coexist at equilibrium",
+    name: "Perfect Coexistence",
+    description: "Stable, balanced equilibrium dynamics",
     outcome: "Coexistence",
     parameters: {
-      r1: 1.0, r2: 0.8, K1: 200, K2: 180,
-      a12: 0.4, a21: 0.3, N1_0: 50, N2_0: 40
+      r1: 1.0, r2: 1.0, K1: 200, K2: 200,
+      a12: 0.3, a21: 0.3, N1_0: 50, N2_0: 50
     },
-    explanation: "Interspecific competition is weaker than intraspecific competition for both species (α₁₂ < K₁/K₂ and α₂₁ < K₂/K₁). Both species reach a stable equilibrium.",
-    biologicalExample: "Tree species in a forest with different shade tolerances and resource requirements can stably coexist."
+    explanation: "Perfectly symmetric parameters with weak interspecific competition create smooth convergence to stable coexistence. Both species settle at exactly 140 individuals.",
+    biologicalExample: "Two similar bird species feeding at different heights in the same tree, minimizing direct competition."
+  },
+  {
+    name: "Oscillating Competition",
+    description: "Unstable dynamics with overshooting",
+    outcome: "Coexistence",
+    parameters: {
+      r1: 2.0, r2: 1.5, K1: 150, K2: 180,
+      a12: 0.8, a21: 0.6, N1_0: 200, N2_0: 150
+    },
+    explanation: "High growth rates with starting populations above carrying capacity create dramatic oscillations before settling into equilibrium.",
+    biologicalExample: "Boom-bust cycles in competing rodent populations that overshoot their environment's capacity."
+  },
+  {
+    name: "Slow Giants",
+    description: "Large organisms with gradual dynamics",
+    outcome: "Species 1 Wins",
+    parameters: {
+      r1: 0.2, r2: 0.1, K1: 400, K2: 200,
+      a12: 0.1, a21: 0.8, N1_0: 50, N2_0: 100
+    },
+    explanation: "Very slow growth rates (10x smaller) create gentle, long-term competitive dynamics. Species 1 eventually wins but takes much longer to see.",
+    biologicalExample: "Competition between large tree species in old-growth forests, where changes occur over decades."
   },
 ];
 
-// Predator-prey scenarios
+// Predator-prey scenarios with extreme visual differences
 const predatorPreyScenarios: PresetScenario[] = [
   {
-    name: "Classic Oscillations",
-    description: "Standard predator-prey cycles showing clear population oscillations",
-    outcome: "Stable Cycles",
+    name: "Explosive Cycles",
+    description: "Massive population booms and crashes",
+    outcome: "Extreme Cycles",
     parameters: {
-      r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
-      N1_0: 2, N2_0: 1
+      r1: 2.0, r2: 0.8, a: 3.0, b: 2.0,
+      N1_0: 8, N2_0: 0.5
     },
-    explanation: "Classic Lotka-Volterra parameters with small initial populations create clear oscillations that are easy to observe.",
-    biologicalExample: "Idealized predator-prey relationship showing the fundamental cyclic dynamics described by Lotka and Volterra."
+    explanation: "High prey growth (2.0) with intense predation (3.0) and high efficiency (2.0) creates dramatic population swings from near-zero to massive peaks.",
+    biologicalExample: "Locust swarms and their bird predators - explosive prey reproduction followed by devastating predation crashes."
   },
   {
-    name: "Fast Oscillations",
-    description: "Rapidly reproducing prey creating faster cycles",
+    name: "Gentle Waves",
+    description: "Smooth, small amplitude oscillations",
+    outcome: "Stable Cycles",
+    parameters: {
+      r1: 0.3, r2: 0.3, a: 0.2, b: 0.3,
+      N1_0: 4, N2_0: 2
+    },
+    explanation: "All parameters 5-10x smaller than explosive scenario create gentle, barely visible oscillations around equilibrium points.",
+    biologicalExample: "Large whales and their krill prey - massive organisms with slow, gentle population fluctuations."
+  },
+  {
+    name: "Lightning Fast",
+    description: "Rapid, frequent micro-oscillations",
     outcome: "Rapid Cycles",
     parameters: {
-      r1: 1.5, r2: 1.0, a: 1.0, b: 1.0,
-      N1_0: 2, N2_0: 1
+      r1: 4.0, r2: 1.5, a: 1.2, b: 0.8,
+      N1_0: 1, N2_0: 1
     },
-    explanation: "Higher prey growth rate increases oscillation frequency - cycles complete faster but with similar amplitude to the classic case.",
-    biologicalExample: "Small mammals like voles that reproduce rapidly, creating faster boom-bust cycles with their predators."
+    explanation: "Extremely high prey growth rate (4.0) with moderate predation creates many fast, small cycles that complete in seconds.",
+    biologicalExample: "Bacteria and bacteriophage viruses - ultra-rapid reproduction creating multiple generations within hours."
   },
   {
-    name: "Large Amplitude Cycles",
-    description: "High predation efficiency creating extreme population swings",
-    outcome: "Extreme Cycles", 
-    parameters: {
-      r1: 1.0, r2: 1.0, a: 1.5, b: 1.0,
-      N1_0: 2, N2_0: 1
-    },
-    explanation: "Higher attack rate creates larger amplitude oscillations - populations swing to higher peaks and lower valleys.",
-    biologicalExample: "Specialist predators like Arctic foxes and lemmings, where high attack efficiency drives dramatic population swings."
-  },
-  {
-    name: "Slow Cycles",
-    description: "Large organisms with slower population dynamics", 
+    name: "Slow Giants",
+    description: "Wide, slow oscillations over long timescales",
     outcome: "Slow Oscillations",
     parameters: {
-      r1: 0.6, r2: 0.6, a: 0.6, b: 0.6,
-      N1_0: 2, N2_0: 1
+      r1: 0.15, r2: 0.1, a: 0.1, b: 0.15,
+      N1_0: 15, N2_0: 3
     },
-    explanation: "Lower growth and interaction rates create slower oscillations - cycles take longer to complete, typical of larger organisms.",
-    biologicalExample: "Large mammal systems like caribou and wolves, where population changes occur slowly over multiple years."
+    explanation: "All parameters 10-20x smaller create cycles that take much longer to complete, like watching in slow motion with large populations.",
+    biologicalExample: "Moose and wolf populations in Yellowstone - large mammals with multi-year population cycles."
   },
   {
-    name: "Small Oscillations",
-    description: "Low initial populations creating subtle cycles",
-    outcome: "Stable Cycles",
+    name: "Near Extinction",
+    description: "Risky cycles approaching zero populations",
+    outcome: "Extreme Cycles",
     parameters: {
-      r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
-      N1_0: 1.2, N2_0: 0.8
+      r1: 1.5, r2: 1.2, a: 2.5, b: 3.0,
+      N1_0: 1, N2_0: 2
     },
-    explanation: "Starting closer to equilibrium creates smaller amplitude oscillations while maintaining the same frequency as classic parameters.",
-    biologicalExample: "Populations near their natural equilibrium showing gentle oscillations around stable levels."
+    explanation: "High predator efficiency (3.0) with strong attack rate (2.5) creates cycles that crash to near-extinction levels before recovering.",
+    biologicalExample: "Specialist predators like lynx and snowshoe hares - cycles so extreme they risk local extinctions."
   }
 ];
 
