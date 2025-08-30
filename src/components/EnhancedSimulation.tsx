@@ -56,37 +56,48 @@ const predatorPreyScenarios: PresetScenario[] = [
     biologicalExample: "Idealized predator-prey relationship showing the fundamental cyclic dynamics described by Lotka and Volterra."
   },
   {
-    name: "Fast Prey Growth",
-    description: "Rapidly reproducing prey with moderate predation",
-    outcome: "Large Oscillations",
+    name: "Fast Oscillations",
+    description: "Rapidly reproducing prey creating faster cycles",
+    outcome: "Rapid Cycles",
     parameters: {
       r1: 1.5, r2: 1.0, a: 1.0, b: 1.0,
-      N1_0: 3, N2_0: 1
+      N1_0: 2, N2_0: 1
     },
-    explanation: "Higher prey growth rate creates wider amplitude oscillations with faster recovery from predation.",
-    biologicalExample: "Small mammals like voles or lemmings that reproduce quickly and support predator populations through boom-bust cycles."
+    explanation: "Higher prey growth rate increases oscillation frequency - cycles complete faster but with similar amplitude to the classic case.",
+    biologicalExample: "Small mammals like voles that reproduce rapidly, creating faster boom-bust cycles with their predators."
   },
   {
-    name: "Efficient Predators",
-    description: "Highly efficient predators with strong conversion rates",
-    outcome: "Tight Cycles",
+    name: "Large Amplitude Cycles",
+    description: "High predation efficiency creating extreme population swings",
+    outcome: "Extreme Cycles", 
     parameters: {
       r1: 1.0, r2: 1.0, a: 1.5, b: 1.0,
-      N1_0: 4, N2_0: 1
+      N1_0: 2, N2_0: 1
     },
-    explanation: "Higher predation rate creates faster, tighter oscillations with more rapid predator response to prey abundance.",
-    biologicalExample: "Specialist predators like Arctic foxes feeding on lemmings, where high attack rates drive tight population coupling."
+    explanation: "Higher attack rate creates larger amplitude oscillations - populations swing to higher peaks and lower valleys.",
+    biologicalExample: "Specialist predators like Arctic foxes and lemmings, where high attack efficiency drives dramatic population swings."
   },
   {
-    name: "Slow Dynamics",
-    description: "Large organisms with slower population dynamics",
-    outcome: "Wide Oscillations",
+    name: "Slow Cycles",
+    description: "Large organisms with slower population dynamics", 
+    outcome: "Slow Oscillations",
     parameters: {
-      r1: 0.8, r2: 0.8, a: 0.8, b: 0.8,
-      N1_0: 5, N2_0: 2
+      r1: 0.6, r2: 0.6, a: 0.6, b: 0.6,
+      N1_0: 2, N2_0: 1
     },
-    explanation: "Reduced rates across all parameters create slower, wider oscillations typical of larger organisms with longer generation times.",
-    biologicalExample: "Large herbivore-carnivore systems like caribou and wolves, where population changes occur over multiple years."
+    explanation: "Lower growth and interaction rates create slower oscillations - cycles take longer to complete, typical of larger organisms.",
+    biologicalExample: "Large mammal systems like caribou and wolves, where population changes occur slowly over multiple years."
+  },
+  {
+    name: "Small Oscillations",
+    description: "Low initial populations creating subtle cycles",
+    outcome: "Stable Cycles",
+    parameters: {
+      r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
+      N1_0: 1.2, N2_0: 0.8
+    },
+    explanation: "Starting closer to equilibrium creates smaller amplitude oscillations while maintaining the same frequency as classic parameters.",
+    biologicalExample: "Populations near their natural equilibrium showing gentle oscillations around stable levels."
   }
 ];
 
