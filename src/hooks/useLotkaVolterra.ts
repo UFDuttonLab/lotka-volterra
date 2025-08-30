@@ -123,9 +123,13 @@ export function useLotkaVolterra() {
               species2: Math.round(newPops.N2 * 100) / 100,
             };
             
-            // Keep more points to see full oscillation cycles
+            // Keep all data points to show full simulation history
             const updatedData = [...prevData, newDataPoint];
-            return updatedData.length > 500 ? updatedData.slice(-500) : updatedData;
+            // Sample data for performance if we have too many points (every 5th point after 2000)
+            if (updatedData.length > 2000 && updatedData.length % 5 !== 0) {
+              return prevData; // Skip this point
+            }
+            return updatedData;
           });
         }
         

@@ -84,10 +84,10 @@ const predatorPreyScenarios: PresetScenario[] = [
     description: "Smooth, sustained population oscillations",
     outcome: "Stable Cycles",
     parameters: {
-      r1: 1.0, r2: 0.8, a: 0.6, b: 0.8,
-      N1_0: 1.5, N2_0: 1.2
+      r1: 1.2, r2: 0.5, a: 0.4, b: 0.6,
+      N1_0: 2.5, N2_0: 1.0
     },
-    explanation: "Moderate prey growth (1.0) with balanced predation (0.6) and efficiency (0.8) creates sustained, gentle oscillations around equilibrium. Starting near equilibrium ensures small but visible cycles.",
+    explanation: "Higher prey growth (1.2) with reduced predation rate (0.4) and efficiency (0.6) ensures prey can always recover. Mathematical equilibrium at N1*=0.83, N2*=3.0 creates gentle, sustained cycles.",
     biologicalExample: "Stable predator-prey relationships in mature ecosystems like wolves and deer in protected areas with clear but gentle population cycles."
   },
   {
