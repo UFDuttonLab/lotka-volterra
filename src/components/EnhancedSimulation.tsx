@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLotkaVolterra } from "@/hooks/useLotkaVolterra";
 import SimulationControls from "@/components/SimulationControls";
 import SimulationChart from "@/components/SimulationChart";
@@ -139,6 +140,7 @@ export default function EnhancedSimulation() {
   } = useLotkaVolterra();
   
   const { toast } = useToast();
+  const [loadedScenario, setLoadedScenario] = useState<string | null>(null);
 
   const loadPreset = (preset: PresetScenario) => {
     // Stop simulation first
@@ -150,6 +152,9 @@ export default function EnhancedSimulation() {
     Object.entries(preset.parameters).forEach(([param, value]) => {
       updateParameter(param, value);
     });
+    
+    // Set loaded scenario
+    setLoadedScenario(preset.name);
     
     // Show feedback
     toast({
@@ -238,7 +243,7 @@ export default function EnhancedSimulation() {
                 </span>
               </div>
               <Badge className={`${outcome.color} border`}>
-                {modelType === 'predator-prey' ? 'Pattern' : 'Predicted'}: {outcome.type}
+                {loadedScenario ? `Scenario: ${loadedScenario}` : `${modelType === 'predator-prey' ? 'Pattern' : 'Predicted'}: ${outcome.type}`}
               </Badge>
             </div>
           </div>
