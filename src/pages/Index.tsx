@@ -4,10 +4,11 @@ import EnhancedSimulation from "@/components/EnhancedSimulation";
 import MathematicalFoundations from "@/components/MathematicalFoundations";
 import HistoricalTimeline from "@/components/HistoricalTimeline";
 import LearningResources from "@/components/LearningResources";
+import ExercisesTab from "@/components/ExercisesTab";
 import EquationDisplay from "@/components/EquationDisplay";
 import ExerciseQuestionModal from "@/components/ExerciseQuestionModal";
 import { useLotkaVolterra } from "@/hooks/useLotkaVolterra";
-import { Calculator, History, BookOpen, Activity } from "lucide-react";
+import { Calculator, History, BookOpen, Activity, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type ModelType = 'competition' | 'predator-prey';
@@ -42,6 +43,12 @@ export default function Index() {
   const { modelType, switchModel, setAllParameters } = hookValues;
   const [activeTab, setActiveTab] = useState("simulate");
   const [selectedExercise, setSelectedExercise] = useState<{
+    title: string;
+    description: string;
+    difficulty: string;
+    question: ExerciseQuestion;
+  } | null>(null);
+  const [activeExercise, setActiveExercise] = useState<{
     title: string;
     description: string;
     difficulty: string;
@@ -91,14 +98,14 @@ export default function Index() {
 
         {/* Main Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="simulate" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               <span className="hidden sm:inline">Simulate</span>
             </TabsTrigger>
             <TabsTrigger value="learn" className="flex items-center gap-2">
               <Calculator className="h-4 w-4" />
-              <span className="hidden sm:inline">Learn Math</span>
+              <span className="hidden sm:inline">Learn</span>
             </TabsTrigger>
             <TabsTrigger value="history" className="flex items-center gap-2">
               <History className="h-4 w-4" />
@@ -108,10 +115,19 @@ export default function Index() {
               <BookOpen className="h-4 w-4" />
               <span className="hidden sm:inline">Resources</span>
             </TabsTrigger>
+            <TabsTrigger value="exercises" className="flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              <span className="hidden sm:inline">Exercises</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="simulate" className="mt-8">
-            <EnhancedSimulation {...hookValues} />
+            <EnhancedSimulation 
+              {...hookValues} 
+              activeExercise={activeExercise}
+              onShowExerciseQuestion={() => setSelectedExercise(activeExercise)}
+              onDismissExercise={() => setActiveExercise(null)}
+            />
           </TabsContent>
 
           <TabsContent value="learn" className="mt-8">
@@ -123,7 +139,14 @@ export default function Index() {
           </TabsContent>
 
           <TabsContent value="resources" className="mt-8">
-            <LearningResources onLoadExercise={handleLoadExercise} onSetSelectedExercise={setSelectedExercise} />
+            <LearningResources />
+          </TabsContent>
+
+          <TabsContent value="exercises" className="mt-8">
+            <ExercisesTab 
+              onLoadExercise={handleLoadExercise}
+              onSetActiveExercise={setActiveExercise}
+            />
           </TabsContent>
         </Tabs>
 

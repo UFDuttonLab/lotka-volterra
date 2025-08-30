@@ -48,17 +48,7 @@ interface Resource {
 }
 
 interface LearningResourcesProps {
-  onLoadExercise: (
-    parameters: ExerciseParameters, 
-    modelType: "competition" | "predator-prey", 
-    title: string
-  ) => void;
-  onSetSelectedExercise: (exercise: {
-    title: string;
-    description: string;
-    difficulty: string;
-    question: ExerciseQuestion;
-  } | null) => void;
+  // No props needed anymore - exercises moved to separate tab
 }
 
 const learningResources: ResourceSection[] = [
@@ -107,224 +97,6 @@ const learningResources: ResourceSection[] = [
         ]
       }
     ]
-  },
-  {
-    id: "competition-exercises",
-    title: "Competition Exercises",
-    icon: Beaker,
-    resources: [
-      {
-        title: "Coexistence vs Exclusion",
-        description: "Predict whether two competing species can coexist or one will exclude the other",
-        type: "exercise",
-        difficulty: "beginner",
-        modelType: "competition",
-        parameters: {
-          r1: 1.0,
-          r2: 0.8,
-          K1: 100,
-          K2: 120,
-          a12: 0.7,
-          a21: 0.9,
-          N1_0: 20,
-          N2_0: 15
-        },
-        content: [
-          "Run the simulation with the given parameters",
-          "Observe how the populations change over time",
-          "Determine the final outcome of competition"
-        ],
-        question: {
-          id: "coexistence-q1",
-          question: "Based on the simulation results, what happens to these two competing species over time?",
-          options: [
-            { id: "a", text: "Both species coexist at stable population levels" },
-            { id: "b", text: "Species 1 excludes Species 2 completely" },
-            { id: "c", text: "Species 2 excludes Species 1 completely" },
-            { id: "d", text: "Both species go extinct" }
-          ],
-          correctAnswer: "a",
-          explanation: "With α₁₂ = 0.7 < K₁/K₂ = 0.83 and α₂₁ = 0.9 < K₂/K₁ = 1.2, both species can coexist. The competition coefficients are weak enough that neither species can completely exclude the other.",
-          hint: "Compare the competition coefficients (α₁₂ and α₂₁) with the ratios of carrying capacities (K₁/K₂ and K₂/K₁)"
-        }
-      },
-      {
-        title: "Strong Competition Analysis",
-        description: "Examine what happens when competition is very intense between species",
-        type: "exercise",
-        difficulty: "intermediate",
-        modelType: "competition",
-        parameters: {
-          r1: 1.2,
-          r2: 0.9,
-          K1: 80,
-          K2: 100,
-          a12: 1.8,
-          a21: 1.5,
-          N1_0: 25,
-          N2_0: 30
-        },
-        content: [
-          "This scenario models intense competition between species",
-          "Watch how strong competitive effects influence population dynamics",
-          "Note which species has the competitive advantage"
-        ],
-        question: {
-          id: "strong-comp-q1",
-          question: "In this high-competition scenario, which species survives and why?",
-          options: [
-            { id: "a", text: "Species 1 survives because it has a higher growth rate" },
-            { id: "b", text: "Species 2 survives because it has a higher carrying capacity" },
-            { id: "c", text: "Both species survive but at very low populations" },
-            { id: "d", text: "The outcome depends on the initial population sizes" }
-          ],
-          correctAnswer: "b",
-          explanation: "Species 2 wins because α₂₁ = 1.5 > K₂/K₁ = 1.25, but α₁₂ = 1.8 > K₁/K₂ = 0.8. When both species have strong competitive effects, the species with the higher carrying capacity (Species 2, K₂ = 100) typically wins.",
-          hint: "In mutual exclusion scenarios, compare carrying capacities and competitive strengths"
-        }
-      },
-      {
-        title: "Invasion Success Prediction",
-        description: "Determine if a new species can successfully invade an established population",
-        type: "exercise",
-        difficulty: "advanced",
-        modelType: "competition",
-        parameters: {
-          r1: 0.8,
-          r2: 1.1,
-          K1: 150,
-          K2: 90,
-          a12: 0.4,
-          a21: 1.3,
-          N1_0: 140,
-          N2_0: 5
-        },
-        content: [
-          "Species 1 is well-established near its carrying capacity",
-          "Species 2 starts with a very small population (invasion scenario)",
-          "Determine if the invader can establish and grow"
-        ],
-        question: {
-          id: "invasion-q1",
-          question: "Can Species 2 successfully invade and establish a population when Species 1 is dominant?",
-          options: [
-            { id: "a", text: "No, Species 2 cannot invade because Species 1 is too well established" },
-            { id: "b", text: "Yes, Species 2 can invade and will eventually exclude Species 1" },
-            { id: "c", text: "Yes, Species 2 can invade and both species will coexist" },
-            { id: "d", text: "The invasion depends on random environmental factors" }
-          ],
-          correctAnswer: "b",
-          explanation: "Species 2 can invade because α₂₁ = 1.3 > K₂/K₁ = 0.6, meaning Species 2 can grow even when Species 1 is at carrying capacity. Despite starting small, Species 2's competitive advantage allows it to eventually exclude Species 1.",
-          hint: "For invasion analysis, check if the invading species can grow when the resident is at equilibrium"
-        }
-      }
-    ]
-  },
-  {
-    id: "predator-prey-exercises", 
-    title: "Predator-Prey Exercises",
-    icon: Zap,
-    resources: [
-      {
-        title: "Oscillation Period Prediction",
-        description: "Predict how parameter changes affect the period of predator-prey cycles",
-        type: "exercise",
-        difficulty: "beginner",
-        modelType: "predator-prey",
-        parameters: {
-          r1: 1.0,
-          a: 0.1,
-          b: 0.075,
-          r2: 0.8,
-          N1_0: 40,
-          N2_0: 9
-        },
-        content: [
-          "This system shows classic predator-prey oscillations",
-          "Observe the population cycles of prey (Species 1) and predator (Species 2)",
-          "Count how long one complete cycle takes"
-        ],
-        question: {
-          id: "oscillation-q1",
-          question: "What happens to the oscillation period if we increase the predator attack rate (parameter 'a')?",
-          options: [
-            { id: "a", text: "The oscillation period becomes longer" },
-            { id: "b", text: "The oscillation period becomes shorter" },
-            { id: "c", text: "The oscillation period stays the same" },
-            { id: "d", text: "The oscillations stop completely" }
-          ],
-          correctAnswer: "b",
-          explanation: "Increasing the attack rate 'a' makes predators more efficient at catching prey, which intensifies the predator-prey interaction. This leads to faster population changes and shorter oscillation periods. The system becomes more 'tightly coupled'.",
-          hint: "Think about how more efficient predation affects the speed of population changes"
-        }
-      },
-      {
-        title: "Stability Analysis Challenge",
-        description: "Determine what parameters lead to stable vs unstable predator-prey dynamics",
-        type: "exercise", 
-        difficulty: "intermediate",
-        modelType: "predator-prey",
-        parameters: {
-          r1: 2.0,
-          a: 0.05,
-          b: 0.02,
-          r2: 1.5,
-          N1_0: 60,
-          N2_0: 30
-        },
-        content: [
-          "High growth rates can lead to unstable dynamics",
-          "Watch what happens to the populations over time",
-          "Consider whether this system is realistic"
-        ],
-        question: {
-          id: "stability-q1",
-          question: "What characterizes the long-term behavior of this predator-prey system?",
-          options: [
-            { id: "a", text: "Stable oscillations that continue indefinitely" },
-            { id: "b", text: "Populations spiral outward to extinction or unrealistic levels" },
-            { id: "c", text: "Both populations reach a steady equilibrium" },
-            { id: "d", text: "Only the predator population survives" }
-          ],
-          correctAnswer: "b",
-          explanation: "With high growth rates (r₁ = 2.0, r₂ = 1.5) relative to interaction strengths, the system becomes unstable. The Lotka-Volterra model lacks density-dependent regulation, so high growth rates cause populations to spiral to unrealistic extremes.",
-          hint: "Consider whether the population sizes remain realistic over time"
-        }
-      },
-      {
-        title: "Population Peak Timing",
-        description: "Analyze the phase relationship between predator and prey population peaks",
-        type: "exercise",
-        difficulty: "advanced", 
-        modelType: "predator-prey",
-        parameters: {
-          r1: 1.2,
-          a: 0.08,
-          b: 0.04,
-          r2: 0.6,
-          N1_0: 35,
-          N2_0: 15
-        },
-        content: [
-          "Classic predator-prey cycles with clear phase relationships",
-          "Track when each population reaches its maximum",
-          "Observe the timing between prey and predator peaks"
-        ],
-        question: {
-          id: "timing-q1",
-          question: "In predator-prey cycles, when does the predator population typically reach its peak relative to the prey peak?",
-          options: [
-            { id: "a", text: "At exactly the same time as the prey peak" },
-            { id: "b", text: "About 1/4 cycle before the prey peak" },
-            { id: "c", text: "About 1/4 cycle after the prey peak" },
-            { id: "d", text: "The timing is completely random" }
-          ],
-          correctAnswer: "c",
-          explanation: "Predator populations lag behind prey populations by about 1/4 of a cycle. This happens because: (1) prey populations peak first, (2) abundant prey allows predator populations to grow, (3) predators peak after prey have started declining, (4) then predator decline follows prey decline. This phase lag is fundamental to predator-prey dynamics.",
-          hint: "Think about the cause-and-effect relationship: predators respond to prey abundance"
-        }
-      }
-    ]  
   },
   {
     id: "case-studies",
@@ -407,21 +179,7 @@ const typeIcons = {
   reading: BookOpen
 };
 
-export default function LearningResources({ onLoadExercise, onSetSelectedExercise }: LearningResourcesProps) {
-  const handleExerciseClick = (resource: Resource) => {
-    if (resource.type === "exercise" && resource.parameters && resource.modelType && resource.question) {
-      // Load the exercise in simulation first
-      onLoadExercise(resource.parameters, resource.modelType, resource.title);
-      
-      // Then show the question modal globally
-      onSetSelectedExercise({
-        title: resource.title,
-        description: resource.description,
-        difficulty: resource.difficulty,
-        question: resource.question
-      });
-    }
-  };
+export default function LearningResources({}: LearningResourcesProps) {
   return (
     <div className="space-y-6">
       <Card className="shadow-card">
@@ -438,7 +196,7 @@ export default function LearningResources({ onLoadExercise, onSetSelectedExercis
       </Card>
 
       <Tabs defaultValue="real-examples" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-3">
           {learningResources.map((section) => {
             const Icon = section.icon;
             return (
@@ -484,18 +242,10 @@ export default function LearningResources({ onLoadExercise, onSetSelectedExercis
                         ))}
                       </ul>
                       
-                      {resource.type === "exercise" && (
-                        <div className="bg-gradient-to-r from-accent/10 to-primary/10 rounded-lg p-4 border border-accent/20">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="w-full"
-                            onClick={() => handleExerciseClick(resource)}
-                          >
-                            Try This Exercise in Simulation
-                          </Button>
-                        </div>
-                      )}
+                      <div className="text-xs text-muted-foreground">
+                        {resource.type === "study" ? "Case Study" : 
+                         resource.type === "example" ? "Real-World Example" : "Recommended Reading"}
+                      </div>
                     </CardContent>
                   </Card>
                 );

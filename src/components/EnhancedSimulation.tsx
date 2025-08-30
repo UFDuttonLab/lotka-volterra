@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import SimulationChart from "./SimulationChart";
 import SimulationControls from "./SimulationControls";
-import { Play, RotateCcw, Lightbulb, Target, TrendingUp } from "lucide-react";
+import ExerciseBanner from "./ExerciseBanner";
+import { Play, RotateCcw, Lightbulb, Target, TrendingUp, Activity } from "lucide-react";
 
 type ModelType = 'competition' | 'predator-prey';
 
@@ -29,6 +30,18 @@ interface Parameters {
   N2_0: number;
 }
 
+interface ExerciseQuestion {
+  id: string;
+  question: string;
+  options: {
+    id: string;
+    text: string;
+  }[];
+  correctAnswer: string;
+  explanation: string;
+  hint?: string;
+}
+
 interface EnhancedSimulationProps {
   modelType: ModelType;
   parameters: Parameters;
@@ -41,6 +54,14 @@ interface EnhancedSimulationProps {
   switchModel: (newModel: ModelType) => void;
   toggleSimulation: () => void;
   resetSimulation: () => void;
+  activeExercise?: {
+    title: string;
+    description: string;
+    difficulty: string;
+    question: ExerciseQuestion;
+  } | null;
+  onShowExerciseQuestion?: () => void;
+  onDismissExercise?: () => void;
 }
 
 interface PresetScenario {
@@ -193,6 +214,9 @@ export default function EnhancedSimulation({
   switchModel,
   toggleSimulation,
   resetSimulation,
+  activeExercise,
+  onShowExerciseQuestion,
+  onDismissExercise,
 }: EnhancedSimulationProps) {
   
   const { toast } = useToast();
@@ -262,6 +286,15 @@ export default function EnhancedSimulation({
 
   return (
     <div className="space-y-6">
+      {/* Exercise Banner */}
+      {activeExercise && onShowExerciseQuestion && onDismissExercise && (
+        <ExerciseBanner
+          exercise={activeExercise}
+          onAnswerQuestion={onShowExerciseQuestion}
+          onDismiss={onDismissExercise}
+        />
+      )}
+
       <Card className="shadow-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
