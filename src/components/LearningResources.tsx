@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
 import { BookOpen, Globe, Users, Beaker, TreePine, Fish, Bird, Zap, Waves } from "lucide-react";
-import ExerciseQuestionModal from "./ExerciseQuestionModal";
 
 interface ResourceSection {
   id: string;
@@ -55,6 +53,12 @@ interface LearningResourcesProps {
     modelType: "competition" | "predator-prey", 
     title: string
   ) => void;
+  onSetSelectedExercise: (exercise: {
+    title: string;
+    description: string;
+    difficulty: string;
+    question: ExerciseQuestion;
+  } | null) => void;
 }
 
 const learningResources: ResourceSection[] = [
@@ -403,21 +407,14 @@ const typeIcons = {
   reading: BookOpen
 };
 
-export default function LearningResources({ onLoadExercise }: LearningResourcesProps) {
-  const [selectedExercise, setSelectedExercise] = useState<{
-    title: string;
-    description: string;
-    difficulty: string;
-    question: ExerciseQuestion;
-  } | null>(null);
-
+export default function LearningResources({ onLoadExercise, onSetSelectedExercise }: LearningResourcesProps) {
   const handleExerciseClick = (resource: Resource) => {
     if (resource.type === "exercise" && resource.parameters && resource.modelType && resource.question) {
       // Load the exercise in simulation first
       onLoadExercise(resource.parameters, resource.modelType, resource.title);
       
-      // Then show the question modal
-      setSelectedExercise({
+      // Then show the question modal globally
+      onSetSelectedExercise({
         title: resource.title,
         description: resource.description,
         difficulty: resource.difficulty,
@@ -526,12 +523,6 @@ export default function LearningResources({ onLoadExercise }: LearningResourcesP
           </div>
         </CardContent>
       </Card>
-
-      <ExerciseQuestionModal
-        isOpen={selectedExercise !== null}
-        onClose={() => setSelectedExercise(null)}
-        exercise={selectedExercise}
-      />
     </div>
   );
 }

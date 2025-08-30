@@ -5,6 +5,7 @@ import MathematicalFoundations from "@/components/MathematicalFoundations";
 import HistoricalTimeline from "@/components/HistoricalTimeline";
 import LearningResources from "@/components/LearningResources";
 import EquationDisplay from "@/components/EquationDisplay";
+import ExerciseQuestionModal from "@/components/ExerciseQuestionModal";
 import { useLotkaVolterra } from "@/hooks/useLotkaVolterra";
 import { Calculator, History, BookOpen, Activity } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -24,10 +25,28 @@ interface Parameters {
   N2_0: number;
 }
 
+interface ExerciseQuestion {
+  id: string;
+  question: string;
+  options: {
+    id: string;
+    text: string;
+  }[];
+  correctAnswer: string;
+  explanation: string;
+  hint?: string;
+}
+
 export default function Index() {
   const hookValues = useLotkaVolterra();
   const { modelType, switchModel, setAllParameters } = hookValues;
   const [activeTab, setActiveTab] = useState("simulate");
+  const [selectedExercise, setSelectedExercise] = useState<{
+    title: string;
+    description: string;
+    difficulty: string;
+    question: ExerciseQuestion;
+  } | null>(null);
   const { toast } = useToast();
 
   const handleLoadExercise = (
@@ -104,9 +123,16 @@ export default function Index() {
           </TabsContent>
 
           <TabsContent value="resources" className="mt-8">
-            <LearningResources onLoadExercise={handleLoadExercise} />
+            <LearningResources onLoadExercise={handleLoadExercise} onSetSelectedExercise={setSelectedExercise} />
           </TabsContent>
         </Tabs>
+
+        {/* Global Exercise Question Modal */}
+        <ExerciseQuestionModal
+          isOpen={!!selectedExercise}
+          onClose={() => setSelectedExercise(null)}
+          exercise={selectedExercise}
+        />
 
         {/* Footer */}
         <footer className="text-center py-8 border-t border-border">
