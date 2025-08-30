@@ -178,9 +178,13 @@ export function useLotkaVolterra() {
     setParameters(prev => ({ ...prev, [param]: value }));
   }, []);
 
+  const setAllParameters = useCallback((newParams: Partial<Parameters>) => {
+    setParameters(prev => ({ ...prev, ...newParams }));
+  }, []);
+
   const switchModel = useCallback((newModel: ModelType) => {
     setModelType(newModel);
-    // Reset to appropriate default parameters
+    // Reset to appropriate default parameters with clear visual differences
     if (newModel === 'predator-prey') {
       setParameters(prev => ({
         ...prev,
@@ -188,20 +192,20 @@ export function useLotkaVolterra() {
         r2: 1.0, // predator death rate
         a: 1.0,  // predation rate
         b: 1.0,  // predator efficiency
-        N1_0: 2, // initial prey - smaller for visible oscillations
-        N2_0: 1,  // initial predators - smaller for visible oscillations
+        N1_0: 1.0, // initial prey - small for clean oscillations
+        N2_0: 1.0,  // initial predators - small for clean oscillations
       }));
     } else {
       setParameters(prev => ({
         ...prev,
-        r1: 1.0,
-        r2: 0.8,
-        K1: 200,
-        K2: 180,
-        a12: 0.5,
-        a21: 0.6,
-        N1_0: 50,
-        N2_0: 40,
+        r1: 1.5, // higher growth rates for competition
+        r2: 1.2,
+        K1: 150, // larger carrying capacities
+        K2: 120,
+        a12: 0.8, // stronger competition
+        a21: 1.2,
+        N1_0: 80, // start near carrying capacity
+        N2_0: 60,
       }));
     }
   }, []);
@@ -228,6 +232,7 @@ export function useLotkaVolterra() {
     currentPopulations,
     currentTime,
     updateParameter,
+    setAllParameters,
     switchModel,
     toggleSimulation,
     resetSimulation,

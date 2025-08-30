@@ -25,11 +25,11 @@ const competitionScenarios: PresetScenario[] = [
     description: "Textbook competitive exclusion principle",
     outcome: "Competitive Exclusion",
     parameters: {
-      r1: 1.0, r2: 1.0, K1: 100, K2: 100,
-      a12: 1.0, a21: 1.0, N1_0: 50, N2_0: 50
+      r1: 1.2, r2: 1.0, K1: 150, K2: 120,
+      a12: 1.1, a21: 0.9, N1_0: 80, N2_0: 70
     },
-    explanation: "The original 1925 competition model with symmetric parameters. Equal growth rates and competition coefficients create competitive exclusion - one species will randomly win based on small fluctuations, demonstrating that complete competitors cannot coexist.",
-    biologicalExample: "Two nearly identical species competing for the exact same resources - classic example of Gause's competitive exclusion principle where only one species survives."
+    explanation: "The classic competition model demonstrating competitive exclusion. Species 1 has slightly higher growth rate and Species 2 has stronger competitive effect on Species 1. This asymmetry leads to Species 1 eventually excluding Species 2, showing that complete competitors cannot coexist.",
+    biologicalExample: "Two bird species competing for the same nesting sites and food sources - the species with even a slight advantage will eventually dominate and exclude the other."
   },
   {
     name: "Rapid Exclusion",
@@ -156,6 +156,7 @@ export default function EnhancedSimulation() {
     currentPopulations,
     currentTime,
     updateParameter,
+    setAllParameters,
     switchModel,
     toggleSimulation,
     resetSimulation,
@@ -165,15 +166,13 @@ export default function EnhancedSimulation() {
   const [loadedScenario, setLoadedScenario] = useState<string | null>(null);
 
   const loadPreset = (preset: PresetScenario) => {
-    // Stop simulation first
+    // Stop current simulation
     if (isRunning) {
       toggleSimulation();
     }
     
-    // Load parameters
-    Object.entries(preset.parameters).forEach(([param, value]) => {
-      updateParameter(param, value);
-    });
+    // Load all preset parameters at once to avoid race conditions
+    setAllParameters(preset.parameters);
     
     // Set loaded scenario
     setLoadedScenario(preset.name);
@@ -184,8 +183,7 @@ export default function EnhancedSimulation() {
       description: `${preset.name}: ${preset.description}`,
     });
     
-    // Reset simulation to show immediate effect
-    setTimeout(() => resetSimulation(), 100);
+    // Reset simulation will happen automatically via useEffect in the hook
   };
 
   const getCurrentOutcome = () => {
