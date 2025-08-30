@@ -25,11 +25,11 @@ const competitionScenarios: PresetScenario[] = [
     description: "Textbook competitive exclusion principle",
     outcome: "Competitive Exclusion",
     parameters: {
-      r1: 1.0, r2: 1.0, K1: 100, K2: 100,
-      a12: 1.0, a21: 1.0, N1_0: 50, N2_0: 50
+      r1: 1.0, r2: 0.95, K1: 200, K2: 200,
+      a12: 1.0, a21: 1.0, N1_0: 100, N2_0: 100
     },
-    explanation: "The original 1925 competition model with symmetric parameters. Equal growth rates and competition coefficients create competitive exclusion - one species will randomly win based on small fluctuations, demonstrating that complete competitors cannot coexist.",
-    biologicalExample: "Two nearly identical species competing for the exact same resources - classic example of Gause's competitive exclusion principle where only one species survives."
+    explanation: "The classic competition model with slight asymmetry (r2=0.95) ensures Species 1 wins. Larger carrying capacities (200) and populations (100) create faster, more visible competitive exclusion on a larger scale.",
+    biologicalExample: "Two nearly identical species competing for the exact same resources - classic example of Gause's competitive exclusion principle where the slightly superior species wins."
   },
   {
     name: "Rapid Exclusion",
@@ -85,9 +85,9 @@ const predatorPreyScenarios: PresetScenario[] = [
     outcome: "Perfect Cycles",
     parameters: {
       r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
-      N1_0: 1.0, N2_0: 1.0
+      N1_0: 2.0, N2_0: 0.5
     },
-    explanation: "The original 1925 equations with perfectly balanced parameters (all = 1.0). Creates mathematically pure oscillations around equilibrium (N1*=1.0, N2*=1.0) with period ≈ 6.28 time units.",
+    explanation: "The original 1925 equations with perfectly balanced parameters (all = 1.0). Starting away from equilibrium (N1*=1.0, N2*=1.0) creates visible oscillations with period ≈ 6.28 time units.",
     biologicalExample: "The theoretical foundation for all predator-prey models - represents idealized conditions with perfect balance between growth, predation, and efficiency."
   },
   {
