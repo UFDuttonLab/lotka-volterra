@@ -56,7 +56,7 @@ export function useLotkaVolterra() {
   });
 
   const intervalRef = useRef<NodeJS.Timeout>();
-  const timeStep = 0.01; // Smaller integration time step for accuracy
+  const timeStep = 0.05; // Integration time step - balanced for accuracy and visual speed
   const updateInterval = 50; // Update frequency in milliseconds
 
   // Lotka-Volterra equations (both competition and predator-prey)

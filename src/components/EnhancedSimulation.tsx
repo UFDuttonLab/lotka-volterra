@@ -122,6 +122,17 @@ const predatorPreyScenarios: PresetScenario[] = [
     },
     explanation: "Moderate prey growth (1.8) just barely outpaces high predator efficiency (2.2) during recovery phases. Populations crash to extremely low levels but mathematical equilibrium ensures they don't go extinct.",
     biologicalExample: "Specialist predators like lynx and snowshoe hares in harsh environments - cycles crash to near-extinction levels where just a few individuals survive to restart the cycle."
+  },
+  {
+    name: "Classic Lotka-Volterra",
+    description: "Perfect neutral oscillations - the textbook model",
+    outcome: "Perfect Cycles",
+    parameters: {
+      r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
+      N1_0: 1.0, N2_0: 1.0
+    },
+    explanation: "The original 1925 equations with perfectly balanced parameters (all = 1.0). Creates mathematically pure oscillations around equilibrium (N1*=1.0, N2*=1.0) with period ≈ 6.28 time units.",
+    biologicalExample: "The theoretical foundation for all predator-prey models - represents idealized conditions with perfect balance between growth, predation, and efficiency."
   }
 ];
 
