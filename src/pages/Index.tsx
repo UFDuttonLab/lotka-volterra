@@ -8,7 +8,8 @@ import { useLotkaVolterra } from "@/hooks/useLotkaVolterra";
 import { Calculator, History, BookOpen, Activity } from "lucide-react";
 
 export default function Index() {
-  const { modelType, switchModel } = useLotkaVolterra();
+  const hookValues = useLotkaVolterra();
+  const { modelType, switchModel } = hookValues;
 
   return (
     <div className="min-h-screen bg-gradient-background p-4 sm:p-6 lg:p-8">
@@ -49,7 +50,7 @@ export default function Index() {
           </TabsList>
 
           <TabsContent value="simulate" className="mt-8">
-            <EnhancedSimulation />
+            <EnhancedSimulation {...hookValues} />
           </TabsContent>
 
           <TabsContent value="learn" className="mt-8">

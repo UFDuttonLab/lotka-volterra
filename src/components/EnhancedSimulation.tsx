@@ -1,13 +1,47 @@
 import { useState } from "react";
-import { useLotkaVolterra } from "@/hooks/useLotkaVolterra";
-import SimulationControls from "@/components/SimulationControls";
-import SimulationChart from "@/components/SimulationChart";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
-import { Play, RotateCcw, Lightbulb, Target, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import SimulationChart from "./SimulationChart";
+import SimulationControls from "./SimulationControls";
+import { Play, RotateCcw, Lightbulb, Target, TrendingUp } from "lucide-react";
+
+type ModelType = 'competition' | 'predator-prey';
+
+interface DataPoint {
+  time: number;
+  species1: number;
+  species2: number;
+}
+
+interface Parameters {
+  r1: number;
+  r2: number;
+  K1: number;
+  K2: number;
+  a12: number;
+  a21: number;
+  a: number;
+  b: number;
+  N1_0: number;
+  N2_0: number;
+}
+
+interface EnhancedSimulationProps {
+  modelType: ModelType;
+  parameters: Parameters;
+  data: DataPoint[];
+  isRunning: boolean;
+  currentPopulations: { N1: number; N2: number };
+  currentTime: number;
+  updateParameter: (param: string, value: number) => void;
+  setAllParameters: (newParams: Partial<Parameters>) => void;
+  switchModel: (newModel: ModelType) => void;
+  toggleSimulation: () => void;
+  resetSimulation: () => void;
+}
 
 interface PresetScenario {
   name: string;
@@ -147,20 +181,19 @@ const predatorPreyScenarios: PresetScenario[] = [
   }
 ];
 
-export default function EnhancedSimulation() {
-  const {
-    modelType,
-    parameters,
-    data,
-    isRunning,
-    currentPopulations,
-    currentTime,
-    updateParameter,
-    setAllParameters,
-    switchModel,
-    toggleSimulation,
-    resetSimulation,
-  } = useLotkaVolterra();
+export default function EnhancedSimulation({
+  modelType,
+  parameters,
+  data,
+  isRunning,
+  currentPopulations,
+  currentTime,
+  updateParameter,
+  setAllParameters,
+  switchModel,
+  toggleSimulation,
+  resetSimulation,
+}: EnhancedSimulationProps) {
   
   const { toast } = useToast();
   const [loadedScenario, setLoadedScenario] = useState<string | null>(null);
