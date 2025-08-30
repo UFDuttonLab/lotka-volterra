@@ -70,14 +70,14 @@ const competitionScenarios: PresetScenario[] = [
 const predatorPreyScenarios: PresetScenario[] = [
   {
     name: "Explosive Cycles",
-    description: "Massive population booms and crashes",
+    description: "Massive population booms and crashes with recovery",
     outcome: "Extreme Cycles",
     parameters: {
-      r1: 2.0, r2: 0.8, a: 3.0, b: 2.0,
-      N1_0: 8, N2_0: 0.5
+      r1: 3.5, r2: 1.2, a: 1.8, b: 1.5,
+      N1_0: 10, N2_0: 1
     },
-    explanation: "High prey growth (2.0) with intense predation (3.0) and high efficiency (2.0) creates dramatic population swings from near-zero to massive peaks.",
-    biologicalExample: "Locust swarms and their bird predators - explosive prey reproduction followed by devastating predation crashes."
+    explanation: "Very high prey growth rate (3.5) overcomes moderate predation (1.8) during recovery phases, while increased predator death rate (1.2) ensures crashes when prey becomes scarce. Creates true boom-bust cycles with dramatic recoveries.",
+    biologicalExample: "Arctic hare and lynx cycles in Canada - explosive prey reproduction creates massive population booms, followed by predator-driven crashes and eventual recovery."
   },
   {
     name: "Gentle Waves",
@@ -114,14 +114,14 @@ const predatorPreyScenarios: PresetScenario[] = [
   },
   {
     name: "Near Extinction",
-    description: "Risky cycles approaching zero populations",
-    outcome: "Extreme Cycles",
+    description: "Dangerous cycles that approach zero but still recover",
+    outcome: "Extreme Cycles", 
     parameters: {
-      r1: 1.5, r2: 1.2, a: 2.5, b: 3.0,
+      r1: 1.8, r2: 1.0, a: 2.0, b: 2.2,
       N1_0: 1, N2_0: 2
     },
-    explanation: "High predator efficiency (3.0) with strong attack rate (2.5) creates cycles that crash to near-extinction levels before recovering.",
-    biologicalExample: "Specialist predators like lynx and snowshoe hares - cycles so extreme they risk local extinctions."
+    explanation: "Moderate prey growth (1.8) just barely outpaces high predator efficiency (2.2) during recovery phases. Populations crash to extremely low levels but mathematical equilibrium ensures they don't go extinct.",
+    biologicalExample: "Specialist predators like lynx and snowshoe hares in harsh environments - cycles crash to near-extinction levels where just a few individuals survive to restart the cycle."
   }
 ];
 
