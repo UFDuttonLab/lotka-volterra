@@ -20,6 +20,28 @@ interface MathSection {
 
 const mathSections: MathSection[] = [
   {
+    id: "parameter-definitions",
+    title: "Parameter Definitions & Biological Context",
+    icon: Calculator,
+    badge: "Essential",
+    content: {
+      introduction: "Understanding what each mathematical parameter represents biologically is crucial for interpreting model behavior and connecting theory to real-world ecology.",
+      equations: [
+        "Competition Parameters: r₁, r₂ (growth rates), K₁, K₂ (carrying capacities), α₁₂, α₂₁ (competition coefficients)",
+        "Predator-Prey Parameters: r₁ (prey growth), r₂ (predator death), a (predation rate), b (conversion efficiency)"
+      ],
+      explanations: [
+        "r₁, r₂ (Intrinsic Growth Rates): Maximum per capita growth rate when resources unlimited. Units: per time. Range: 0.1-2.0/year for vertebrates, higher for microorganisms. Reflects reproductive potential and generation time.",
+        "K₁, K₂ (Carrying Capacities): Maximum sustainable population given resource constraints. Units: individuals. Determined by food availability, habitat quality, territory requirements. Example: Deer carrying capacity depends on forage, cover, predation pressure.",
+        "α₁₂, α₂₁ (Competition Coefficients): Per capita effect of species j on species i's growth. Units: dimensionless (equivalent individuals). Range: 0 (no competition) to >1 (strong interspecific effects). Measures resource overlap and competitive impact.",
+        "a (Predation Rate/Capture Efficiency): Rate predators encounter and successfully capture prey. Units: prey consumed per predator per time. Combines search efficiency, encounter rate, capture success. Affected by hunting ability, prey escape behavior, habitat structure.",
+        "b (Predator Efficiency/Conversion Rate): Efficiency converting consumed prey to new predators. Units: predators per prey consumed. Range: 0.01-0.5 (typically <20% due to metabolic losses). Reflects energetic efficiency, reproduction success, offspring survival."
+      ],
+      biologicalMeaning: "These parameters connect mathematical symbols to measurable biological quantities. Field ecologists determine parameter values through observation studies, removal experiments, and energetic analyses. Understanding parameter ranges helps assess model realism and predictions.",
+      examples: "Measuring parameters: Lions hunt success ~20% (predation rate a), 10% ecological efficiency rule (conversion b), territory size studies (carrying capacity K), resource overlap experiments (competition coefficients α)."
+    }
+  },
+  {
     id: "model-distinction",
     title: "Two Different Lotka-Volterra Systems",
     icon: TrendingUp,
@@ -110,6 +132,52 @@ const mathSections: MathSection[] = [
     }
   },
   {
+    id: "conserved-quantity",
+    title: "The Conserved Quantity H: System's Memory",
+    icon: Target,
+    badge: "Advanced",
+    content: {
+      introduction: "The conserved quantity H is one of the most important but least understood aspects of predator-prey dynamics. It acts like 'energy' in the ecological system.",
+      equations: [
+        "H = b·N₁ - r₂·ln(N₁) + a·N₂ - r₁·ln(N₂)",
+        "dH/dt = 0 (H remains constant along any trajectory)",
+        "Equilibrium point: N₁* = r₂/b, N₂* = r₁/a"
+      ],
+      explanations: [
+        "H is analogous to total energy in physical systems - it's conserved throughout population cycles",
+        "Each closed orbit in phase space has a unique H value that identifies that specific orbit",
+        "Initial conditions determine H value, which then constrains all future population dynamics",
+        "Higher H values correspond to larger amplitude oscillations between abundance and scarcity",
+        "H conservation explains why predator-prey orbits are closed (don't spiral inward like competition models)"
+      ],
+      biologicalMeaning: "H represents the 'total ecological energy' of the predator-prey system. It shows why these systems maintain persistent cycles rather than reaching stable equilibrium. The conservation of H means the system has perfect memory - it remembers its initial state forever, leading to predictable cyclical behavior.",
+      examples: "In lynx-hare cycles, H determines whether populations swing between (500-5000 hares) or (50-50000 hares). Higher H means more extreme population crashes and booms. This explains why some regions show mild cycles while others show dramatic population swings."
+    }
+  },
+  {
+    id: "phase-plane-dynamics",
+    title: "Phase Plane Analysis & Orbit Structure",
+    icon: TrendingUp,
+    badge: "Mathematical",
+    content: {
+      introduction: "Phase plane analysis reveals the geometric structure of population dynamics and helps visualize long-term system behavior.",
+      equations: [
+        "Competition nullclines: N₁ = K₁ - α₁₂N₂, N₂ = K₂ - α₂₁N₁",
+        "Predator-prey nullclines: N₁ = r₂/b (vertical), N₂ = r₁/a (horizontal)",
+        "Flow direction: ∇H points perpendicular to orbits in predator-prey systems"
+      ],
+      explanations: [
+        "Nullclines show where dN₁/dt = 0 or dN₂/dt = 0 (zero growth lines)",
+        "Competition: Four equilibrium outcomes based on α₁₂α₂₁ vs K₁/K₂ and K₂/K₁ relationships",
+        "Predator-prey: Single equilibrium surrounded by nested closed orbits",
+        "Orbit direction: Clockwise in predator-prey (prey peaks before predators)",
+        "Stability: Competition equilibria can be stable; predator-prey equilibria are neutrally stable"
+      ],
+      biologicalMeaning: "Phase planes show the 'landscape' of possible population dynamics. In competition, populations flow toward stable points. In predator-prey, populations flow in circles around the equilibrium, with the size of circles determined by initial conditions and conserved quantity H.",
+      examples: "Visualizing outcomes: Two competing plant species may converge to coexistence point. Lynx-hare populations trace elliptical orbits with hare peaks preceding lynx peaks by ~2 years, creating the characteristic phase lag observed in nature."
+    }
+  },
+  {
     id: "equilibrium-analysis",
     title: "Equilibrium Points and Stability",
     icon: Target,
@@ -134,7 +202,7 @@ const mathSections: MathSection[] = [
 ];
 
 export default function MathematicalFoundations() {
-  const [openSections, setOpenSections] = useState<string[]>(["model-distinction"]);
+  const [openSections, setOpenSections] = useState<string[]>(["parameter-definitions"]);
 
   const toggleSection = (sectionId: string) => {
     setOpenSections(prev => 

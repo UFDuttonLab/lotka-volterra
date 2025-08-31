@@ -64,27 +64,29 @@ export default function ExerciseQuestionModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <div className="flex items-center gap-3">
-            <Target className="h-6 w-6 text-primary" />
-            <div className="flex-1">
-              <DialogTitle className="text-xl">{exercise.title}</DialogTitle>
-              <DialogDescription className="mt-1">
-                {exercise.description}
-              </DialogDescription>
+      <DialogContent className="max-w-[95vw] md:max-w-3xl max-h-[85vh] md:max-h-[90vh] overflow-y-auto p-4 md:p-6">
+        <DialogHeader className="space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex items-center gap-3 flex-1">
+              <Target className="h-5 w-5 md:h-6 md:w-6 text-primary flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <DialogTitle className="text-lg md:text-xl leading-tight">{exercise.title}</DialogTitle>
+                <DialogDescription className="mt-1 text-sm leading-relaxed">
+                  {exercise.description}
+                </DialogDescription>
+              </div>
             </div>
-            <Badge variant="outline" className={`text-xs ${difficultyColors[exercise.difficulty as keyof typeof difficultyColors]}`}>
+            <Badge variant="outline" className={`text-xs self-start sm:self-center flex-shrink-0 ${difficultyColors[exercise.difficulty as keyof typeof difficultyColors]}`}>
               {exercise.difficulty}
             </Badge>
           </div>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           {/* Instructions */}
           <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
-            <CardContent className="pt-4">
-              <p className="text-sm text-muted-foreground">
+            <CardContent className="pt-3 md:pt-4">
+              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                 📊 <strong>Instructions:</strong> Run the simulation and observe the population dynamics. 
                 Then answer the question based on what you see in the simulation results.
               </p>
@@ -92,12 +94,12 @@ export default function ExerciseQuestionModal({
           </Card>
 
           {/* Question */}
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <HelpCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-              <div className="flex-1">
-                <h3 className="font-semibold text-lg mb-2">Question:</h3>
-                <p className="text-muted-foreground leading-relaxed">
+          <div className="space-y-3 md:space-y-4">
+            <div className="flex items-start gap-2 md:gap-3">
+              <HelpCircle className="h-4 w-4 md:h-5 md:w-5 text-primary mt-1 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-base md:text-lg mb-2">Question:</h3>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                   {exercise.question.question}
                 </p>
               </div>
@@ -111,16 +113,16 @@ export default function ExerciseQuestionModal({
                     variant="outline" 
                     size="sm" 
                     onClick={() => setShowHint(true)}
-                    className="text-xs"
+                    className="text-xs md:text-sm h-8 md:h-9 px-3 md:px-4"
                   >
                     💡 Show Hint
                   </Button>
                 ) : (
                   <Card className="bg-accent/10 border-accent/30">
-                    <CardContent className="pt-4">
+                    <CardContent className="pt-3 md:pt-4">
                       <div className="flex items-start gap-2">
-                        <span className="text-sm">💡</span>
-                        <p className="text-sm text-muted-foreground">
+                        <span className="text-sm flex-shrink-0">💡</span>
+                        <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                           <strong>Hint:</strong> {exercise.question.hint}
                         </p>
                       </div>
@@ -132,24 +134,25 @@ export default function ExerciseQuestionModal({
           </div>
 
           {/* Answer Options */}
-          <div className="space-y-4">
-            <h4 className="font-medium">Choose your answer:</h4>
+          <div className="space-y-3 md:space-y-4">
+            <h4 className="font-medium text-sm md:text-base">Choose your answer:</h4>
             <RadioGroup 
               value={selectedAnswer} 
               onValueChange={setSelectedAnswer}
               disabled={hasSubmitted}
             >
-              <div className="space-y-3">
+              <div className="space-y-2 md:space-y-3">
                 {exercise.question.options.map((option) => (
-                  <div key={option.id} className="flex items-start space-x-3">
+                  <div key={option.id} className="flex items-start space-x-2 md:space-x-3 p-2 md:p-3 rounded-lg hover:bg-muted/50 transition-colors">
                     <RadioGroupItem 
                       value={option.id} 
                       id={option.id}
                       disabled={hasSubmitted}
+                      className="mt-1 h-4 w-4 md:h-5 md:w-5 flex-shrink-0"
                     />
                     <Label 
                       htmlFor={option.id} 
-                      className={`flex-1 cursor-pointer leading-relaxed ${
+                      className={`flex-1 cursor-pointer leading-relaxed text-sm md:text-base min-h-[44px] flex items-center ${
                         hasSubmitted 
                           ? option.id === exercise.question.correctAnswer
                             ? "text-green-700 font-medium"
@@ -159,16 +162,16 @@ export default function ExerciseQuestionModal({
                           : ""
                       }`}
                     >
-                      <div className="flex items-start gap-2">
-                        <span className="font-mono text-sm mt-0.5">
+                      <div className="flex items-start gap-2 w-full">
+                        <span className="font-mono text-xs md:text-sm mt-0.5 flex-shrink-0">
                           {String.fromCharCode(65 + exercise.question.options.findIndex(o => o.id === option.id))}.
                         </span>
-                        <span>{option.text}</span>
+                        <span className="math-formula unicode-math flex-1">{option.text}</span>
                         {hasSubmitted && option.id === exercise.question.correctAnswer && (
-                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
+                          <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                         )}
                         {hasSubmitted && option.id === selectedAnswer && option.id !== exercise.question.correctAnswer && (
-                          <XCircle className="h-4 w-4 text-red-600 mt-0.5" />
+                          <XCircle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
                         )}
                       </div>
                     </Label>
@@ -183,7 +186,7 @@ export default function ExerciseQuestionModal({
             <Button 
               onClick={handleSubmit} 
               disabled={!selectedAnswer}
-              className="w-full"
+              className="w-full h-10 md:h-11 text-sm md:text-base"
             >
               Submit Answer
             </Button>
@@ -217,7 +220,7 @@ export default function ExerciseQuestionModal({
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-2 pt-4">
+          <div className="flex flex-col sm:flex-row gap-2 pt-4">
             {hasSubmitted && (
               <Button 
                 variant="outline" 
@@ -226,7 +229,7 @@ export default function ExerciseQuestionModal({
                   setHasSubmitted(false);
                   setShowHint(false);
                 }}
-                className="flex-1"
+                className="flex-1 h-10 md:h-11 text-sm md:text-base"
               >
                 Try Again
               </Button>
@@ -234,7 +237,7 @@ export default function ExerciseQuestionModal({
             <Button 
               variant={hasSubmitted ? "default" : "outline"} 
               onClick={handleClose}
-              className="flex-1"
+              className="flex-1 h-10 md:h-11 text-sm md:text-base"
             >
               {hasSubmitted ? "Continue Learning" : "Close"}
             </Button>
