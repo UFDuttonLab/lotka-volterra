@@ -154,7 +154,7 @@ export default function EquationDisplay({ modelType, onModelChange }: EquationDi
                   <strong>Phase Relationships:</strong> Predator peaks follow prey peaks
                 </div>
                 <div className="p-2 bg-accent/10 rounded border-l-4 border-accent">
-                  <strong>Conservation:</strong> Total energy H = b·N₁ - r₁·ln(N₁) + a·N₂ - r₂·ln(N₂) is conserved
+                  <strong>Conservation:</strong> Total energy H = b·N₁ - r₂·ln(N₁) + a·N₂ - r₁·ln(N₂) is conserved
                 </div>
               </>
             )}

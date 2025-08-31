@@ -97,7 +97,7 @@ const mathSections: MathSection[] = [
       equations: [
         "Prey: dN₁/dt = r₁N₁ - aN₁N₂",
         "Predator: dN₂/dt = -r₂N₂ + bN₁N₂",
-        "Conserved quantity: H = b·N₁ - r₁·ln(N₁) + a·N₂ - r₂·ln(N₂)"
+        "Conserved quantity: H = b·N₁ - r₂·ln(N₁) + a·N₂ - r₁·ln(N₂)"
       ],
       explanations: [
         "Prey grow exponentially (r₁N₁) but are consumed by predators (aN₁N₂)",
