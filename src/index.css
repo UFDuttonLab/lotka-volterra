@@ -135,6 +135,45 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    /* Improve text rendering for mathematical symbols */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Mathematical content styling for better mobile display */
+  .math-content {
+    font-family: 'STIX Two Math', 'Times New Roman', serif;
+    font-feature-settings: 'liga' on, 'kern' on;
+    line-height: 1.6;
+  }
+
+  /* Responsive mathematical text sizing */
+  .math-formula {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+    font-family: 'STIX Two Math', 'Times New Roman', serif;
+    letter-spacing: 0.025em;
+  }
+
+  /* Mobile-specific adjustments for formulas */
+  @media (max-width: 768px) {
+    .math-formula {
+      font-size: clamp(0.9rem, 3vw, 1.1rem);
+      line-height: 1.7;
+      word-wrap: break-word;
+      hyphens: auto;
+    }
+    
+    /* Better spacing for mathematical symbols on mobile */
+    .math-content {
+      line-height: 1.8;
+    }
+  }
+
+  /* Ensure Unicode symbols render properly */
+  .unicode-math {
+    font-variant-numeric: normal;
+    font-feature-settings: 'liga' on, 'kern' on, 'calt' on;
   }
 }

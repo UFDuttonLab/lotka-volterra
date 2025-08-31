@@ -98,25 +98,30 @@ export default function Index() {
 
         {/* Main Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="simulate" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-5 h-auto p-1">
+            <TabsTrigger value="simulate" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-1.5 px-2 text-xs sm:text-sm">
               <Activity className="h-4 w-4" />
+              <span className="text-xs sm:hidden">Sim</span>
               <span className="hidden sm:inline">Simulate</span>
             </TabsTrigger>
-            <TabsTrigger value="learn" className="flex items-center gap-2">
+            <TabsTrigger value="learn" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-1.5 px-2 text-xs sm:text-sm">
               <Calculator className="h-4 w-4" />
+              <span className="text-xs sm:hidden">Math</span>
               <span className="hidden sm:inline">Learn</span>
             </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center gap-2">
+            <TabsTrigger value="history" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-1.5 px-2 text-xs sm:text-sm">
               <History className="h-4 w-4" />
+              <span className="text-xs sm:hidden">Hist</span>
               <span className="hidden sm:inline">History</span>
             </TabsTrigger>
-            <TabsTrigger value="resources" className="flex items-center gap-2">
+            <TabsTrigger value="resources" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-1.5 px-2 text-xs sm:text-sm">
               <BookOpen className="h-4 w-4" />
+              <span className="text-xs sm:hidden">Docs</span>
               <span className="hidden sm:inline">Resources</span>
             </TabsTrigger>
-            <TabsTrigger value="exercises" className="flex items-center gap-2">
+            <TabsTrigger value="exercises" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-1.5 px-2 text-xs sm:text-sm">
               <Zap className="h-4 w-4" />
+              <span className="text-xs sm:hidden">Quiz</span>
               <span className="hidden sm:inline">Exercises</span>
             </TabsTrigger>
           </TabsList>

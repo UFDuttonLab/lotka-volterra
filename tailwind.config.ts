@@ -18,6 +18,11 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+				'math': ['STIX Two Math', 'Times New Roman', 'serif'],
+				'scientific': ['STIX Two Math', 'Computer Modern', 'Times New Roman', 'serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

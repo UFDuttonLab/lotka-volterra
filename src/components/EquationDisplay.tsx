@@ -47,19 +47,19 @@ export default function EquationDisplay({ modelType, onModelChange }: EquationDi
           <div className="text-center space-y-3">
             {modelType === 'competition' ? (
               <>
-                <div className="text-base font-mono">
+                <div className="math-formula unicode-math text-base">
                   dN₁/dt = r₁N₁(1 - (N₁ + α₁₂N₂)/K₁)
                 </div>
-                <div className="text-base font-mono">
+                <div className="math-formula unicode-math text-base">
                   dN₂/dt = r₂N₂(1 - (N₂ + α₂₁N₁)/K₂)
                 </div>
               </>
             ) : (
               <>
-                <div className="text-base font-mono">
+                <div className="math-formula unicode-math text-base">
                   dN₁/dt = r₁N₁ - aN₁N₂
                 </div>
-                <div className="text-base font-mono">
+                <div className="math-formula unicode-math text-base">
                   dN₂/dt = -r₂N₂ + bN₁N₂
                 </div>
               </>
@@ -75,51 +75,51 @@ export default function EquationDisplay({ modelType, onModelChange }: EquationDi
           <div className="grid gap-2 text-sm">
             {modelType === 'competition' ? (
               <>
-                <div className="flex justify-between">
-                  <span className="font-mono">N₁, N₂</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">N₁, N₂</span>
                   <span className="text-muted-foreground">Population sizes of competing species</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-mono">r₁, r₂</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">r₁, r₂</span>
                   <span className="text-muted-foreground">Intrinsic growth rates</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-mono">K₁, K₂</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">K₁, K₂</span>
                   <span className="text-muted-foreground">Carrying capacities</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-mono">α₁₂</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">α₁₂</span>
                   <span className="text-muted-foreground">Effect of species 2 on species 1</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-mono">α₂₁</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">α₂₁</span>
                   <span className="text-muted-foreground">Effect of species 1 on species 2</span>
                 </div>
               </>
             ) : (
               <>
-                <div className="flex justify-between">
-                  <span className="font-mono">N₁</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">N₁</span>
                   <span className="text-muted-foreground">Prey population size</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-mono">N₂</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">N₂</span>
                   <span className="text-muted-foreground">Predator population size</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-mono">r₁</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">r₁</span>
                   <span className="text-muted-foreground">Prey intrinsic growth rate</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-mono">r₂</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">r₂</span>
                   <span className="text-muted-foreground">Predator death rate</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-mono">a</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">a</span>
                   <span className="text-muted-foreground">Predation rate (capture efficiency)</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-mono">b</span>
+                <div className="flex justify-between items-center">
+                  <span className="math-formula unicode-math">b</span>
                   <span className="text-muted-foreground">Predator efficiency (conversion rate)</span>
                 </div>
               </>
@@ -154,7 +154,7 @@ export default function EquationDisplay({ modelType, onModelChange }: EquationDi
                   <strong>Phase Relationships:</strong> Predator peaks follow prey peaks
                 </div>
                 <div className="p-2 bg-accent/10 rounded border-l-4 border-accent">
-                  <strong>Conservation:</strong> Total energy H = b·N₁ - r₂·ln(N₁) + a·N₂ - r₁·ln(N₂) is conserved
+                  <strong>Conservation:</strong> <span className="math-formula unicode-math">Total energy H = b·N₁ - r₂·ln(N₁) + a·N₂ - r₁·ln(N₂) is conserved</span>
                 </div>
               </>
             )}

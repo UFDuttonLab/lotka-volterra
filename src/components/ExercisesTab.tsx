@@ -274,14 +274,14 @@ export default function ExercisesTab({ onLoadExercise, onSetActiveExercise }: Ex
   const renderExercise = (exercise: Exercise) => (
     <Card key={exercise.title} className="border-l-4 border-l-primary">
       <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <CardTitle className="text-lg">{exercise.title}</CardTitle>
-            <p className="text-sm text-muted-foreground">{exercise.description}</p>
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0">
+          <div className="space-y-2 flex-1">
+            <CardTitle className="text-base sm:text-lg leading-tight">{exercise.title}</CardTitle>
+            <p className="text-sm text-muted-foreground leading-relaxed">{exercise.description}</p>
           </div>
           <Badge 
             variant="outline" 
-            className={difficultyColors[exercise.difficulty]}
+            className={`${difficultyColors[exercise.difficulty]} shrink-0 text-xs`}
           >
             {exercise.difficulty}
           </Badge>
