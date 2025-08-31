@@ -23,8 +23,13 @@ interface SimulationChartProps {
 }
 
 export default function SimulationChart({ data, isRunning, modelType = "competition" }: SimulationChartProps) {
+  // Apply model-specific theming - teal/emerald for competition, indigo for predator-prey
+  const isCompetition = modelType === 'competition';
+  const cardBg = isCompetition ? 'bg-emerald-50/70 border-emerald-300' : 'bg-indigo-50/70 border-indigo-300';
+  const runningColor = isCompetition ? 'bg-emerald-500' : 'bg-indigo-500';
+  
   return (
-    <Card className="w-full shadow-card">
+    <Card className={`w-full shadow-card ${cardBg}`}>
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-semibold">Population Dynamics</CardTitle>
         <p className="text-sm text-muted-foreground">
@@ -89,7 +94,7 @@ export default function SimulationChart({ data, isRunning, modelType = "competit
         {isRunning && (
           <div className="flex items-center justify-center mt-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+              <div className={`w-2 h-2 ${runningColor} rounded-full animate-pulse`}></div>
               Simulation running...
             </div>
           </div>

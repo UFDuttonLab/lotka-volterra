@@ -10,13 +10,13 @@ interface EquationDisplayProps {
 }
 
 export default function EquationDisplay({ modelType, onModelChange }: EquationDisplayProps) {
-  // Define color themes based on model type
+  // Define color themes based on model type - using teal/emerald vs indigo to avoid slider color conflicts
   const isCompetition = modelType === 'competition';
-  const cardBg = isCompetition ? 'bg-green-100/80 border-green-200' : 'bg-blue-100/80 border-blue-200';
-  const equationBg = isCompetition ? 'bg-green-200/50' : 'bg-blue-200/50';
-  const badgeColor = isCompetition ? 'bg-green-200 text-green-900 border-green-300' : 'bg-blue-200 text-blue-900 border-blue-300';
-  const switchButtonColor = isCompetition ? 'hover:bg-blue-100 hover:border-blue-300' : 'hover:bg-green-100 hover:border-green-300';
-  const outcomeBg = isCompetition ? 'bg-green-200/60' : 'bg-blue-200/60';
+  const cardBg = isCompetition ? 'bg-emerald-50/70 border-emerald-300' : 'bg-indigo-50/70 border-indigo-300';
+  const equationBg = isCompetition ? 'bg-emerald-100/50' : 'bg-indigo-100/50';
+  const badgeColor = isCompetition ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-indigo-100 text-indigo-800 border-indigo-200';
+  const switchButtonColor = isCompetition ? 'hover:bg-indigo-50 hover:border-indigo-200' : 'hover:bg-emerald-50 hover:border-emerald-200';
+  const outcomeBg = isCompetition ? 'bg-emerald-100/60' : 'bg-indigo-100/60';
   
   return (
     <Card className={`w-full shadow-card ${cardBg}`}>
@@ -143,25 +143,25 @@ export default function EquationDisplay({ modelType, onModelChange }: EquationDi
           <div className="space-y-2 text-sm">
             {modelType === 'competition' ? (
               <>
-                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-green-500`}>
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-emerald-400`}>
                   <strong>Coexistence:</strong> Both species survive when competition is weak
                 </div>
-                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-green-600`}>
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-emerald-500`}>
                   <strong>Competitive Exclusion:</strong> One species outcompetes the other
                 </div>
-                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-green-700`}>
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-emerald-600`}>
                   <strong>Bistability:</strong> Outcome depends on initial conditions
                 </div>
               </>
             ) : (
               <>
-                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-blue-500`}>
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-indigo-400`}>
                   <strong>Cyclical Oscillations:</strong> Populations cycle in periodic orbits
                 </div>
-                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-blue-600`}>
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-indigo-500`}>
                   <strong>Phase Relationships:</strong> Predator peaks follow prey peaks
                 </div>
-                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-blue-700`}>
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-indigo-600`}>
                   <strong>Conservation:</strong> <span className="math-formula unicode-math">Total energy H = b·N₁ - r₂·ln(N₁) + a·N₂ - r₁·ln(N₂) is conserved</span>
                 </div>
               </>

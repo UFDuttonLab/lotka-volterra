@@ -42,6 +42,13 @@ export default function Index() {
   const hookValues = useLotkaVolterra();
   const { modelType, switchModel, setAllParameters } = hookValues;
   const [activeTab, setActiveTab] = useState("simulate");
+  
+  // Apply subtle model-specific theming to main layout
+  const isCompetition = modelType === 'competition';
+  const mainBgGradient = isCompetition 
+    ? 'bg-gradient-to-br from-background via-emerald-50/20 to-background' 
+    : 'bg-gradient-to-br from-background via-indigo-50/20 to-background';
+  const tabIndicator = isCompetition ? 'text-emerald-600' : 'text-indigo-600';
   const [selectedExercise, setSelectedExercise] = useState<{
     title: string;
     description: string;
@@ -80,7 +87,7 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-background p-4 sm:p-6 lg:p-8">
+    <div className={`min-h-screen transition-colors duration-500 ${activeTab === 'simulate' ? mainBgGradient : 'bg-gradient-background'} p-4 sm:p-6 lg:p-8`}>
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
@@ -100,7 +107,7 @@ export default function Index() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 h-auto p-1">
             <TabsTrigger value="simulate" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-1.5 px-2 text-xs sm:text-sm">
-              <Activity className="h-4 w-4" />
+              <Activity className={`h-4 w-4 ${activeTab === 'simulate' ? tabIndicator : ''}`} />
               <span className="text-xs sm:hidden">Sim</span>
               <span className="hidden sm:inline">Simulate</span>
             </TabsTrigger>

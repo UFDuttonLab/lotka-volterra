@@ -31,11 +31,17 @@ export default function SimulationControls({
   onPlayPause,
   onReset,
 }: SimulationControlsProps) {
+  // Apply model-specific theming - teal/emerald for competition, indigo for predator-prey
+  const isCompetition = modelType === 'competition';
+  const cardBg = isCompetition ? 'bg-emerald-50/70 border-emerald-300' : 'bg-indigo-50/70 border-indigo-300';
+  const sectionBg = isCompetition ? 'bg-emerald-100/30' : 'bg-indigo-100/30';
+  const iconColor = isCompetition ? 'text-emerald-600' : 'text-indigo-600';
+  
   return (
-    <Card className="shadow-card">
+    <Card className={`shadow-card ${cardBg}`}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Settings className="h-5 w-5 text-primary" />
+          <Settings className={`h-5 w-5 ${iconColor}`} />
           Simulation Controls
         </CardTitle>
       </CardHeader>
@@ -62,8 +68,8 @@ export default function SimulationControls({
         {modelType === 'competition' ? (
           <>
             {/* Growth Rates */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <div className={`space-y-4 p-4 rounded-lg ${sectionBg}`}>
+              <h3 className={`text-sm font-medium ${iconColor} uppercase tracking-wide`}>
                 Growth Rates
               </h3>
               <div className="space-y-3">
@@ -99,8 +105,8 @@ export default function SimulationControls({
             </div>
 
             {/* Carrying Capacities */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <div className={`space-y-4 p-4 rounded-lg ${sectionBg}`}>
+              <h3 className={`text-sm font-medium ${iconColor} uppercase tracking-wide`}>
                 Carrying Capacities
               </h3>
               <div className="space-y-3">
@@ -136,8 +142,8 @@ export default function SimulationControls({
             </div>
 
             {/* Competition Coefficients */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <div className={`space-y-4 p-4 rounded-lg ${sectionBg}`}>
+              <h3 className={`text-sm font-medium ${iconColor} uppercase tracking-wide`}>
                 Competition Coefficients
               </h3>
               <div className="space-y-3">
@@ -175,8 +181,8 @@ export default function SimulationControls({
         ) : (
           <>
             {/* Prey Parameters */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <div className={`space-y-4 p-4 rounded-lg ${sectionBg}`}>
+              <h3 className={`text-sm font-medium ${iconColor} uppercase tracking-wide`}>
                 Prey Parameters
               </h3>
               <div className="space-y-3">
@@ -198,8 +204,8 @@ export default function SimulationControls({
             </div>
 
             {/* Predator Parameters */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <div className={`space-y-4 p-4 rounded-lg ${sectionBg}`}>
+              <h3 className={`text-sm font-medium ${iconColor} uppercase tracking-wide`}>
                 Predator Parameters
               </h3>
               <div className="space-y-3">
@@ -221,8 +227,8 @@ export default function SimulationControls({
             </div>
 
             {/* Interaction Parameters */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <div className={`space-y-4 p-4 rounded-lg ${sectionBg}`}>
+              <h3 className={`text-sm font-medium ${iconColor} uppercase tracking-wide`}>
                 Interaction Parameters
               </h3>
               <div className="space-y-3">
@@ -260,8 +266,8 @@ export default function SimulationControls({
         )}
 
         {/* Initial Populations */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+        <div className={`space-y-4 p-4 rounded-lg ${sectionBg}`}>
+          <h3 className={`text-sm font-medium ${iconColor} uppercase tracking-wide`}>
             Initial Populations
           </h3>
           <div className="space-y-3">
