@@ -67,22 +67,36 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart
               data={phaseData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              margin={{ top: 30, right: 50, left: 60, bottom: 50 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis 
                 type="number" 
                 dataKey="prey" 
                 name={xLabel}
-                stroke="hsl(var(--muted-foreground))"
-                fontSize={12}
+                stroke="hsl(var(--foreground))"
+                fontSize={13}
+                fontWeight={500}
+                label={{ 
+                  value: xLabel, 
+                  position: 'insideBottom', 
+                  offset: -10,
+                  style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '14px', fontWeight: '600' }
+                }}
               />
               <YAxis 
                 type="number" 
                 dataKey="predator" 
                 name={yLabel}
-                stroke="hsl(var(--muted-foreground))"
-                fontSize={12}
+                stroke="hsl(var(--foreground))"
+                fontSize={13}
+                fontWeight={500}
+                label={{ 
+                  value: yLabel, 
+                  angle: -90, 
+                  position: 'insideLeft',
+                  style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '14px', fontWeight: '600' }
+                }}
               />
               <Tooltip 
                 cursor={{ strokeDasharray: '3 3' }}
@@ -119,29 +133,55 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 <ReferenceDot 
                   x={equilibrium.x} 
                   y={equilibrium.y} 
-                  r={6} 
+                  r={8} 
                   fill="hsl(var(--destructive))" 
                   stroke="hsl(var(--background))"
-                  strokeWidth={2}
+                  strokeWidth={3}
                 />
               )}
             </ScatterChart>
           </ResponsiveContainer>
         </div>
         
-        <div className="mt-4 text-xs text-muted-foreground space-y-1">
+        <div className="mt-4 space-y-3 text-sm">
+          <div className="space-y-1">
+            <h4 className="font-semibold text-foreground">Phase Plane Interpretation</h4>
+            <p className="text-muted-foreground text-xs">
+              Each point represents the system state (N₁, N₂) at a given time. The trajectory shows how populations evolve.
+            </p>
+          </div>
+          
           {modelType === 'predator-prey' ? (
-            <>
-              <p>• Trajectory shows the relationship between predator and prey populations over time</p>
-              <p>• Red dot marks the equilibrium point (r₂/b, r₁/a)</p>
-              <p>• Closed orbits indicate periodic oscillations (conservation of energy H)</p>
-            </>
+            <div className="space-y-2 text-xs">
+              <div className="p-3 bg-muted/50 rounded-lg border">
+                <h5 className="font-medium text-foreground mb-2">Why Trajectories Form Closed Loops:</h5>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• <span className="font-medium">Conserved Quantity H:</span> H = r₁ln(N₂) - aN₂ + r₂ln(N₁) - bN₁ remains constant</li>
+                  <li>• <span className="font-medium">Neutral Stability:</span> Equilibrium point is a center, not an attractor</li>
+                  <li>• <span className="font-medium">Phase Lag:</span> Predator population changes follow prey changes with delay</li>
+                  <li>• <span className="font-medium">Periodic Oscillations:</span> System returns to starting state, creating closed orbits</li>
+                </ul>
+              </div>
+              <p className="text-muted-foreground">
+                <span className="inline-block w-2 h-2 bg-destructive rounded-full mr-1"></span>
+                Red dot marks the equilibrium point (r₂/b, r₁/a) - a center point around which orbits circulate
+              </p>
+            </div>
           ) : (
-            <>
-              <p>• Shows the interaction between competing species in phase space</p>
-              <p>• Trajectory converges to equilibrium or exclusion depending on parameters</p>
-              <p>• Final point represents long-term outcome of competition</p>
-            </>
+            <div className="space-y-2 text-xs">
+              <div className="p-3 bg-muted/50 rounded-lg border">
+                <h5 className="font-medium text-foreground mb-2">Why Trajectories Converge (Don't Loop):</h5>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• <span className="font-medium">No Conservation Law:</span> Unlike predator-prey, competition has no conserved quantity</li>
+                  <li>• <span className="font-medium">Dissipative System:</span> Competition reduces total carrying capacity over time</li>
+                  <li>• <span className="font-medium">Stable Equilibria:</span> System has attracting fixed points or exclusion states</li>
+                  <li>• <span className="font-medium">Competitive Exclusion:</span> Stronger competitor eventually dominates</li>
+                </ul>
+              </div>
+              <p className="text-muted-foreground">
+                Trajectory endpoint represents the long-term competitive outcome: coexistence or species exclusion
+              </p>
+            </div>
           )}
         </div>
       </CardContent>
