@@ -60,7 +60,6 @@ interface EnhancedSimulationProps {
     difficulty: string;
     question: ExerciseQuestion;
   } | null;
-  onShowExerciseQuestion?: () => void;
   onDismissExercise?: () => void;
 }
 
@@ -215,7 +214,6 @@ export default function EnhancedSimulation({
   toggleSimulation,
   resetSimulation,
   activeExercise,
-  onShowExerciseQuestion,
   onDismissExercise,
 }: EnhancedSimulationProps) {
   
@@ -287,10 +285,9 @@ export default function EnhancedSimulation({
   return (
     <div className="space-y-6">
       {/* Exercise Banner */}
-      {activeExercise && onShowExerciseQuestion && onDismissExercise && (
+      {activeExercise && onDismissExercise && (
         <ExerciseBanner
           exercise={activeExercise}
-          onAnswerQuestion={onShowExerciseQuestion}
           onDismiss={onDismissExercise}
         />
       )}

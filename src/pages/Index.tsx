@@ -6,7 +6,7 @@ import HistoricalTimeline from "@/components/HistoricalTimeline";
 import LearningResources from "@/components/LearningResources";
 import ExercisesTab from "@/components/ExercisesTab";
 import EquationDisplay from "@/components/EquationDisplay";
-import ExerciseQuestionModal from "@/components/ExerciseQuestionModal";
+
 import { useLotkaVolterra } from "@/hooks/useLotkaVolterra";
 import { Calculator, History, BookOpen, Activity, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -49,12 +49,6 @@ export default function Index() {
     ? 'bg-gradient-to-br from-background via-emerald-50/20 to-background' 
     : 'bg-gradient-to-br from-background via-indigo-50/20 to-background';
   const tabIndicator = isCompetition ? 'text-emerald-600' : 'text-indigo-600';
-  const [selectedExercise, setSelectedExercise] = useState<{
-    title: string;
-    description: string;
-    difficulty: string;
-    question: ExerciseQuestion;
-  } | null>(null);
   const [activeExercise, setActiveExercise] = useState<{
     title: string;
     description: string;
@@ -137,7 +131,6 @@ export default function Index() {
             <EnhancedSimulation 
               {...hookValues} 
               activeExercise={activeExercise}
-              onShowExerciseQuestion={() => setSelectedExercise(activeExercise)}
               onDismissExercise={() => setActiveExercise(null)}
             />
           </TabsContent>
@@ -162,12 +155,6 @@ export default function Index() {
           </TabsContent>
         </Tabs>
 
-        {/* Global Exercise Question Modal */}
-        <ExerciseQuestionModal
-          isOpen={!!selectedExercise}
-          onClose={() => setSelectedExercise(null)}
-          exercise={selectedExercise}
-        />
 
         {/* Footer */}
         <footer className="text-center py-8 border-t border-border">
