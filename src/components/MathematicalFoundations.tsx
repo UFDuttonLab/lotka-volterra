@@ -197,7 +197,7 @@ export default function MathematicalFoundations() {
                       </h4>
                       <div className="bg-muted/30 rounded-lg p-4 space-y-2">
                         {section.content.equations.map((equation, idx) => (
-                          <div key={idx} className="font-mono text-sm bg-card p-3 rounded border">
+                          <div key={idx} className="math-formula unicode-math text-sm bg-card p-3 rounded border">
                             {equation}
                           </div>
                         ))}

@@ -383,15 +383,15 @@ export default function EnhancedSimulation({
                         {outcome.type === "Near Equilibrium" && "Populations are approaching steady states, suggesting weak predator-prey interactions."}
                         {outcome.type === "Analyzing..." && "Run the simulation longer to analyze the cyclical patterns and stability."}
                       </p>
-                      <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                        <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                         <div className="text-center">
-                          <div className="text-lg font-mono font-bold text-primary">
+                          <div className="text-lg math-formula unicode-math font-bold text-primary">
                             {parameters.a!.toFixed(3)}
                           </div>
                           <div className="text-xs text-muted-foreground">Predation Rate</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-lg font-mono font-bold text-secondary">
+                          <div className="text-lg math-formula unicode-math font-bold text-secondary">
                             {parameters.b!.toFixed(3)}
                           </div>
                           <div className="text-xs text-muted-foreground">Pred. Efficiency</div>
@@ -412,13 +412,13 @@ export default function EnhancedSimulation({
                           <div className="text-lg font-mono font-bold text-primary">
                             {(parameters.a12! / (parameters.K1! / parameters.K2!)).toFixed(2)}
                           </div>
-                          <div className="text-xs text-muted-foreground">α₁₂ / (K₁/K₂)</div>
+                          <div className="text-xs text-muted-foreground math-formula unicode-math">α₁₂ / (K₁/K₂)</div>
                         </div>
                         <div className="text-center">
                           <div className="text-lg font-mono font-bold text-secondary">
                             {(parameters.a21! / (parameters.K2! / parameters.K1!)).toFixed(2)}
                           </div>
-                          <div className="text-xs text-muted-foreground">α₂₁ / (K₂/K₁)</div>
+                          <div className="text-xs text-muted-foreground math-formula unicode-math">α₂₁ / (K₂/K₁)</div>
                         </div>
                       </div>
                     </div>
@@ -484,14 +484,14 @@ export default function EnhancedSimulation({
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t text-xs">
                     {modelType === 'predator-prey' ? (
                       <>
-                        <div className="text-center">
-                          <div className="font-mono font-semibold">{scenario.parameters.r1}</div>
-                          <div className="text-muted-foreground">r₁ (prey)</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-mono font-semibold">{scenario.parameters.r2}</div>
-                          <div className="text-muted-foreground">r₂ (pred)</div>
-                        </div>
+                         <div className="text-center">
+                           <div className="font-mono font-semibold">{scenario.parameters.r1}</div>
+                           <div className="text-muted-foreground math-formula unicode-math">r₁ (prey)</div>
+                         </div>
+                         <div className="text-center">
+                           <div className="font-mono font-semibold">{scenario.parameters.r2}</div>
+                           <div className="text-muted-foreground math-formula unicode-math">r₂ (pred)</div>
+                         </div>
                         <div className="text-center">
                           <div className="font-mono font-semibold">{scenario.parameters.a}</div>
                           <div className="text-muted-foreground">a (attack)</div>
@@ -503,22 +503,22 @@ export default function EnhancedSimulation({
                       </>
                     ) : (
                       <>
-                        <div className="text-center">
-                          <div className="font-mono font-semibold">{scenario.parameters.r1}</div>
-                          <div className="text-muted-foreground">r₁</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-mono font-semibold">{scenario.parameters.r2}</div>
-                          <div className="text-muted-foreground">r₂</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-mono font-semibold">{scenario.parameters.a12}</div>
-                          <div className="text-muted-foreground">α₁₂</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-mono font-semibold">{scenario.parameters.a21}</div>
-                          <div className="text-muted-foreground">α₂₁</div>
-                        </div>
+                         <div className="text-center">
+                           <div className="font-mono font-semibold">{scenario.parameters.r1}</div>
+                           <div className="text-muted-foreground math-formula unicode-math">r₁</div>
+                         </div>
+                         <div className="text-center">
+                           <div className="font-mono font-semibold">{scenario.parameters.r2}</div>
+                           <div className="text-muted-foreground math-formula unicode-math">r₂</div>
+                         </div>
+                         <div className="text-center">
+                           <div className="font-mono font-semibold">{scenario.parameters.a12}</div>
+                           <div className="text-muted-foreground math-formula unicode-math">α₁₂</div>
+                         </div>
+                         <div className="text-center">
+                           <div className="font-mono font-semibold">{scenario.parameters.a21}</div>
+                           <div className="text-muted-foreground math-formula unicode-math">α₂₁</div>
+                         </div>
                       </>
                     )}
                   </div>
