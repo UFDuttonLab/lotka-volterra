@@ -148,36 +148,36 @@ const competitionScenarios: PresetScenario[] = [
 // Predator-prey scenarios with extreme visual differences
 const predatorPreyScenarios: PresetScenario[] = [
   {
-    name: "Realistic Parameters",
-    description: "Based on lynx-hare data from Hudson Bay Company records",
+    name: "Realistic Parameters", 
+    description: "Based on lynx-hare data with realistic population sizes",
     outcome: "Stable Cycles",
     parameters: {
-      r1: 1.2, r2: 0.8, a: 0.6, b: 0.4,
-      N1_0: 8, N2_0: 2
+      r1: 1.2, r2: 0.8, a: 0.008, b: 0.005,
+      N1_0: 120, N2_0: 30
     },
     explanation: "Parameters approximating real lynx-hare dynamics. Moderate prey growth (1.2) with realistic predation efficiency (0.4) creates stable 8-10 year cycles similar to historical fur trade records.",
     biologicalExample: "The famous lynx-hare cycles documented by Hudson Bay Company fur traders from 1845-1935, showing remarkably consistent 9-10 year population cycles."
   },
   {
-    name: "Near Extinction Recovery",
-    description: "Demonstrates population recovery from critically low levels",
-    outcome: "Extreme Cycles", 
+    name: "Minimum Viable Population",
+    description: "Shows why populations below 50-100 individuals are vulnerable",
+    outcome: "Conservation Warning", 
     parameters: {
-      r1: 1.5, r2: 0.6, a: 1.8, b: 1.2,
-      N1_0: 0.5, N2_0: 0.1
+      r1: 1.5, r2: 0.6, a: 0.015, b: 0.012,
+      N1_0: 60, N2_0: 15
     },
-    explanation: "Starting with very small populations to show how the model assumes recovery from near-extinction. In reality, populations this small would likely go extinct from stochastic effects.",
-    biologicalExample: "Demonstrates model limitations - real populations below ~50-100 individuals face extinction from genetic bottlenecks and random events."
+    explanation: "Starting with small but viable populations (60 prey, 15 predators) demonstrates conservation thresholds. Populations below 50-100 face extinction from genetic bottlenecks and environmental stochasticity.",
+    biologicalExample: "California condors dropped to 27 individuals in 1987, requiring intensive conservation efforts. Most viable populations need 50-100+ breeding individuals."
   },
   {
     name: "Classic Lotka-Volterra",
-    description: "Perfect neutral oscillations - the textbook model",
+    description: "Perfect neutral oscillations with realistic populations",
     outcome: "Perfect Cycles",
     parameters: {
-      r1: 1.0, r2: 1.0, a: 1.0, b: 1.0,
-      N1_0: 2.0, N2_0: 0.5
+      r1: 1.0, r2: 1.0, a: 0.012, b: 0.008,
+      N1_0: 80, N2_0: 20
     },
-    explanation: "The original 1925 equations with perfectly balanced parameters (all = 1.0). Starting away from equilibrium (N1*=1.0, N2*=1.0) creates visible oscillations with period ≈ 6.28 time units.",
+    explanation: "The original 1925 equations scaled for realistic populations. Balanced parameters create visible oscillations with equilibrium at N1*≈83, N2*≈125, maintaining the classic 4:1 prey-to-predator ratio.",
     biologicalExample: "The theoretical foundation for all predator-prey models - represents idealized conditions with perfect balance between growth, predation, and efficiency."
   },
   {
@@ -185,8 +185,8 @@ const predatorPreyScenarios: PresetScenario[] = [
     description: "Smooth, sustained population oscillations",
     outcome: "Stable Cycles",
     parameters: {
-      r1: 1.2, r2: 0.5, a: 0.4, b: 0.6,
-      N1_0: 2.5, N2_0: 1.0
+      r1: 1.2, r2: 0.5, a: 0.005, b: 0.007,
+      N1_0: 100, N2_0: 40
     },
     explanation: "Higher prey growth (1.2) with reduced predation rate (0.4) and efficiency (0.6) ensures prey can always recover. Mathematical equilibrium at N1*=0.83, N2*=3.0 creates gentle, sustained cycles.",
     biologicalExample: "Stable predator-prey relationships in mature ecosystems like wolves and deer in protected areas with clear but gentle population cycles."
@@ -196,8 +196,8 @@ const predatorPreyScenarios: PresetScenario[] = [
     description: "Rapid, frequent micro-oscillations",
     outcome: "Rapid Cycles",
     parameters: {
-      r1: 4.0, r2: 1.5, a: 1.2, b: 0.8,
-      N1_0: 1, N2_0: 1
+      r1: 4.0, r2: 1.5, a: 0.015, b: 0.010,
+      N1_0: 80, N2_0: 80
     },
     explanation: "Extremely high prey growth rate (4.0) with moderate predation creates many fast, small cycles that complete in seconds.",
     biologicalExample: "Bacteria and bacteriophage viruses - ultra-rapid reproduction creating multiple generations within hours."
@@ -207,19 +207,19 @@ const predatorPreyScenarios: PresetScenario[] = [
     description: "Wide, slow oscillations over long timescales",
     outcome: "Slow Oscillations",
     parameters: {
-      r1: 0.15, r2: 0.1, a: 0.1, b: 0.15,
-      N1_0: 15, N2_0: 3
+      r1: 0.15, r2: 0.1, a: 0.001, b: 0.0015,
+      N1_0: 150, N2_0: 30
     },
     explanation: "All parameters 10-20x smaller create cycles that take much longer to complete, like watching in slow motion with large populations.",
     biologicalExample: "Moose and wolf populations in Yellowstone - large mammals with multi-year population cycles."
   },
   {
-    name: "Near Extinction",
-    description: "Dangerous cycles that approach zero but still recover",
+    name: "High-Risk Cycles",
+    description: "Large oscillations with conservation concerns",
     outcome: "Extreme Cycles", 
     parameters: {
-      r1: 1.8, r2: 1.0, a: 2.0, b: 2.2,
-      N1_0: 1, N2_0: 2
+      r1: 1.8, r2: 1.0, a: 0.025, b: 0.028,
+      N1_0: 80, N2_0: 160
     },
     explanation: "Moderate prey growth (1.8) just barely outpaces high predator efficiency (2.2) during recovery phases. Populations crash to extremely low levels but mathematical equilibrium ensures they don't go extinct.",
     biologicalExample: "Specialist predators like lynx and snowshoe hares in harsh environments - cycles crash to near-extinction levels where just a few individuals survive to restart the cycle."
