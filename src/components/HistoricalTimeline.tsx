@@ -12,32 +12,36 @@ interface TimelineEvent {
 }
 
 const timelineEvents: TimelineEvent[] = [
-  {
-    year: 1925,
-    title: "Alfred Lotka's Foundational Work",
-    description: "Published 'Elements of Physical Biology' introducing mathematical models for population dynamics",
-    figure: "Alfred J. Lotka",
-    category: "theory",
-    details: [
-      "Developed the first systematic approach to mathematical biology",
-      "Introduced the concept of population oscillations",
-      "Applied thermodynamic principles to biological systems",
-      "Laid groundwork for predator-prey dynamics"
-    ]
-  },
-  {
-    year: 1926,
-    title: "Volterra's Independent Discovery",
-    description: "Vito Volterra independently derived similar equations while studying fish populations in the Adriatic Sea",
-    figure: "Vito Volterra",
-    category: "application",
-    details: [
-      "Motivated by real fisheries data from WWI period",
-      "Noticed predator fish populations increased during wartime fishing restrictions",
-      "Developed mathematical framework to explain the phenomenon",
-      "Connected mathematics directly to ecological observations"
-    ]
-  },
+    {
+      year: 1925,
+      title: "Alfred Lotka's Foundational Work",
+      description: "Published 'Elements of Physical Biology' introducing mathematical models for population dynamics",
+      figure: "Alfred J. Lotka",
+      category: "theory",
+      details: [
+        "Developed the first systematic approach to mathematical biology",
+        "Introduced the concept of population oscillations", 
+        "Applied thermodynamic principles to biological systems",
+        "Laid groundwork for predator-prey dynamics",
+        "Citation: Lotka, A.J. (1925). Elements of Physical Biology. Baltimore: Williams & Wilkins Company. 460 pages.",
+        "Archive: https://archive.org/details/elementsofphysic017171mbp"
+      ]
+    },
+    {
+      year: 1926,
+      title: "Volterra's Independent Discovery",
+      description: "Vito Volterra independently derived similar equations while studying fish populations in the Adriatic Sea",
+      figure: "Vito Volterra",
+      category: "application",
+      details: [
+        "Motivated by real fisheries data from WWI period",
+        "Noticed predator fish populations increased during wartime fishing restrictions",
+        "Developed mathematical framework to explain the phenomenon",
+        "Connected mathematics directly to ecological observations",
+        "Citation: Volterra, V. (1926). 'Fluctuations in the abundance of a species considered mathematically.' Nature, 118, 558-560.",
+        "Original Italian: Volterra, V. (1926). 'Variazioni e fluttuazioni del numero d'individui in specie animali conviventi.' Memorie della R. Accademia Nazionale dei Lincei, 2, 31-113."
+      ]
+    },
   {
     year: 1928,
     title: "The Lotka-Volterra Collaboration",
@@ -51,19 +55,21 @@ const timelineEvents: TimelineEvent[] = [
       "Established foundation for modern population ecology"
     ]
   },
-  {
-    year: 1934,
-    title: "G.F. Gause's Experimental Validation",
-    description: "First experimental tests of competitive exclusion principle using laboratory populations",
-    figure: "Georgii F. Gause",
-    category: "application",
-    details: [
-      "Used Paramecium species in controlled laboratory conditions",
-      "Demonstrated competitive exclusion in practice",
-      "Showed coexistence required niche differentiation",
-      "Coined the term 'competitive exclusion principle'"
-    ]
-  },
+    {
+      year: 1934,
+      title: "G.F. Gause's Experimental Validation",
+      description: "First experimental tests of competitive exclusion principle using laboratory populations",
+      figure: "Georgii F. Gause",
+      category: "application",
+      details: [
+        "Used Paramecium species in controlled laboratory conditions",
+        "Demonstrated competitive exclusion in practice",
+        "Showed coexistence required niche differentiation",
+        "Coined the term 'competitive exclusion principle'",
+        "Citation: Gause, G.F. (1934). The Struggle for Existence. Baltimore: Williams & Wilkins.",
+        "Key experiment: Laboratory competition between Paramecium aurelia and P. caudatum"
+      ]
+    },
   {
     year: 1950,
     title: "MacArthur's Resource Competition Theory",
@@ -77,32 +83,36 @@ const timelineEvents: TimelineEvent[] = [
       "Influenced modern community ecology theory"
     ]
   },
-  {
-    year: 1970,
-    title: "Modern Applications in Conservation",
-    description: "Application to endangered species management and habitat conservation",
-    figure: "Conservation Biologists",
-    category: "modern",
-    details: [
-      "Used to model species reintroduction programs",
-      "Applied to invasive species management",
-      "Integrated with habitat fragmentation models",
-      "Became standard tool in conservation planning"
-    ]
-  },
-  {
-    year: 2000,
-    title: "Computational Ecology Era",
-    description: "Integration with modern computational methods and big data approaches",
-    figure: "Modern Ecologists",
-    category: "modern",
-    details: [
-      "Enhanced with agent-based modeling approaches",
-      "Integrated with climate change predictions",
-      "Applied to ecosystem-scale dynamics",
-      "Used in biodiversity conservation strategies"
-    ]
-  }
+    {
+      year: 1970,
+      title: "Modern Applications in Conservation",
+      description: "Application to endangered species management and habitat conservation",
+      figure: "Conservation Biologists",
+      category: "modern",
+      details: [
+        "Used to model species reintroduction programs",
+        "Applied to invasive species management",
+        "Integrated with habitat fragmentation models",
+        "Became standard tool in conservation planning",
+        "Key citations: MacArthur, R.H. & Wilson, E.O. (1967). The Theory of Island Biogeography. Princeton University Press.",
+        "Lynx-hare data: Elton, C. & Nicholson, M. (1942). 'The ten-year cycle in numbers of the lynx in Canada.' Journal of Animal Ecology, 11(2), 215-244."
+      ]
+    },
+    {
+      year: 2000,
+      title: "Computational Ecology Era",
+      description: "Integration with modern computational methods and big data approaches",
+      figure: "Modern Ecologists",
+      category: "modern",
+      details: [
+        "Enhanced with agent-based modeling approaches",
+        "Integrated with climate change predictions",
+        "Applied to ecosystem-scale dynamics",
+        "Used in biodiversity conservation strategies",
+        "Modern reviews: Berryman, A.A. (1992). 'The origins and evolution of predator-prey theory.' Ecology, 73(5), 1530-1535.",
+        "Current applications: Turchin, P. (2003). Complex Population Dynamics: A Theoretical/Empirical Synthesis. Princeton University Press."
+      ]
+    }
 ];
 
 const categoryColors = {

@@ -55,9 +55,22 @@ export function useLotkaVolterra() {
     N2: parameters.N2_0,
   });
 
+  // Conservation quantity H for predator-prey systems
+  const [conservedQuantity, setConservedQuantity] = useState<{
+    current: number;
+    initial: number;
+    isConserved: boolean;
+  }>({ current: 0, initial: 0, isConserved: true });
+
   const intervalRef = useRef<NodeJS.Timeout>();
   const timeStep = 0.05; // Integration time step - balanced for accuracy and visual speed
   const updateInterval = 50; // Update frequency in milliseconds
+
+  // Calculate conserved quantity H for predator-prey systems
+  const calculateConservedQuantity = useCallback((N1: number, N2: number, params: Parameters): number => {
+    // H = r₂·ln(N₁) - b·N₁ + r₁·ln(N₂) - a·N₂
+    return params.r2 * Math.log(N1) - params.b * N1 + params.r1 * Math.log(N2) - params.a * N2;
+  }, []);
 
   // Lotka-Volterra equations (both competition and predator-prey)
   const calculateDerivatives = useCallback((N1: number, N2: number, params: Parameters, model: ModelType) => {
@@ -114,6 +127,20 @@ export function useLotkaVolterra() {
       setCurrentPopulations(prevPops => {
         const newPops = integrate(prevPops.N1, prevPops.N2, parameters, modelType);
         
+        // Update conserved quantity H for predator-prey systems
+        if (modelType === 'predator-prey') {
+          const currentH = calculateConservedQuantity(newPops.N1, newPops.N2, parameters);
+          setConservedQuantity(prev => {
+            const tolerance = 0.001; // 0.1% tolerance
+            const isConserved = Math.abs(currentH - prev.initial) / Math.abs(prev.initial) < tolerance;
+            return {
+              current: currentH,
+              initial: prev.initial === 0 ? currentH : prev.initial,
+              isConserved: prev.initial === 0 ? true : isConserved
+            };
+          });
+        }
+        
         // Record data every step for maximum accuracy
         if (true) {
           setData(prevData => {
@@ -164,7 +191,17 @@ export function useLotkaVolterra() {
       species1: parameters.N1_0,
       species2: parameters.N2_0,
     }]);
-  }, [parameters.N1_0, parameters.N2_0, stopSimulation]);
+    
+    // Reset conserved quantity
+    if (modelType === 'predator-prey') {
+      const initialH = calculateConservedQuantity(parameters.N1_0, parameters.N2_0, parameters);
+      setConservedQuantity({
+        current: initialH,
+        initial: initialH,
+        isConserved: true
+      });
+    }
+  }, [parameters.N1_0, parameters.N2_0, stopSimulation, modelType, calculateConservedQuantity]);
 
   const toggleSimulation = useCallback(() => {
     if (isRunning) {
@@ -231,6 +268,7 @@ export function useLotkaVolterra() {
     isRunning,
     currentPopulations,
     currentTime,
+    conservedQuantity,
     updateParameter,
     setAllParameters,
     switchModel,

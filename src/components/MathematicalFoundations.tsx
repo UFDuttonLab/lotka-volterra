@@ -119,7 +119,7 @@ const mathSections: MathSection[] = [
       equations: [
         "Prey: dN₁/dt = r₁N₁ - aN₁N₂",
         "Predator: dN₂/dt = -r₂N₂ + bN₁N₂",
-        "Conserved quantity: H = b·N₁ - r₂·ln(N₁) + a·N₂ - r₁·ln(N₂)"
+        "Conserved quantity: H = r₂·ln(N₁) - b·N₁ + r₁·ln(N₂) - a·N₂"
       ],
       explanations: [
         "Prey grow exponentially (r₁N₁) but are consumed by predators (aN₁N₂)",
@@ -139,7 +139,7 @@ const mathSections: MathSection[] = [
     content: {
       introduction: "The conserved quantity H is one of the most important but least understood aspects of predator-prey dynamics. It acts like 'energy' in the ecological system.",
       equations: [
-        "H = b·N₁ - r₂·ln(N₁) + a·N₂ - r₁·ln(N₂)",
+        "H = r₂·ln(N₁) - b·N₁ + r₁·ln(N₂) - a·N₂",
         "dH/dt = 0 (H remains constant along any trajectory)",
         "Equilibrium point: N₁* = r₂/b, N₂* = r₁/a"
       ],

@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import SimulationChart from "./SimulationChart";
 import SimulationControls from "./SimulationControls";
 import ExerciseBanner from "./ExerciseBanner";
+import PhasePlaneChart from "./PhasePlaneChart";
 import { Play, RotateCcw, Lightbulb, Target, TrendingUp, Activity } from "lucide-react";
 
 type ModelType = 'competition' | 'predator-prey';
@@ -49,6 +50,11 @@ interface EnhancedSimulationProps {
   isRunning: boolean;
   currentPopulations: { N1: number; N2: number };
   currentTime: number;
+  conservedQuantity?: {
+    current: number;
+    initial: number;
+    isConserved: boolean;
+  };
   updateParameter: (param: string, value: number) => void;
   setAllParameters: (newParams: Partial<Parameters>) => void;
   switchModel: (newModel: ModelType) => void;
@@ -208,6 +214,7 @@ export default function EnhancedSimulation({
   isRunning,
   currentPopulations,
   currentTime,
+  conservedQuantity,
   updateParameter,
   setAllParameters,
   switchModel,
@@ -361,7 +368,18 @@ export default function EnhancedSimulation({
               />
             </div>
             <div className="lg:col-span-2 space-y-6">
-              <SimulationChart data={data} isRunning={isRunning} modelType={modelType} />
+              <SimulationChart 
+                data={data} 
+                isRunning={isRunning} 
+                modelType={modelType} 
+                conservedQuantity={conservedQuantity}
+              />
+              <PhasePlaneChart 
+                data={data}
+                modelType={modelType}
+                parameters={parameters}
+                isRunning={isRunning}
+              />
               {/* Interpretation Panel */}
               <Card className="shadow-card">
                 <CardHeader>
@@ -427,7 +445,18 @@ export default function EnhancedSimulation({
 
           {/* Mobile Layout */}
           <div className="lg:hidden space-y-6">
-            <SimulationChart data={data} isRunning={isRunning} modelType={modelType} />
+            <SimulationChart 
+              data={data} 
+              isRunning={isRunning} 
+              modelType={modelType} 
+              conservedQuantity={conservedQuantity}
+            />
+            <PhasePlaneChart 
+              data={data}
+              modelType={modelType}
+              parameters={parameters}
+              isRunning={isRunning}
+            />
             <SimulationControls
               modelType={modelType}
               parameters={parameters}

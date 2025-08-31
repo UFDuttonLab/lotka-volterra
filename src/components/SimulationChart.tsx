@@ -20,9 +20,14 @@ interface SimulationChartProps {
   data: DataPoint[];
   isRunning: boolean;
   modelType?: "competition" | "predator-prey";
+  conservedQuantity?: {
+    current: number;
+    initial: number;
+    isConserved: boolean;
+  };
 }
 
-export default function SimulationChart({ data, isRunning, modelType = "competition" }: SimulationChartProps) {
+export default function SimulationChart({ data, isRunning, modelType = "competition", conservedQuantity }: SimulationChartProps) {
   // Apply model-specific theming - teal/emerald for competition, indigo for predator-prey
   const isCompetition = modelType === 'competition';
   const cardBg = isCompetition ? 'bg-emerald-50/70 border-emerald-300' : 'bg-indigo-50/70 border-indigo-300';
@@ -96,6 +101,36 @@ export default function SimulationChart({ data, isRunning, modelType = "competit
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <div className={`w-2 h-2 ${runningColor} rounded-full animate-pulse`}></div>
               Simulation running...
+            </div>
+          </div>
+        )}
+        
+        {/* Conservation Quantity Display for Predator-Prey */}
+        {modelType === 'predator-prey' && conservedQuantity && (
+          <div className="mt-4 p-3 bg-muted/30 rounded-lg border">
+            <div className="text-sm space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-medium">Conservation Quantity (H):</span>
+                <span className="font-mono">{conservedQuantity.current.toFixed(4)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Initial H:</span>
+                <span className="font-mono text-muted-foreground">{conservedQuantity.initial.toFixed(4)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs">Conservation Status:</span>
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${conservedQuantity.isConserved ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <span className={`text-xs font-medium ${conservedQuantity.isConserved ? 'text-green-700' : 'text-red-700'}`}>
+                    {conservedQuantity.isConserved ? '✓ Conserved' : '⚠ Numerical Error'}
+                  </span>
+                </div>
+              </div>
+              {!conservedQuantity.isConserved && (
+                <p className="text-xs text-red-600 mt-1">
+                  H should remain constant. Large changes indicate numerical integration errors.
+                </p>
+              )}
             </div>
           </div>
         )}
