@@ -171,9 +171,6 @@ export default function Index() {
 
         {/* Footer */}
         <footer className="text-center py-8 border-t border-border">
-          <p className="text-sm text-muted-foreground mb-2">
-            Educational tool for exploring ecological dynamics through mathematical modeling
-          </p>
           <p className="text-xs text-muted-foreground">
             Developed by <a 
               href="https://ufduttonlab.github.io/" 
