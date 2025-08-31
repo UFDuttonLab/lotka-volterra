@@ -77,14 +77,14 @@ interface PresetScenario {
 const competitionScenarios: PresetScenario[] = [
   {
     name: "Classic Lotka-Volterra",
-    description: "Textbook competitive exclusion principle",
-    outcome: "Competitive Exclusion",
+    description: "Clear competitive exclusion with moderate asymmetry",
+    outcome: "Species 1 Wins",
     parameters: {
-      r1: 1.0, r2: 0.95, K1: 200, K2: 200,
-      a12: 1.0, a21: 1.0, N1_0: 100, N2_0: 100
+      r1: 1.0, r2: 0.8, K1: 100, K2: 100,
+      a12: 0.8, a21: 1.2, N1_0: 50, N2_0: 50
     },
-    explanation: "The classic competition model with slight asymmetry (r2=0.95) ensures Species 1 wins. Larger carrying capacities (200) and populations (100) create faster, more visible competitive exclusion on a larger scale.",
-    biologicalExample: "Two nearly identical species competing for the exact same resources - classic example of Gause's competitive exclusion principle where the slightly superior species wins."
+    explanation: "Species 1 wins through both higher growth rate (1.0 vs 0.8) and competitive advantage (a21=1.2 > a12=0.8). Starting populations at 50% carrying capacity create visible exclusion dynamics within 10-15 time units.",
+    biologicalExample: "Classic example of Gause's competitive exclusion principle - one species with slight advantages in both growth and competition eventually excludes the other."
   },
   {
     name: "Rapid Exclusion",

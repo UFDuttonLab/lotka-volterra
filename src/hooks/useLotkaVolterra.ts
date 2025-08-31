@@ -33,18 +33,18 @@ interface DataPoint {
 export function useLotkaVolterra() {
   const [modelType, setModelType] = useState<ModelType>('predator-prey');
   const [parameters, setParameters] = useState<Parameters>({
-    // Competition parameters
+    // Competition parameters - classic competitive exclusion
     r1: 1.0,
     r2: 0.8,
-    K1: 200,
-    K2: 180,
-    a12: 0.5,
-    a21: 0.6,
+    K1: 100,
+    K2: 100,
+    a12: 0.8,
+    a21: 1.2,
     // Predator-prey parameters - classic oscillating values
     a: 1.0,
     b: 1.0,
-    N1_0: 2,
-    N2_0: 1,
+    N1_0: 2.0,
+    N2_0: 0.5,
   });
 
   const [data, setData] = useState<DataPoint[]>([]);
@@ -184,7 +184,7 @@ export function useLotkaVolterra() {
 
   const switchModel = useCallback((newModel: ModelType) => {
     setModelType(newModel);
-    // Reset to appropriate default parameters with clear visual differences
+    // Reset to classic scenario parameters with clear visual differences
     if (newModel === 'predator-prey') {
       setParameters(prev => ({
         ...prev,
@@ -192,20 +192,20 @@ export function useLotkaVolterra() {
         r2: 1.0, // predator death rate
         a: 1.0,  // predation rate
         b: 1.0,  // predator efficiency
-        N1_0: 1.0, // initial prey - small for clean oscillations
-        N2_0: 1.0,  // initial predators - small for clean oscillations
+        N1_0: 2.0, // initial prey - classic oscillations
+        N2_0: 0.5,  // initial predators - classic oscillations
       }));
     } else {
       setParameters(prev => ({
         ...prev,
-        r1: 1.5, // higher growth rates for competition
-        r2: 1.2,
-        K1: 150, // larger carrying capacities
-        K2: 120,
-        a12: 0.8, // stronger competition
+        r1: 1.0, // growth rates for classic exclusion
+        r2: 0.8,
+        K1: 100, // carrying capacities
+        K2: 100,
+        a12: 0.8, // asymmetric competition
         a21: 1.2,
-        N1_0: 80, // start near carrying capacity
-        N2_0: 60,
+        N1_0: 50, // start at half carrying capacity
+        N2_0: 50,
       }));
     }
   }, []);
