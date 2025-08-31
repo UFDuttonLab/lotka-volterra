@@ -24,6 +24,7 @@ interface SimulationChartProps {
     current: number;
     initial: number;
     isConserved: boolean;
+    driftPercent: number;
   };
 }
 
@@ -116,6 +117,19 @@ export default function SimulationChart({ data, isRunning, modelType = "competit
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Initial H:</span>
                 <span className="font-mono text-muted-foreground">{conservedQuantity.initial.toFixed(4)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Conservation Drift:</span>
+                <span className={`font-mono text-xs ${
+                  conservedQuantity.driftPercent < 0.1 ? 'text-green-600' : 
+                  conservedQuantity.driftPercent < 1.0 ? 'text-yellow-600' : 'text-red-600'
+                }`}>
+                  {conservedQuantity.driftPercent.toFixed(3)}%
+                </span>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Small drift (&lt;0.1%) indicates excellent numerical accuracy. 
+                H should be perfectly constant in theory.
               </div>
             </div>
           </div>

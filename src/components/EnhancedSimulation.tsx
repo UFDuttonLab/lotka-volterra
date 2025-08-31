@@ -8,6 +8,9 @@ import SimulationChart from "./SimulationChart";
 import SimulationControls from "./SimulationControls";
 import ExerciseBanner from "./ExerciseBanner";
 import PhasePlaneChart from "./PhasePlaneChart";
+import ParameterValidation from "./ParameterValidation";
+import ModelLimitations from "./ModelLimitations";
+import TechnicalDetails from "./TechnicalDetails";
 import { Play, RotateCcw, Lightbulb, Target, TrendingUp, Activity } from "lucide-react";
 
 type ModelType = 'competition' | 'predator-prey';
@@ -54,6 +57,11 @@ interface EnhancedSimulationProps {
     current: number;
     initial: number;
     isConserved: boolean;
+    driftPercent: number;
+  };
+  populationWarnings?: {
+    nearExtinction: boolean;
+    unrealisticParameters: string[];
   };
   updateParameter: (param: string, value: number) => void;
   setAllParameters: (newParams: Partial<Parameters>) => void;
@@ -81,15 +89,15 @@ interface PresetScenario {
 // Competition scenarios with dramatic visual differences
 const competitionScenarios: PresetScenario[] = [
   {
-    name: "Classic Lotka-Volterra",
-    description: "Clear competitive exclusion with moderate asymmetry",
-    outcome: "Species 1 Wins",
+    name: "Realistic Parameters",
+    description: "Based on actual ecological data - balanced competition",
+    outcome: "Coexistence",
     parameters: {
-      r1: 1.0, r2: 0.8, K1: 100, K2: 100,
-      a12: 0.8, a21: 1.2, N1_0: 50, N2_0: 50
+      r1: 0.8, r2: 0.6, K1: 150, K2: 180,
+      a12: 0.4, a21: 0.3, N1_0: 75, N2_0: 90
     },
-    explanation: "Species 1 wins through both higher growth rate (1.0 vs 0.8) and competitive advantage (a21=1.2 > a12=0.8). Starting populations at 50% carrying capacity create visible exclusion dynamics within 10-15 time units.",
-    biologicalExample: "Classic example of Gause's competitive exclusion principle - one species with slight advantages in both growth and competition eventually excludes the other."
+    explanation: "Realistic growth rates (r < 1.0) and moderate competition coefficients based on field studies. Both species can coexist because neither has overwhelming competitive advantage.",
+    biologicalExample: "Two bird species feeding at different tree levels with overlapping but not identical niches."
   },
   {
     name: "Rapid Exclusion",
@@ -140,6 +148,28 @@ const competitionScenarios: PresetScenario[] = [
 // Predator-prey scenarios with extreme visual differences
 const predatorPreyScenarios: PresetScenario[] = [
   {
+    name: "Realistic Parameters",
+    description: "Based on lynx-hare data from Hudson Bay Company records",
+    outcome: "Stable Cycles",
+    parameters: {
+      r1: 1.2, r2: 0.8, a: 0.6, b: 0.4,
+      N1_0: 8, N2_0: 2
+    },
+    explanation: "Parameters approximating real lynx-hare dynamics. Moderate prey growth (1.2) with realistic predation efficiency (0.4) creates stable 8-10 year cycles similar to historical fur trade records.",
+    biologicalExample: "The famous lynx-hare cycles documented by Hudson Bay Company fur traders from 1845-1935, showing remarkably consistent 9-10 year population cycles."
+  },
+  {
+    name: "Near Extinction Recovery",
+    description: "Demonstrates population recovery from critically low levels",
+    outcome: "Extreme Cycles", 
+    parameters: {
+      r1: 1.5, r2: 0.6, a: 1.8, b: 1.2,
+      N1_0: 0.5, N2_0: 0.1
+    },
+    explanation: "Starting with very small populations to show how the model assumes recovery from near-extinction. In reality, populations this small would likely go extinct from stochastic effects.",
+    biologicalExample: "Demonstrates model limitations - real populations below ~50-100 individuals face extinction from genetic bottlenecks and random events."
+  },
+  {
     name: "Classic Lotka-Volterra",
     description: "Perfect neutral oscillations - the textbook model",
     outcome: "Perfect Cycles",
@@ -149,17 +179,6 @@ const predatorPreyScenarios: PresetScenario[] = [
     },
     explanation: "The original 1925 equations with perfectly balanced parameters (all = 1.0). Starting away from equilibrium (N1*=1.0, N2*=1.0) creates visible oscillations with period ≈ 6.28 time units.",
     biologicalExample: "The theoretical foundation for all predator-prey models - represents idealized conditions with perfect balance between growth, predation, and efficiency."
-  },
-  {
-    name: "Explosive Cycles",
-    description: "Massive population booms and crashes with recovery",
-    outcome: "Extreme Cycles",
-    parameters: {
-      r1: 3.5, r2: 1.2, a: 1.8, b: 1.5,
-      N1_0: 10, N2_0: 1
-    },
-    explanation: "Very high prey growth rate (3.5) overcomes moderate predation (1.8) during recovery phases, while increased predator death rate (1.2) ensures crashes when prey becomes scarce. Creates true boom-bust cycles with dramatic recoveries.",
-    biologicalExample: "Arctic hare and lynx cycles in Canada - explosive prey reproduction creates massive population booms, followed by predator-driven crashes and eventual recovery."
   },
   {
     name: "Gentle Waves",
@@ -215,6 +234,7 @@ export default function EnhancedSimulation({
   currentPopulations,
   currentTime,
   conservedQuantity,
+  populationWarnings,
   updateParameter,
   setAllParameters,
   switchModel,
@@ -301,10 +321,10 @@ export default function EnhancedSimulation({
 
       <Card className="shadow-card">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            Interactive {modelType === 'predator-prey' ? 'Predator-Prey' : 'Competition'} Laboratory
-          </CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              Interactive {modelType === 'predator-prey' ? 'Lotka-Volterra Predator-Prey' : 'Lotka-Volterra Competition (Logistic Growth)'} Laboratory
+            </CardTitle>
           <p className="text-muted-foreground">
             Explore {modelType === 'predator-prey' ? 'predator-prey dynamics with oscillating cycles' : 'competition dynamics with equilibrium states'} through real-time simulation and preset scenarios.
           </p>
@@ -365,6 +385,12 @@ export default function EnhancedSimulation({
                 isRunning={isRunning}
                 onPlayPause={toggleSimulation}
                 onReset={resetSimulation}
+              />
+              <ParameterValidation
+                modelType={modelType}
+                parameters={parameters}
+                populationWarnings={populationWarnings}
+                currentPopulations={currentPopulations}
               />
             </div>
             <div className="lg:col-span-2 space-y-6">
@@ -440,6 +466,20 @@ export default function EnhancedSimulation({
                   )}
                 </CardContent>
               </Card>
+              
+              {/* Model Limitations */}
+              <ModelLimitations 
+                modelType={modelType}
+                currentPopulations={currentPopulations}
+              />
+              
+              {/* Technical Details */}
+              <TechnicalDetails 
+                modelType={modelType}
+                conservedQuantity={conservedQuantity}
+                timeStep={0.05}
+                currentTime={currentTime}
+              />
             </div>
           </div>
 
@@ -464,6 +504,16 @@ export default function EnhancedSimulation({
               isRunning={isRunning}
               onPlayPause={toggleSimulation}
               onReset={resetSimulation}
+            />
+            <ParameterValidation
+              modelType={modelType}
+              parameters={parameters}
+              populationWarnings={populationWarnings}
+              currentPopulations={currentPopulations}
+            />
+            <ModelLimitations 
+              modelType={modelType}
+              currentPopulations={currentPopulations}
             />
           </div>
         </TabsContent>

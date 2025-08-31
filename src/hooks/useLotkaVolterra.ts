@@ -55,12 +55,19 @@ export function useLotkaVolterra() {
     N2: parameters.N2_0,
   });
 
-  // Conservation quantity H for predator-prey systems
+  // Conservation quantity H for predator-prey systems with drift tracking
   const [conservedQuantity, setConservedQuantity] = useState<{
     current: number;
     initial: number;
     isConserved: boolean;
-  }>({ current: 0, initial: 0, isConserved: true });
+    driftPercent: number;
+  }>({ current: 0, initial: 0, isConserved: true, driftPercent: 0 });
+
+  // Population warnings for biological realism
+  const [populationWarnings, setPopulationWarnings] = useState<{
+    nearExtinction: boolean;
+    unrealisticParameters: string[];
+  }>({ nearExtinction: false, unrealisticParameters: [] });
 
   const intervalRef = useRef<NodeJS.Timeout>();
   const timeStep = 0.05; // Integration time step - balanced for accuracy and visual speed
@@ -112,12 +119,12 @@ export function useLotkaVolterra() {
     const newN1 = N1 + (timeStep / 6) * (k1.dN1dt + 2 * k2.dN1dt + 2 * k3.dN1dt + k4.dN1dt);
     const newN2 = N2 + (timeStep / 6) * (k1.dN2dt + 2 * k2.dN2dt + 2 * k3.dN2dt + k4.dN2dt);
 
-    // Natural bounds - use tiny epsilon instead of zero to preserve system properties
-    const epsilon = 1e-10;
-    return {
-      N1: newN1 > 0 ? newN1 : epsilon,
-      N2: newN2 > 0 ? newN2 : epsilon,
-    };
+  // Biologically meaningful population floor - populations can't recover from true zero
+  const EXTINCTION_THRESHOLD = 0.001;
+  return {
+    N1: newN1 > EXTINCTION_THRESHOLD ? newN1 : EXTINCTION_THRESHOLD,
+    N2: newN2 > EXTINCTION_THRESHOLD ? newN2 : EXTINCTION_THRESHOLD,
+  };
   }, [calculateDerivatives]);
 
   const updateSimulation = useCallback(() => {
@@ -132,14 +139,25 @@ export function useLotkaVolterra() {
           const currentH = calculateConservedQuantity(newPops.N1, newPops.N2, parameters);
           setConservedQuantity(prev => {
             const tolerance = 0.001; // 0.1% tolerance
-            const isConserved = Math.abs(currentH - prev.initial) / Math.abs(prev.initial) < tolerance;
+            const driftPercent = prev.initial !== 0 ? Math.abs((currentH - prev.initial) / prev.initial) * 100 : 0;
+            const isConserved = driftPercent < 0.1;
             return {
               current: currentH,
               initial: prev.initial === 0 ? currentH : prev.initial,
-              isConserved: prev.initial === 0 ? true : isConserved
+              isConserved: prev.initial === 0 ? true : isConserved,
+              driftPercent: prev.initial === 0 ? 0 : driftPercent
             };
           });
         }
+
+        // Check for population warnings
+        const EXTINCTION_THRESHOLD = 0.001;
+        const nearExtinction = newPops.N1 <= EXTINCTION_THRESHOLD * 1.1 || newPops.N2 <= EXTINCTION_THRESHOLD * 1.1;
+        
+        setPopulationWarnings(prev => ({
+          ...prev,
+          nearExtinction
+        }));
         
         // Record data every step for maximum accuracy
         if (true) {
@@ -198,9 +216,16 @@ export function useLotkaVolterra() {
       setConservedQuantity({
         current: initialH,
         initial: initialH,
-        isConserved: true
+        isConserved: true,
+        driftPercent: 0
       });
     }
+
+    // Reset warnings
+    setPopulationWarnings({
+      nearExtinction: false,
+      unrealisticParameters: []
+    });
   }, [parameters.N1_0, parameters.N2_0, stopSimulation, modelType, calculateConservedQuantity]);
 
   const toggleSimulation = useCallback(() => {
@@ -213,7 +238,34 @@ export function useLotkaVolterra() {
 
   const updateParameter = useCallback((param: string, value: number) => {
     setParameters(prev => ({ ...prev, [param]: value }));
-  }, []);
+    
+    // Validate parameters for biological realism
+    const validateParameter = (paramName: string, paramValue: number) => {
+      const warnings: string[] = [];
+      
+      if (modelType === 'predator-prey') {
+        if (paramName === 'r1' && paramValue > 10) warnings.push('Extremely high prey growth rate (most organisms r < 2.0)');
+        if (paramName === 'r2' && paramValue > 10) warnings.push('Extremely high predator death rate');
+        if (paramName === 'a' && paramValue > 5) warnings.push('Unrealistically efficient predation');
+        if (paramName === 'b' && paramValue > 5) warnings.push('Extremely high predator efficiency');
+        if ((paramName === 'N1_0' || paramName === 'N2_0') && paramValue > 1000 && (parameters.r1 < 0.5 || parameters.r2 < 0.5)) {
+          warnings.push('Large populations with slow growth - may take very long to see dynamics');
+        }
+      } else {
+        if ((paramName === 'r1' || paramName === 'r2') && paramValue > 10) warnings.push('Extremely high growth rate (most organisms r < 2.0)');
+        if ((paramName === 'K1' || paramName === 'K2') && paramValue < 10) warnings.push('Very low carrying capacity');
+        if ((paramName === 'a12' || paramName === 'a21') && paramValue > 5) warnings.push('Extremely strong competition coefficient');
+      }
+      
+      return warnings;
+    };
+
+    const warnings = validateParameter(param, value);
+    setPopulationWarnings(prev => ({
+      ...prev,
+      unrealisticParameters: warnings
+    }));
+  }, [modelType, parameters]);
 
   const setAllParameters = useCallback((newParams: Partial<Parameters>) => {
     setParameters(prev => ({ ...prev, ...newParams }));
@@ -269,6 +321,7 @@ export function useLotkaVolterra() {
     currentPopulations,
     currentTime,
     conservedQuantity,
+    populationWarnings,
     updateParameter,
     setAllParameters,
     switchModel,
