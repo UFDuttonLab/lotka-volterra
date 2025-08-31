@@ -12,10 +12,11 @@ interface EquationDisplayProps {
 export default function EquationDisplay({ modelType, onModelChange }: EquationDisplayProps) {
   // Define color themes based on model type
   const isCompetition = modelType === 'competition';
-  const cardBg = isCompetition ? 'bg-green-50/50' : 'bg-blue-50/50';
-  const equationBg = isCompetition ? 'bg-green-100/30' : 'bg-blue-100/30';
-  const badgeColor = isCompetition ? 'bg-green-100 text-green-800 border-green-200' : 'bg-blue-100 text-blue-800 border-blue-200';
-  const switchButtonColor = isCompetition ? 'hover:bg-blue-50 hover:border-blue-200' : 'hover:bg-green-50 hover:border-green-200';
+  const cardBg = isCompetition ? 'bg-green-100/80 border-green-200' : 'bg-blue-100/80 border-blue-200';
+  const equationBg = isCompetition ? 'bg-green-200/50' : 'bg-blue-200/50';
+  const badgeColor = isCompetition ? 'bg-green-200 text-green-900 border-green-300' : 'bg-blue-200 text-blue-900 border-blue-300';
+  const switchButtonColor = isCompetition ? 'hover:bg-blue-100 hover:border-blue-300' : 'hover:bg-green-100 hover:border-green-300';
+  const outcomeBg = isCompetition ? 'bg-green-200/60' : 'bg-blue-200/60';
   
   return (
     <Card className={`w-full shadow-card ${cardBg}`}>
@@ -142,25 +143,25 @@ export default function EquationDisplay({ modelType, onModelChange }: EquationDi
           <div className="space-y-2 text-sm">
             {modelType === 'competition' ? (
               <>
-                <div className="p-2 bg-green-100/40 rounded border-l-4 border-green-500">
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-green-500`}>
                   <strong>Coexistence:</strong> Both species survive when competition is weak
                 </div>
-                <div className="p-2 bg-green-100/40 rounded border-l-4 border-green-600">
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-green-600`}>
                   <strong>Competitive Exclusion:</strong> One species outcompetes the other
                 </div>
-                <div className="p-2 bg-green-100/40 rounded border-l-4 border-green-700">
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-green-700`}>
                   <strong>Bistability:</strong> Outcome depends on initial conditions
                 </div>
               </>
             ) : (
               <>
-                <div className="p-2 bg-blue-100/40 rounded border-l-4 border-blue-500">
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-blue-500`}>
                   <strong>Cyclical Oscillations:</strong> Populations cycle in periodic orbits
                 </div>
-                <div className="p-2 bg-blue-100/40 rounded border-l-4 border-blue-600">
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-blue-600`}>
                   <strong>Phase Relationships:</strong> Predator peaks follow prey peaks
                 </div>
-                <div className="p-2 bg-blue-100/40 rounded border-l-4 border-blue-700">
+                <div className={`p-2 ${outcomeBg} rounded border-l-4 border-blue-700`}>
                   <strong>Conservation:</strong> <span className="math-formula unicode-math">Total energy H = b·N₁ - r₂·ln(N₁) + a·N₂ - r₁·ln(N₂) is conserved</span>
                 </div>
               </>
