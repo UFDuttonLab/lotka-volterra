@@ -96,7 +96,7 @@ export default function Index() {
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Discover the mathematical beauty of ecological dynamics through interactive simulations
-            of both competition and predator-prey models, with historical insights and comprehensive educational resources.
+            of both competition and predator-prey models.
           </p>
         </div>
 
