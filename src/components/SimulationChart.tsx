@@ -117,20 +117,6 @@ export default function SimulationChart({ data, isRunning, modelType = "competit
                 <span className="text-muted-foreground">Initial H:</span>
                 <span className="font-mono text-muted-foreground">{conservedQuantity.initial.toFixed(4)}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs">Conservation Status:</span>
-                <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${conservedQuantity.isConserved ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                  <span className={`text-xs font-medium ${conservedQuantity.isConserved ? 'text-green-700' : 'text-red-700'}`}>
-                    {conservedQuantity.isConserved ? '✓ Conserved' : '⚠ Numerical Error'}
-                  </span>
-                </div>
-              </div>
-              {!conservedQuantity.isConserved && (
-                <p className="text-xs text-red-600 mt-1">
-                  H should remain constant. Large changes indicate numerical integration errors.
-                </p>
-              )}
             </div>
           </div>
         )}
