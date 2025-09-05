@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import IsoclineDiagram from "./IsoclineDiagram";
+import DiagramLegend from "./DiagramLegend";
 
 interface CompetitionParameters {
   r1: number;
@@ -44,9 +45,23 @@ export default function ComparisonDiagram({ parameters }: ComparisonDiagramProps
           </TabsList>
           
           <TabsContent value="side-by-side" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <IsoclineDiagram type="competition" parameters={parameters} />
-              <IsoclineDiagram type="predator-prey" parameters={parameters} />
+            <div className="flex flex-col md:flex-row gap-6 justify-center items-start">
+              <div className="flex flex-col items-center">
+                <IsoclineDiagram type="competition" parameters={parameters} showEmbeddedLegend={false} />
+                <DiagramLegend 
+                  type="competition" 
+                  competition={{
+                    coexistencePossible: parameters ? 
+                      ((parameters.K1 - parameters.a12 * parameters.K2 / parameters.a21) > 0 && 
+                       (parameters.K2 - parameters.a21 * parameters.K1 / parameters.a12) > 0) : 
+                      true
+                  }} 
+                />
+              </div>
+              <div className="flex flex-col items-center">
+                <IsoclineDiagram type="predator-prey" parameters={parameters} showEmbeddedLegend={false} />
+                <DiagramLegend type="predator-prey" />
+              </div>
             </div>
           </TabsContent>
           

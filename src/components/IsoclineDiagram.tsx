@@ -25,9 +25,10 @@ interface IsoclineDiagramProps {
   type: "competition" | "predator-prey";
   parameters?: CompetitionParameters & PredatorPreyParameters;
   className?: string;
+  showEmbeddedLegend?: boolean;
 }
 
-export default function IsoclineDiagram({ type, parameters, className }: IsoclineDiagramProps) {
+export default function IsoclineDiagram({ type, parameters, className, showEmbeddedLegend = true }: IsoclineDiagramProps) {
   // Default parameters that ensure meaningful diagrams
   const defaultParams = {
     r1: 1.0, r2: 0.8, K1: 100, K2: 80, a12: 0.8, a21: 0.6,
@@ -600,44 +601,46 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                  </>
                )}
                
-                {/* Embedded legend inside SVG */}
-          <g transform={`translate(${width - 150}, 15)`}>
-            <rect x="0" y="0" width="140" height="120" fill="hsl(var(--background))" stroke="hsl(var(--border))" strokeWidth="1" rx="4" opacity="0.95"/>
-            <text x="8" y="15" fontSize="11" fill="hsl(var(--foreground))" fontWeight="600">Legend</text>
-            
-            <line x1="8" y1="28" x2="20" y2="28" stroke="hsl(var(--primary))" strokeWidth="3"/>
-            <text x="24" y="31" fontSize="9" fill="hsl(var(--foreground))">
-              {type === 'competition' ? 'Species 1' : 'Prey'} nullcline
-            </text>
-            
-            <line x1="8" y1="40" x2="20" y2="40" stroke="hsl(var(--secondary))" strokeWidth="3"/>
-            <text x="24" y="43" fontSize="9" fill="hsl(var(--foreground))">
-              {type === 'competition' ? 'Species 2' : 'Predator'} nullcline
-            </text>
-            
-            <circle cx="14" cy="52" r="2.5" fill="hsl(var(--destructive))"/>
-            <text x="24" y="55" fontSize="9" fill="hsl(var(--foreground))">Equilibrium point</text>
-            
-            <path d="M 8 64 L 20 64" stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-            <text x="24" y="67" fontSize="9" fill="hsl(var(--foreground))">Flow direction</text>
-            
-            {type === 'competition' && (
-              <>
-                <circle cx="14" cy="76" r="2" fill="hsl(var(--primary))" opacity="0.7"/>
-                <text x="24" y="79" fontSize="9" fill="hsl(var(--foreground))">Carrying capacity</text>
-                
-                <text x="8" y="95" fontSize="8" fill="hsl(var(--muted-foreground))">
-                  {competition?.coexistencePossible ? '✓ Coexistence' : '⚠ Exclusion'}
-                </text>
-              </>
-            )}
-            
-            {type === 'predator-prey' && (
-              <text x="8" y="90" fontSize="8" fill="hsl(var(--muted-foreground))">
-                ✓ Oscillatory dynamics
-              </text>
-            )}
-          </g>
+                {/* Embedded legend inside SVG - conditionally shown */}
+                {showEmbeddedLegend && (
+                  <g transform={`translate(${width - 150}, 15)`}>
+                    <rect x="0" y="0" width="140" height="120" fill="hsl(var(--background))" stroke="hsl(var(--border))" strokeWidth="1" rx="4" opacity="0.95"/>
+                    <text x="8" y="15" fontSize="11" fill="hsl(var(--foreground))" fontWeight="600">Legend</text>
+                    
+                    <line x1="8" y1="28" x2="20" y2="28" stroke="hsl(var(--primary))" strokeWidth="3"/>
+                    <text x="24" y="31" fontSize="9" fill="hsl(var(--foreground))">
+                      {type === 'competition' ? 'Species 1' : 'Prey'} nullcline
+                    </text>
+                    
+                    <line x1="8" y1="40" x2="20" y2="40" stroke="hsl(var(--secondary))" strokeWidth="3"/>
+                    <text x="24" y="43" fontSize="9" fill="hsl(var(--foreground))">
+                      {type === 'competition' ? 'Species 2' : 'Predator'} nullcline
+                    </text>
+                    
+                    <circle cx="14" cy="52" r="2.5" fill="hsl(var(--destructive))"/>
+                    <text x="24" y="55" fontSize="9" fill="hsl(var(--foreground))">Equilibrium point</text>
+                    
+                    <path d="M 8 64 L 20 64" stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
+                    <text x="24" y="67" fontSize="9" fill="hsl(var(--foreground))">Flow direction</text>
+                    
+                    {type === 'competition' && (
+                      <>
+                        <circle cx="14" cy="76" r="2" fill="hsl(var(--primary))" opacity="0.7"/>
+                        <text x="24" y="79" fontSize="9" fill="hsl(var(--foreground))">Carrying capacity</text>
+                        
+                        <text x="8" y="95" fontSize="8" fill="hsl(var(--muted-foreground))">
+                          {competition?.coexistencePossible ? '✓ Coexistence' : '⚠ Exclusion'}
+                        </text>
+                      </>
+                    )}
+                    
+                    {type === 'predator-prey' && (
+                      <text x="8" y="90" fontSize="8" fill="hsl(var(--muted-foreground))">
+                        ✓ Oscillatory dynamics
+                      </text>
+                    )}
+                  </g>
+                )}
         </svg>
       </CardContent>
     </Card>
