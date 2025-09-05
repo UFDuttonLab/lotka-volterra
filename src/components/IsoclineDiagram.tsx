@@ -288,60 +288,36 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                     Species 2 nullcline
                   </text>
                   
-                  {/* Regional flow indicators and accurate biological labeling */}
+                  {/* Regional indicators with simplified visualization */}
                   {competition.coexistencePossible ? (
                     <>
                       {/* Equilibrium point */}
                       <circle 
                         cx={competition.equilibrium!.x}
                         cy={competition.equilibrium!.y}
-                        r="5"
+                        r="6"
                         fill="hsl(var(--destructive))"
                         stroke="white"
                         strokeWidth="2"
                       />
                       <text 
-                        x={competition.equilibrium!.x + 12}
+                        x={competition.equilibrium!.x + 15}
                         y={competition.equilibrium!.y - 5}
-                        fontSize="11"
-                        fill="hsl(var(--foreground))"
-                        fontWeight="600"
+                        fontSize="12"
+                        fill="hsl(var(--destructive))"
+                        fontWeight="700"
                       >
                         Coexistence
                       </text>
                       
-                      {/* Flow arrows toward equilibrium - four regions */}
-                      <g opacity="0.8">
-                        {(() => {
-                          const eqX = competition.equilibrium!.x;
-                          const eqY = competition.equilibrium!.y;
-                          const offset = 50;
-                          
-                          return (
-                            <>
-                              {/* Region 1: Below both nullclines - both grow */}
-                              <path d={`M ${eqX - offset} ${eqY + offset} L ${eqX - 15} ${eqY + 15}`} stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-                              <text x={eqX - offset - 10} y={eqY + offset + 5} fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="end">Both grow initially</text>
-                              
-                              {/* Region 2: Above Species 1, below Species 2 nullcline */}
-                              <path d={`M ${eqX + offset} ${eqY + offset} L ${eqX + 15} ${eqY + 15}`} stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-                              <text x={eqX + offset + 5} y={eqY + offset + 5} fontSize="10" fill="hsl(var(--primary))" fontWeight="600">Species 1 ↓, Species 2 ↑</text>
-                              
-                              {/* Region 3: Above both nullclines - both decline toward equilibrium */}
-                              <path d={`M ${eqX + offset} ${eqY - offset} L ${eqX + 15} ${eqY - 15}`} stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-                              <text x={eqX + offset + 5} y={eqY - offset - 5} fontSize="10" fill="hsl(var(--primary))" fontWeight="600">Both decline</text>
-                              
-                              {/* Region 4: Below Species 1, above Species 2 nullcline */}
-                              <path d={`M ${eqX - offset} ${eqY - offset} L ${eqX - 15} ${eqY - 15}`} stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-                              <text x={eqX - offset - 10} y={eqY - offset - 5} fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="end">Species 1 ↑, Species 2 ↓</text>
-                            </>
-                          );
-                        })()}
-                      </g>
+                      {/* Subtle regional background shading */}
+                      <rect x={margin.left} y={margin.top} 
+                            width={chartWidth} height={chartHeight}
+                            fill="hsl(var(--primary) / 0.05)"/>
                     </>
                    ) : (
                     <>
-                      {/* Competitive exclusion scenario - accurate regional analysis */}
+                      {/* Competitive exclusion scenario - simplified */}
                       {(() => {
                         // Calculate nullcline intersections with axes
                         const n1NullclineXInt = p.K1 / p.a12; // Where Species 1 nullcline hits x-axis
@@ -355,68 +331,51 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                         
                         return (
                           <>
-                            {/* Background coloring to show winning region */}
+                            {/* Subtle background shading to show winning region */}
                             <rect x={margin.left} y={margin.top} 
                                   width={chartWidth} height={chartHeight}
-                                  fill={species1Wins ? "hsl(var(--primary) / 0.06)" : "hsl(var(--secondary) / 0.06)"}/>
+                                  fill={species1Wins ? "hsl(var(--primary) / 0.08)" : "hsl(var(--secondary) / 0.08)"}/>
                             
                             {/* Exclusion endpoint - the final outcome */}
                             <circle 
                               cx={winnerEndpoint.x} 
                               cy={winnerEndpoint.y} 
-                              r="6" 
+                              r="8" 
                               fill="hsl(var(--destructive))" 
                               stroke="white" 
-                              strokeWidth="2"/>
+                              strokeWidth="3"/>
                             <text 
-                              x={winnerEndpoint.x + (species1Wins ? -25 : 15)} 
-                              y={winnerEndpoint.y + (species1Wins ? 20 : -10)} 
-                              fontSize="12" 
+                              x={winnerEndpoint.x + (species1Wins ? -35 : 25)} 
+                              y={winnerEndpoint.y + (species1Wins ? 25 : -15)} 
+                              fontSize="13" 
                               fill="hsl(var(--destructive))" 
                               fontWeight="700" 
                               textAnchor="middle">
                               {species1Wins ? "Species 1 Wins" : "Species 2 Wins"}
                             </text>
                             
-                            {/* Regional flow arrows pointing toward exclusion */}
-                            <g opacity="0.9">
-                              {/* Region 1: Both below their nullclines - both grow initially */}
-                              <path d={`M ${margin.left + 40} ${margin.top + chartHeight - 40} L ${winnerEndpoint.x - 30} ${winnerEndpoint.y + 10}`} 
-                                    stroke="hsl(var(--primary))" strokeWidth="2.5" markerEnd="url(#arrow-flow)"/>
-                              <text x={margin.left + 60} y={margin.top + chartHeight - 20} 
-                                    fontSize="11" fill="hsl(var(--primary))" fontWeight="600">
-                                Both grow initially
-                              </text>
-                              
-                              {/* Region 2: Species 1 above nullcline, Species 2 below */}
-                              <path d={`M ${margin.left + chartWidth - 60} ${margin.top + chartHeight - 40} L ${winnerEndpoint.x - 20} ${winnerEndpoint.y + 20}`} 
-                                    stroke="hsl(var(--primary))" strokeWidth="2.5" markerEnd="url(#arrow-flow)"/>
-                              <text x={margin.left + chartWidth - 40} y={margin.top + chartHeight - 20} 
-                                    fontSize="11" fill="hsl(var(--primary))" fontWeight="600" textAnchor="middle">
-                                {species1Wins ? "Species 1 ↓, Species 2 ↑" : "Species 1 ↑, Species 2 ↓"}
-                              </text>
-                              
-                              {/* Region 3: Both above their nullclines */}
-                              <path d={`M ${margin.left + chartWidth - 60} ${margin.top + 60} L ${winnerEndpoint.x - 10} ${winnerEndpoint.y - 10}`} 
-                                    stroke="hsl(var(--primary))" strokeWidth="2.5" markerEnd="url(#arrow-flow)"/>
-                              <text x={margin.left + chartWidth - 40} y={margin.top + 40} 
-                                    fontSize="11" fill="hsl(var(--primary))" fontWeight="600" textAnchor="middle">
-                                Both decline toward exclusion
-                              </text>
-                              
-                              {/* Region 4: Species 1 below nullcline, Species 2 above */}
-                              <path d={`M ${margin.left + 60} ${margin.top + 60} L ${winnerEndpoint.x - 40} ${winnerEndpoint.y - 20}`} 
-                                    stroke="hsl(var(--primary))" strokeWidth="2.5" markerEnd="url(#arrow-flow)"/>
-                              <text x={margin.left + 80} y={margin.top + 40} 
-                                    fontSize="11" fill="hsl(var(--primary))" fontWeight="600">
-                                {species1Wins ? "Species 1 ↑, Species 2 ↓" : "Species 1 ↓, Species 2 ↑"}
-                              </text>
-                            </g>
+                            {/* Simple regional labels without arrows */}
+                            <text x={margin.left + 30} y={margin.top + chartHeight - 20} 
+                                  fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
+                              Both grow
+                            </text>
+                            <text x={margin.left + chartWidth - 30} y={margin.top + chartHeight - 20} 
+                                  fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500" textAnchor="end">
+                              Mixed growth
+                            </text>
+                            <text x={margin.left + chartWidth - 30} y={margin.top + 30} 
+                                  fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500" textAnchor="end">
+                              Both decline
+                            </text>
+                            <text x={margin.left + 30} y={margin.top + 30} 
+                                  fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
+                              Mixed growth
+                            </text>
                             
-                            {/* Outcome summary */}
-                            <text x={margin.left + chartWidth/2} y={margin.top + 20} 
-                                  fontSize="13" fill="hsl(var(--destructive))" fontWeight="700" textAnchor="middle">
-                              Competitive Exclusion: {species1Wins ? "Species 1" : "Species 2"} Always Wins
+                            {/* Clean outcome summary */}
+                            <text x={margin.left + chartWidth/2} y={margin.top + 15} 
+                                  fontSize="12" fill="hsl(var(--destructive))" fontWeight="600" textAnchor="middle">
+                              Competitive Exclusion
                             </text>
                           </>
                         );
