@@ -35,13 +35,16 @@ export default function DiagramLegend({ type, competition }: DiagramLegendProps)
             <span className="text-foreground">Equilibrium point</span>
           </div>
           
-          <div className="flex items-center gap-2">
-            <div className="flex items-center">
-              <div className="w-3 h-0.5 bg-primary"></div>
-              <div className="w-0 h-0 border-l-2 border-l-primary border-t border-t-transparent border-b border-b-transparent ml-0.5"></div>
+          {/* Show flow direction only for predator-prey or competition with coexistence */}
+          {(type === 'predator-prey' || (type === 'competition' && competition?.coexistencePossible)) && (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center">
+                <div className="w-3 h-0.5 bg-primary"></div>
+                <div className="w-0 h-0 border-l-2 border-l-primary border-t border-t-transparent border-b border-b-transparent ml-0.5"></div>
+              </div>
+              <span className="text-foreground">Flow direction</span>
             </div>
-            <span className="text-foreground">Flow direction</span>
-          </div>
+          )}
         </div>
         
         {type === 'competition' && (

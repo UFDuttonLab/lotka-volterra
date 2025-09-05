@@ -37,10 +37,10 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
   
   const p = parameters || defaultParams;
   
-  // Compact chart dimensions for proper grid layout
-  const width = 400;
-  const height = 280;
-  const margin = { top: 40, right: 40, bottom: 40, left: 40 };
+  // Optimized chart dimensions with reduced white space
+  const width = 420;
+  const height = 300;
+  const margin = { top: 25, right: 20, bottom: 50, left: 50 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   
@@ -186,25 +186,25 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                 markerEnd="url(#arrowhead)"
               />
               
-              {/* Axis labels - Centered and prominent */}
+              {/* Axis labels - Optimized positioning to prevent cutoff */}
               <text 
                 x={margin.left + chartWidth / 2} 
-                y={margin.top + chartHeight + 35} 
-                fontSize="16" 
+                y={margin.top + chartHeight + 45} 
+                fontSize="14" 
                 fill="hsl(var(--foreground))"
-                fontWeight="700"
+                fontWeight="600"
                 textAnchor="middle"
               >
                 N₁ {type === 'competition' ? '(Species 1)' : '(Prey)'}
               </text>
               <text 
-                x={margin.left - 35} 
+                x={margin.left - 40} 
                 y={margin.top + chartHeight / 2} 
-                fontSize="16" 
+                fontSize="14" 
                 fill="hsl(var(--foreground))"
-                fontWeight="700"
+                fontWeight="600"
                 textAnchor="middle"
-                transform={`rotate(-90, ${margin.left - 35}, ${margin.top + chartHeight / 2})`}
+                transform={`rotate(-90, ${margin.left - 40}, ${margin.top + chartHeight / 2})`}
               >
                 N₂ {type === 'competition' ? '(Species 2)' : '(Predator)'}
               </text>
@@ -258,19 +258,19 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                     strokeWidth="4"
                   />
                   <text 
-                    x={(competition.n1Nullcline.start.x + competition.n1Nullcline.end.x) / 2}
-                    y={(competition.n1Nullcline.start.y + competition.n1Nullcline.end.y) / 2 - 15}
-                    fontSize="12"
+                    x={(competition.n1Nullcline.start.x + competition.n1Nullcline.end.x) / 2 + 15}
+                    y={(competition.n1Nullcline.start.y + competition.n1Nullcline.end.y) / 2 - 20}
+                    fontSize="11"
                     fill="hsl(var(--primary))"
-                    fontWeight="700"
+                    fontWeight="600"
                     textAnchor="middle"
                   >
                     N₁ = K₁ - α₁₂N₂
                   </text>
                   <text 
-                    x={(competition.n1Nullcline.start.x + competition.n1Nullcline.end.x) / 2}
-                    y={(competition.n1Nullcline.start.y + competition.n1Nullcline.end.y) / 2 - 2}
-                    fontSize="10"
+                    x={(competition.n1Nullcline.start.x + competition.n1Nullcline.end.x) / 2 + 15}
+                    y={(competition.n1Nullcline.start.y + competition.n1Nullcline.end.y) / 2 - 8}
+                    fontSize="9"
                     fill="hsl(var(--primary))"
                     textAnchor="middle"
                   >
@@ -287,19 +287,19 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                     strokeWidth="4"
                   />
                   <text 
-                    x={(competition.n2Nullcline.start.x + competition.n2Nullcline.end.x) / 2}
-                    y={(competition.n2Nullcline.start.y + competition.n2Nullcline.end.y) / 2 + 25}
-                    fontSize="12"
+                    x={(competition.n2Nullcline.start.x + competition.n2Nullcline.end.x) / 2 - 15}
+                    y={(competition.n2Nullcline.start.y + competition.n2Nullcline.end.y) / 2 + 20}
+                    fontSize="11"
                     fill="hsl(var(--secondary))"
-                    fontWeight="700"
+                    fontWeight="600"
                     textAnchor="middle"
                   >
                     N₂ = K₂ - α₂₁N₁
                   </text>
                   <text 
-                    x={(competition.n2Nullcline.start.x + competition.n2Nullcline.end.x) / 2}
-                    y={(competition.n2Nullcline.start.y + competition.n2Nullcline.end.y) / 2 + 40}
-                    fontSize="10"
+                    x={(competition.n2Nullcline.start.x + competition.n2Nullcline.end.x) / 2 - 15}
+                    y={(competition.n2Nullcline.start.y + competition.n2Nullcline.end.y) / 2 + 32}
+                    fontSize="9"
                     fill="hsl(var(--secondary))"
                     textAnchor="middle"
                   >
@@ -446,19 +446,19 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                      strokeWidth="4"
                    />
                    <text 
-                     x={margin.left + chartWidth * 0.3}
-                     y={predatorPrey.preyNullcline.y - 12}
-                     fontSize="12"
+                     x={margin.left + chartWidth * 0.25}
+                     y={predatorPrey.preyNullcline.y - 15}
+                     fontSize="11"
                      fill="hsl(var(--primary))"
-                     fontWeight="700"
+                     fontWeight="600"
                      textAnchor="middle"
                    >
                      N₂ = {predatorPrey.preyNullcline.value.toFixed(1)}
                    </text>
                    <text 
-                     x={margin.left + chartWidth * 0.7}
-                     y={predatorPrey.preyNullcline.y + 18}
-                     fontSize="10"
+                     x={margin.left + chartWidth * 0.75}
+                     y={predatorPrey.preyNullcline.y + 20}
+                     fontSize="9"
                      fill="hsl(var(--primary))"
                      textAnchor="middle"
                    >
@@ -475,21 +475,21 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                      strokeWidth="4"
                    />
                    <text 
-                     x={predatorPrey.predatorNullcline.x + 20}
-                     y={margin.top + chartHeight * 0.3}
-                     fontSize="12"
+                     x={predatorPrey.predatorNullcline.x + 25}
+                     y={margin.top + chartHeight * 0.25}
+                     fontSize="11"
                      fill="hsl(var(--secondary))"
-                     fontWeight="700"
-                     transform={`rotate(-90, ${predatorPrey.predatorNullcline.x + 20}, ${margin.top + chartHeight * 0.3})`}
+                     fontWeight="600"
+                     transform={`rotate(-90, ${predatorPrey.predatorNullcline.x + 25}, ${margin.top + chartHeight * 0.25})`}
                    >
                      N₁ = {predatorPrey.predatorNullcline.value.toFixed(1)}
                    </text>
                    <text 
-                     x={predatorPrey.predatorNullcline.x - 20}
-                     y={margin.top + chartHeight * 0.7}
-                     fontSize="10"
+                     x={predatorPrey.predatorNullcline.x - 25}
+                     y={margin.top + chartHeight * 0.75}
+                     fontSize="9"
                      fill="hsl(var(--secondary))"
-                     transform={`rotate(-90, ${predatorPrey.predatorNullcline.x - 20}, ${margin.top + chartHeight * 0.7})`}
+                     transform={`rotate(-90, ${predatorPrey.predatorNullcline.x - 25}, ${margin.top + chartHeight * 0.75})`}
                    >
                      dN₂/dt = 0
                    </text>
@@ -505,21 +505,21 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                      strokeWidth="2"
                    />
                    <text 
-                     x={predatorPrey.equilibrium.x - 45}
-                     y={predatorPrey.equilibrium.y - 25}
+                     x={predatorPrey.equilibrium.x + 50}
+                     y={predatorPrey.equilibrium.y - 15}
                      fontSize="11"
                      fill="hsl(var(--foreground))"
                      fontWeight="600"
-                     textAnchor="middle"
+                     textAnchor="start"
                    >
                      Equilibrium
                    </text>
                    <text 
-                     x={predatorPrey.equilibrium.x - 45}
-                     y={predatorPrey.equilibrium.y - 10}
+                     x={predatorPrey.equilibrium.x + 50}
+                     y={predatorPrey.equilibrium.y + 2}
                      fontSize="9"
                      fill="hsl(var(--muted-foreground))"
-                     textAnchor="middle"
+                     textAnchor="start"
                    >
                      ({predatorPrey.equilibrium.n1.toFixed(1)}, {predatorPrey.equilibrium.n2.toFixed(1)})
                    </text>
