@@ -369,7 +369,7 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                             </text>
                             <text x={margin.left + 30} y={margin.top + 30} 
                                   fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
-                              Species 2 grows, Species 1 declines
+                              Both decline
                             </text>
                           </>
                         );
