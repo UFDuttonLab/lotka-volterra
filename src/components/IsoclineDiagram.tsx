@@ -361,7 +361,7 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                             </text>
                             <text x={margin.left + chartWidth - 30} y={margin.top + chartHeight - 20} 
                                   fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500" textAnchor="end">
-                              Mixed growth
+                              Species 1 grows, Species 2 declines
                             </text>
                             <text x={margin.left + chartWidth - 30} y={margin.top + 30} 
                                   fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500" textAnchor="end">
@@ -369,13 +369,7 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                             </text>
                             <text x={margin.left + 30} y={margin.top + 30} 
                                   fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
-                              Mixed growth
-                            </text>
-                            
-                            {/* Clean outcome summary */}
-                            <text x={margin.left + chartWidth/2} y={margin.top + 15} 
-                                  fontSize="12" fill="hsl(var(--destructive))" fontWeight="600" textAnchor="middle">
-                              Competitive Exclusion
+                              Species 2 grows, Species 1 declines
                             </text>
                           </>
                         );
