@@ -68,8 +68,8 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
 
   return (
     <div className="space-y-4">
-      {/* Large Chart Card */}
-      <Card className="shadow-card">
+      {/* Large Phase Plane Chart Card - Force Rebuild */}
+      <Card className="shadow-card border-2">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-semibold">{chartTitle}</CardTitle>
