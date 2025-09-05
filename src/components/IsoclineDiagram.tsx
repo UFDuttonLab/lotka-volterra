@@ -36,10 +36,10 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
   
   const p = parameters || defaultParams;
   
-  // Increased chart dimensions and margins for better label visibility
-  const width = 500;
-  const height = 400;
-  const margin = { top: 60, right: 120, bottom: 80, left: 80 };
+  // Large chart dimensions for educational diagrams
+  const width = 800;
+  const height = 600;
+  const margin = { top: 80, right: 150, bottom: 100, left: 100 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   
@@ -126,15 +126,16 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
         </div>
       </CardHeader>
       <CardContent className="p-4">
-        <div className="flex flex-col lg:flex-row gap-4 items-start">
-          {/* Main diagram - responsive and properly sized */}
-          <div className="flex-1 max-w-full overflow-hidden">
+        <div className="flex flex-col gap-6">
+          {/* Large Educational Diagram */}
+          <div className="w-full">
             <svg 
               width="100%" 
               height={height} 
               viewBox={`0 0 ${width} ${height}`}
-              className="border rounded-lg bg-background w-full h-auto"
+              className="border rounded-lg bg-background w-full"
               preserveAspectRatio="xMidYMid meet"
+              style={{ minHeight: '600px' }}
             >
               <defs>
                 <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
@@ -194,24 +195,24 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                 markerEnd="url(#arrowhead)"
               />
               
-              {/* Axis labels - Made more prominent */}
+              {/* Axis labels - Enhanced for large educational diagrams */}
               <text 
-                x={margin.left + chartWidth + 35} 
-                y={margin.top + chartHeight + 8} 
-                fontSize="16" 
+                x={margin.left + chartWidth + 40} 
+                y={margin.top + chartHeight + 12} 
+                fontSize="20" 
                 fill="hsl(var(--foreground))"
                 fontWeight="700"
               >
                 N₁ {type === 'competition' ? '(Species 1)' : '(Prey)'}
               </text>
               <text 
-                x={margin.left - 25} 
-                y={margin.top - 35} 
-                fontSize="16" 
+                x={margin.left - 35} 
+                y={margin.top - 45} 
+                fontSize="20" 
                 fill="hsl(var(--foreground))"
                 fontWeight="700"
                 textAnchor="middle"
-                transform={`rotate(-90, ${margin.left - 25}, ${margin.top - 35})`}
+                transform={`rotate(-90, ${margin.left - 35}, ${margin.top - 45})`}
               >
                 N₂ {type === 'competition' ? '(Species 2)' : '(Predator)'}
               </text>
@@ -265,18 +266,18 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                     strokeWidth="4"
                   />
                   <text 
-                    x={competition.n1Nullcline.start.x + 15}
-                    y={competition.n1Nullcline.start.y - 15}
-                    fontSize="12"
+                    x={competition.n1Nullcline.start.x + 20}
+                    y={competition.n1Nullcline.start.y - 20}
+                    fontSize="16"
                     fill="hsl(var(--primary))"
                     fontWeight="700"
                   >
                     dN₁/dt = 0
                   </text>
                   <text 
-                    x={competition.n1Nullcline.start.x + 15}
+                    x={competition.n1Nullcline.start.x + 20}
                     y={competition.n1Nullcline.start.y - 2}
-                    fontSize="10"
+                    fontSize="14"
                     fill="hsl(var(--primary))"
                   >
                     N₁ = K₁ - α₁₂N₂
