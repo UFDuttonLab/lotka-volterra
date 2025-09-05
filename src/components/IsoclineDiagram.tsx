@@ -186,24 +186,25 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                 markerEnd="url(#arrowhead)"
               />
               
-              {/* Axis labels - Made more prominent */}
+              {/* Axis labels - Centered and prominent */}
               <text 
-                x={margin.left + chartWidth + 35} 
-                y={margin.top + chartHeight + 8} 
-                fontSize="16" 
-                fill="hsl(var(--foreground))"
-                fontWeight="700"
-              >
-                N₁ {type === 'competition' ? '(Species 1)' : '(Prey)'}
-              </text>
-              <text 
-                x={margin.left - 25} 
-                y={margin.top - 35} 
+                x={margin.left + chartWidth / 2} 
+                y={margin.top + chartHeight + 35} 
                 fontSize="16" 
                 fill="hsl(var(--foreground))"
                 fontWeight="700"
                 textAnchor="middle"
-                transform={`rotate(-90, ${margin.left - 25}, ${margin.top - 35})`}
+              >
+                N₁ {type === 'competition' ? '(Species 1)' : '(Prey)'}
+              </text>
+              <text 
+                x={margin.left - 35} 
+                y={margin.top + chartHeight / 2} 
+                fontSize="16" 
+                fill="hsl(var(--foreground))"
+                fontWeight="700"
+                textAnchor="middle"
+                transform={`rotate(-90, ${margin.left - 35}, ${margin.top + chartHeight / 2})`}
               >
                 N₂ {type === 'competition' ? '(Species 2)' : '(Predator)'}
               </text>
@@ -435,93 +436,93 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                         height={(margin.top + chartHeight - predatorPrey.preyNullcline.y)}
                         fill="hsl(var(--muted) / 0.1)"/>
                   
-                  {/* Prey nullcline (horizontal) - Consolidated labels */}
-                  <line 
-                    x1={margin.left}
-                    y1={predatorPrey.preyNullcline.y}
-                    x2={margin.left + chartWidth}
-                    y2={predatorPrey.preyNullcline.y}
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth="4"
-                  />
-                  <text 
-                    x={margin.left + chartWidth / 2}
-                    y={predatorPrey.preyNullcline.y - 8}
-                    fontSize="12"
-                    fill="hsl(var(--primary))"
-                    fontWeight="700"
-                    textAnchor="middle"
-                  >
-                    N₂ = {predatorPrey.preyNullcline.value.toFixed(1)}
-                  </text>
-                  <text 
-                    x={margin.left + chartWidth / 2}
-                    y={predatorPrey.preyNullcline.y + 15}
-                    fontSize="10"
-                    fill="hsl(var(--primary))"
-                    textAnchor="middle"
-                  >
-                    dN₁/dt = 0
-                  </text>
-                  
-                  {/* Predator nullcline (vertical) - Consolidated labels */}
-                  <line 
-                    x1={predatorPrey.predatorNullcline.x}
-                    y1={margin.top}
-                    x2={predatorPrey.predatorNullcline.x}
-                    y2={margin.top + chartHeight}
-                    stroke="hsl(var(--secondary))" 
-                    strokeWidth="4"
-                  />
-                  <text 
-                    x={predatorPrey.predatorNullcline.x + 15}
-                    y={margin.top + chartHeight / 2}
-                    fontSize="12"
-                    fill="hsl(var(--secondary))"
-                    fontWeight="700"
-                    transform={`rotate(-90, ${predatorPrey.predatorNullcline.x + 15}, ${margin.top + chartHeight / 2})`}
-                  >
-                    N₁ = {predatorPrey.predatorNullcline.value.toFixed(1)}
-                  </text>
-                  <text 
-                    x={predatorPrey.predatorNullcline.x - 15}
-                    y={margin.top + chartHeight / 2}
-                    fontSize="10"
-                    fill="hsl(var(--secondary))"
-                    transform={`rotate(-90, ${predatorPrey.predatorNullcline.x - 15}, ${margin.top + chartHeight / 2})`}
-                  >
-                    dN₂/dt = 0
-                  </text>
-                  
-                  
-                  {/* Equilibrium point - Repositioned label */}
-                  <circle 
-                    cx={predatorPrey.equilibrium.x}
-                    cy={predatorPrey.equilibrium.y}
-                    r="5"
-                    fill="hsl(var(--destructive))"
-                    stroke="white"
-                    strokeWidth="2"
-                  />
-                  <text 
-                    x={predatorPrey.equilibrium.x - 15}
-                    y={predatorPrey.equilibrium.y - 15}
-                    fontSize="10"
-                    fill="hsl(var(--foreground))"
-                    fontWeight="600"
-                    textAnchor="end"
-                  >
-                    Equilibrium
-                  </text>
-                  <text 
-                    x={predatorPrey.equilibrium.x - 15}
-                    y={predatorPrey.equilibrium.y - 2}
-                    fontSize="9"
-                    fill="hsl(var(--muted-foreground))"
-                    textAnchor="end"
-                  >
-                    ({predatorPrey.equilibrium.n1.toFixed(1)}, {predatorPrey.equilibrium.n2.toFixed(1)})
-                  </text>
+                   {/* Prey nullcline (horizontal) - Better spaced labels */}
+                   <line 
+                     x1={margin.left}
+                     y1={predatorPrey.preyNullcline.y}
+                     x2={margin.left + chartWidth}
+                     y2={predatorPrey.preyNullcline.y}
+                     stroke="hsl(var(--primary))" 
+                     strokeWidth="4"
+                   />
+                   <text 
+                     x={margin.left + chartWidth * 0.3}
+                     y={predatorPrey.preyNullcline.y - 12}
+                     fontSize="12"
+                     fill="hsl(var(--primary))"
+                     fontWeight="700"
+                     textAnchor="middle"
+                   >
+                     N₂ = {predatorPrey.preyNullcline.value.toFixed(1)}
+                   </text>
+                   <text 
+                     x={margin.left + chartWidth * 0.7}
+                     y={predatorPrey.preyNullcline.y + 18}
+                     fontSize="10"
+                     fill="hsl(var(--primary))"
+                     textAnchor="middle"
+                   >
+                     dN₁/dt = 0
+                   </text>
+                   
+                   {/* Predator nullcline (vertical) - Better spaced labels */}
+                   <line 
+                     x1={predatorPrey.predatorNullcline.x}
+                     y1={margin.top}
+                     x2={predatorPrey.predatorNullcline.x}
+                     y2={margin.top + chartHeight}
+                     stroke="hsl(var(--secondary))" 
+                     strokeWidth="4"
+                   />
+                   <text 
+                     x={predatorPrey.predatorNullcline.x + 20}
+                     y={margin.top + chartHeight * 0.3}
+                     fontSize="12"
+                     fill="hsl(var(--secondary))"
+                     fontWeight="700"
+                     transform={`rotate(-90, ${predatorPrey.predatorNullcline.x + 20}, ${margin.top + chartHeight * 0.3})`}
+                   >
+                     N₁ = {predatorPrey.predatorNullcline.value.toFixed(1)}
+                   </text>
+                   <text 
+                     x={predatorPrey.predatorNullcline.x - 20}
+                     y={margin.top + chartHeight * 0.7}
+                     fontSize="10"
+                     fill="hsl(var(--secondary))"
+                     transform={`rotate(-90, ${predatorPrey.predatorNullcline.x - 20}, ${margin.top + chartHeight * 0.7})`}
+                   >
+                     dN₂/dt = 0
+                   </text>
+                   
+                   
+                   {/* Equilibrium point - Repositioned to avoid overlap */}
+                   <circle 
+                     cx={predatorPrey.equilibrium.x}
+                     cy={predatorPrey.equilibrium.y}
+                     r="5"
+                     fill="hsl(var(--destructive))"
+                     stroke="white"
+                     strokeWidth="2"
+                   />
+                   <text 
+                     x={predatorPrey.equilibrium.x - 45}
+                     y={predatorPrey.equilibrium.y - 25}
+                     fontSize="11"
+                     fill="hsl(var(--foreground))"
+                     fontWeight="600"
+                     textAnchor="middle"
+                   >
+                     Equilibrium
+                   </text>
+                   <text 
+                     x={predatorPrey.equilibrium.x - 45}
+                     y={predatorPrey.equilibrium.y - 10}
+                     fontSize="9"
+                     fill="hsl(var(--muted-foreground))"
+                     textAnchor="middle"
+                   >
+                     ({predatorPrey.equilibrium.n1.toFixed(1)}, {predatorPrey.equilibrium.n2.toFixed(1)})
+                   </text>
                   
                   {/* Clockwise orbital flow arrows */}
                   <g opacity="0.9">
