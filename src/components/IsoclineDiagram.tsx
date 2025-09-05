@@ -259,22 +259,13 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                   />
                   <text 
                     x={(competition.n1Nullcline.start.x + competition.n1Nullcline.end.x) / 2 + 15}
-                    y={(competition.n1Nullcline.start.y + competition.n1Nullcline.end.y) / 2 - 20}
+                    y={(competition.n1Nullcline.start.y + competition.n1Nullcline.end.y) / 2 - 10}
                     fontSize="11"
                     fill="hsl(var(--primary))"
                     fontWeight="600"
                     textAnchor="middle"
                   >
-                    N₁ = K₁ - α₁₂N₂
-                  </text>
-                  <text 
-                    x={(competition.n1Nullcline.start.x + competition.n1Nullcline.end.x) / 2 + 15}
-                    y={(competition.n1Nullcline.start.y + competition.n1Nullcline.end.y) / 2 - 8}
-                    fontSize="9"
-                    fill="hsl(var(--primary))"
-                    textAnchor="middle"
-                  >
-                    dN₁/dt = 0
+                    Species 1 nullcline
                   </text>
                   
                   {/* Species 2 nullcline */}
@@ -288,22 +279,13 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                   />
                   <text 
                     x={(competition.n2Nullcline.start.x + competition.n2Nullcline.end.x) / 2 - 15}
-                    y={(competition.n2Nullcline.start.y + competition.n2Nullcline.end.y) / 2 + 20}
+                    y={(competition.n2Nullcline.start.y + competition.n2Nullcline.end.y) / 2 + 26}
                     fontSize="11"
                     fill="hsl(var(--secondary))"
                     fontWeight="600"
                     textAnchor="middle"
                   >
-                    N₂ = K₂ - α₂₁N₁
-                  </text>
-                  <text 
-                    x={(competition.n2Nullcline.start.x + competition.n2Nullcline.end.x) / 2 - 15}
-                    y={(competition.n2Nullcline.start.y + competition.n2Nullcline.end.y) / 2 + 32}
-                    fontSize="9"
-                    fill="hsl(var(--secondary))"
-                    textAnchor="middle"
-                  >
-                    dN₂/dt = 0
+                    Species 2 nullcline
                   </text>
                   
                   {/* Regional flow indicators */}
@@ -320,20 +302,12 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                       />
                       <text 
                         x={competition.equilibrium!.x + 12}
-                        y={competition.equilibrium!.y - 12}
+                        y={competition.equilibrium!.y - 5}
                         fontSize="11"
                         fill="hsl(var(--foreground))"
                         fontWeight="600"
                       >
-                        Stable Equilibrium
-                      </text>
-                      <text 
-                        x={competition.equilibrium!.x + 12}
-                        y={competition.equilibrium!.y + 2}
-                        fontSize="9"
-                        fill="hsl(var(--muted-foreground))"
-                      >
-                        ({competition.equilibrium!.n1.toFixed(1)}, {competition.equilibrium!.n2.toFixed(1)})
+                        Coexistence
                       </text>
                       
                       {/* Dynamic flow arrows toward equilibrium */}
@@ -346,16 +320,16 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                           return (
                             <>
                               <path d={`M ${eqX - offset} ${eqY - offset} L ${eqX - 20} ${eqY - 20}`} stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-                              <text x={eqX - offset - 5} y={eqY - offset - 5} fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="end">N₁↑, N₂↑</text>
+                              <text x={eqX - offset - 5} y={eqY - offset - 5} fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="end">Both grow</text>
                               
                               <path d={`M ${eqX + offset} ${eqY - offset} L ${eqX + 20} ${eqY - 20}`} stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-                              <text x={eqX + offset + 5} y={eqY - offset - 5} fontSize="10" fill="hsl(var(--primary))" fontWeight="600">N₁↓, N₂↑</text>
+                              <text x={eqX + offset + 5} y={eqY - offset - 5} fontSize="10" fill="hsl(var(--primary))" fontWeight="600">Species 2 dominates</text>
                               
                               <path d={`M ${eqX - offset} ${eqY + offset} L ${eqX - 20} ${eqY + 20}`} stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-                              <text x={eqX - offset - 5} y={eqY + offset + 15} fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="end">N₁↑, N₂↓</text>
+                              <text x={eqX - offset - 5} y={eqY + offset + 15} fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="end">Species 1 dominates</text>
                               
                               <path d={`M ${eqX + offset} ${eqY + offset} L ${eqX + 20} ${eqY + 20}`} stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-                              <text x={eqX + offset + 5} y={eqY + offset + 15} fontSize="10" fill="hsl(var(--primary))" fontWeight="600">N₁↓, N₂↓</text>
+                              <text x={eqX + offset + 5} y={eqY + offset + 15} fontSize="10" fill="hsl(var(--primary))" fontWeight="600">Both decline</text>
                             </>
                           );
                         })()}
@@ -453,16 +427,7 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                       fontWeight="600"
                       textAnchor="middle"
                     >
-                      Prey Nullcline: N₂ = {predatorPrey.preyNullcline.value.toFixed(1)}
-                    </text>
-                    <text 
-                      x={margin.left + chartWidth * 0.75}
-                      y={predatorPrey.preyNullcline.y + 20}
-                      fontSize="9"
-                      fill="hsl(var(--primary))"
-                      textAnchor="middle"
-                    >
-                      dN₁/dt = 0 (prey growth = predation)
+                      Prey nullcline
                     </text>
                    
                    {/* Predator nullcline (vertical) - Better spaced labels */}
@@ -482,16 +447,7 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                       fontWeight="600"
                       transform={`rotate(-90, ${predatorPrey.predatorNullcline.x + 25}, ${margin.top + chartHeight * 0.25})`}
                     >
-                      Predator Nullcline: N₁ = {predatorPrey.predatorNullcline.value.toFixed(1)}
-                    </text>
-                    <text 
-                      x={predatorPrey.predatorNullcline.x - 25}
-                      y={margin.top + chartHeight * 0.75}
-                      fontSize="9"
-                      fill="hsl(var(--secondary))"
-                      transform={`rotate(-90, ${predatorPrey.predatorNullcline.x - 25}, ${margin.top + chartHeight * 0.75})`}
-                    >
-                      dN₂/dt = 0 (predator birth = death)
+                      Predator nullcline
                     </text>
                    
                    
@@ -506,22 +462,13 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                    />
                    <text 
                      x={predatorPrey.equilibrium.x + 50}
-                     y={predatorPrey.equilibrium.y - 15}
+                     y={predatorPrey.equilibrium.y - 5}
                      fontSize="11"
                      fill="hsl(var(--foreground))"
                      fontWeight="600"
                      textAnchor="start"
                    >
                      Equilibrium
-                   </text>
-                   <text 
-                     x={predatorPrey.equilibrium.x + 50}
-                     y={predatorPrey.equilibrium.y + 2}
-                     fontSize="9"
-                     fill="hsl(var(--muted-foreground))"
-                     textAnchor="start"
-                   >
-                     ({predatorPrey.equilibrium.n1.toFixed(1)}, {predatorPrey.equilibrium.n2.toFixed(1)})
                    </text>
                   
                   {/* Clockwise orbital flow arrows */}
