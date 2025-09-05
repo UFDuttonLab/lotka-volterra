@@ -37,8 +37,8 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
               <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
                 <polygon points="0 0, 8 3, 0 6" fill="#22c55e" />
               </marker>
-              <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                <polygon points="0 0, 8 3, 0 6" fill="#3b82f6" />
+              <marker id="arrow-blue" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                <polygon points="0 0, 6 2, 0 4" fill="#3b82f6" />
               </marker>
             </defs>
             <rect width="240" height="220" fill="url(#grid)" />
@@ -183,24 +183,24 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
                 <rect x="105" y="105" width="70" height="70" fill="rgba(59, 130, 246, 0.05)" rx="3"/>
                 
                 {/* Regional labels in corners */}
-                <text x="140" y="35" fontSize="7" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  ↑↑
+                <text x="140" y="35" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  Prey ↑, Predator ↑
                 </text>
-                <text x="60" y="35" fontSize="7" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  ↓↑
+                <text x="60" y="35" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  Prey ↓, Predator ↑
                 </text>
-                <text x="60" y="170" fontSize="7" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  ↓↓
+                <text x="60" y="170" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  Prey ↓, Predator ↓
                 </text>
-                <text x="140" y="170" fontSize="7" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  ↑↓
+                <text x="140" y="170" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  Prey ↑, Predator ↓
                 </text>
                 
                 {/* Improved orbital flow indicators - better positioned and sized */}
-                <path d="M 125 75 Q 135 65 145 75" fill="none" stroke="#3b82f6" strokeWidth="2.5" markerEnd="url(#arrow-blue)"/>
-                <path d="M 75 75 Q 65 65 55 75" fill="none" stroke="#3b82f6" strokeWidth="2.5" markerEnd="url(#arrow-blue)"/>
-                <path d="M 75 125 Q 65 135 55 125" fill="none" stroke="#3b82f6" strokeWidth="2.5" markerEnd="url(#arrow-blue)"/>
-                <path d="M 125 125 Q 135 135 145 125" fill="none" stroke="#3b82f6" strokeWidth="2.5" markerEnd="url(#arrow-blue)"/>
+                <path d="M 125 75 Q 135 65 145 75" fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
+                <path d="M 75 75 Q 65 65 55 75" fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
+                <path d="M 75 125 Q 65 135 55 125" fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
+                <path d="M 125 125 Q 135 135 145 125" fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
               </>
             )}
             
