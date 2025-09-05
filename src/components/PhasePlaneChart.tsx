@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, ReferenceLine } from 'recharts';
 import { Badge } from "@/components/ui/badge";
 
 interface DataPoint {
@@ -26,6 +26,25 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
   // Calculate equilibrium point
   const equilibrium = modelType === "predator-prey" 
     ? { x: parameters.r2 / parameters.b, y: parameters.r1 / parameters.a }
+    : null;
+
+  // Calculate isoclines
+  const isoclines = modelType === "predator-prey" 
+    ? {
+        // Prey nullcline: horizontal line at N₂ = r₁/a
+        preyNullcline: parameters.r1 / parameters.a,
+        // Predator nullcline: vertical line at N₁ = r₂/b  
+        predatorNullcline: parameters.r2 / parameters.b
+      }
+    : parameters.K1 && parameters.K2 
+    ? {
+        // Competition N₁-nullcline: N₁ = K₁ - a*N₂
+        // Competition N₂-nullcline: N₂ = K₂ - b*N₁
+        K1: parameters.K1,
+        K2: parameters.K2,
+        alpha12: parameters.a, // effect of species 2 on species 1
+        alpha21: parameters.b   // effect of species 1 on species 2
+      }
     : null;
 
   // Transform data for phase plane (species1 vs species2)
@@ -128,6 +147,72 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 strokeWidth={1}
               />
               
+              {/* Isoclines */}
+              {modelType === 'predator-prey' && isoclines && (
+                <>
+                  {/* Prey nullcline: horizontal line */}
+                  <ReferenceLine 
+                    y={isoclines.preyNullcline}
+                    stroke="hsl(var(--accent))"
+                    strokeDasharray="8 4"
+                    strokeWidth={2}
+                    label={{
+                      value: `Prey nullcline: N₂ = ${isoclines.preyNullcline.toFixed(2)}`,
+                      position: 'top',
+                      style: { fontSize: '11px', fill: 'hsl(var(--accent))' }
+                    }}
+                  />
+                  {/* Predator nullcline: vertical line */}
+                  <ReferenceLine 
+                    x={isoclines.predatorNullcline}
+                    stroke="hsl(var(--secondary))"
+                    strokeDasharray="8 4" 
+                    strokeWidth={2}
+                    label={{
+                      value: `Predator nullcline: N₁ = ${isoclines.predatorNullcline.toFixed(2)}`,
+                      position: 'top',
+                      angle: -90,
+                      style: { fontSize: '11px', fill: 'hsl(var(--secondary))' }
+                    }}
+                  />
+                </>
+              )}
+
+              {modelType === 'competition' && isoclines && (
+                <>
+                  {/* N₁-nullcline: N₁ = K₁ - α₁₂*N₂ */}
+                  <ReferenceLine 
+                    segment={[
+                      { x: 0, y: isoclines.K1 }, 
+                      { x: isoclines.K1 / isoclines.alpha12, y: 0 }
+                    ]}
+                    stroke="hsl(var(--accent))"
+                    strokeDasharray="8 4"
+                    strokeWidth={2}
+                    label={{
+                      value: `N₁-nullcline`,
+                      position: 'top',
+                      style: { fontSize: '11px', fill: 'hsl(var(--accent))' }
+                    }}
+                  />
+                  {/* N₂-nullcline: N₂ = K₂ - α₂₁*N₁ */}
+                  <ReferenceLine 
+                    segment={[
+                      { x: 0, y: isoclines.K2 }, 
+                      { x: isoclines.K2 / isoclines.alpha21, y: 0 }
+                    ]}
+                    stroke="hsl(var(--secondary))"
+                    strokeDasharray="8 4"
+                    strokeWidth={2}
+                    label={{
+                      value: `N₂-nullcline`,
+                      position: 'bottom',
+                      style: { fontSize: '11px', fill: 'hsl(var(--secondary))' }
+                    }}
+                  />
+                </>
+              )}
+              
               {/* Equilibrium point for predator-prey */}
               {modelType === 'predator-prey' && equilibrium && (
                 <ReferenceDot 
@@ -145,41 +230,41 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
         
         <div className="mt-4 space-y-3 text-sm">
           <div className="space-y-1">
-            <h4 className="font-semibold text-foreground">Phase Plane Interpretation</h4>
+            <h4 className="font-semibold text-foreground">Phase Plane with Isoclines</h4>
             <p className="text-muted-foreground text-xs">
-              Each point represents the system state (N₁, N₂) at a given time. The trajectory shows how populations evolve.
+              Each point shows system state (N₁, N₂) at a time. Dashed lines are isoclines where growth rates equal zero.
             </p>
           </div>
           
           {modelType === 'predator-prey' ? (
             <div className="space-y-2 text-xs">
               <div className="p-3 bg-muted/50 rounded-lg border">
-                <h5 className="font-medium text-foreground mb-2">Why Trajectories Form Closed Loops:</h5>
+                <h5 className="font-medium text-foreground mb-2">Isoclines & Flow Pattern:</h5>
                 <ul className="space-y-1 text-muted-foreground">
-                  <li>• <span className="font-medium">Conserved Quantity H:</span> H = r₁ln(N₂) - aN₂ + r₂ln(N₁) - bN₁ remains constant</li>
-                  <li>• <span className="font-medium">Neutral Stability:</span> Equilibrium point is a center, not an attractor</li>
-                  <li>• <span className="font-medium">Phase Lag:</span> Predator population changes follow prey changes with delay</li>
-                  <li>• <span className="font-medium">Periodic Oscillations:</span> System returns to starting state, creating closed orbits</li>
+                  <li>• <span className="font-medium text-accent">Horizontal line (N₂ = r₁/a):</span> Prey nullcline - predator population where prey growth = 0</li>
+                  <li>• <span className="font-medium text-secondary">Vertical line (N₁ = r₂/b):</span> Predator nullcline - prey population where predator growth = 0</li>
+                  <li>• <span className="font-medium">Clockwise flow:</span> Trajectories circulate around equilibrium intersection point</li>
+                  <li>• <span className="font-medium">Conserved orbits:</span> Each starting point creates a unique closed loop</li>
                 </ul>
               </div>
               <p className="text-muted-foreground">
                 <span className="inline-block w-2 h-2 bg-destructive rounded-full mr-1"></span>
-                Red dot marks the equilibrium point (r₂/b, r₁/a) - a center point around which orbits circulate
+                Red dot: Equilibrium (r₂/b, r₁/a) where isoclines intersect
               </p>
             </div>
           ) : (
             <div className="space-y-2 text-xs">
               <div className="p-3 bg-muted/50 rounded-lg border">
-                <h5 className="font-medium text-foreground mb-2">Why Trajectories Converge (Don't Loop):</h5>
+                <h5 className="font-medium text-foreground mb-2">Isoclines & Competitive Outcome:</h5>
                 <ul className="space-y-1 text-muted-foreground">
-                  <li>• <span className="font-medium">No Conservation Law:</span> Unlike predator-prey, competition has no conserved quantity</li>
-                  <li>• <span className="font-medium">Dissipative System:</span> Competition reduces total carrying capacity over time</li>
-                  <li>• <span className="font-medium">Stable Equilibria:</span> System has attracting fixed points or exclusion states</li>
-                  <li>• <span className="font-medium">Competitive Exclusion:</span> Stronger competitor eventually dominates</li>
+                  <li>• <span className="font-medium text-accent">N₁-nullcline (N₁ = K₁ - α₁₂N₂):</span> Species 1 stops growing on this line</li>
+                  <li>• <span className="font-medium text-secondary">N₂-nullcline (N₂ = K₂ - α₂₁N₁):</span> Species 2 stops growing on this line</li>
+                  <li>• <span className="font-medium">Flow direction:</span> Populations move toward lower-right (competitive exclusion) or intersection (coexistence)</li>
+                  <li>• <span className="font-medium">Intersection slopes:</span> Determine if coexistence is stable or unstable</li>
                 </ul>
               </div>
               <p className="text-muted-foreground">
-                Trajectory endpoint represents the long-term competitive outcome: coexistence or species exclusion
+                Trajectory endpoint shows competitive outcome: exclusion of one species or stable coexistence
               </p>
             </div>
           )}
