@@ -36,10 +36,10 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
   
   const p = parameters || defaultParams;
   
-  // Larger chart dimensions for better visibility and label management
-  const width = 800;
-  const height = 600;
-  const margin = { top: 80, right: 140, bottom: 100, left: 100 };
+  // Compact chart dimensions for proper grid layout
+  const width = 500;
+  const height = 350;
+  const margin = { top: 50, right: 60, bottom: 60, left: 60 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   
@@ -125,22 +125,19 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
           </Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Main diagram - takes priority space */}
-          <div className="flex-1 min-h-[600px] flex justify-center">
-            <svg width={width} height={height} className="border rounded-lg bg-background shadow-sm">
-              <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-                  <polygon points="0 0, 10 4, 0 8" fill="hsl(var(--foreground))" />
-                </marker>
-                <marker id="arrow-flow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                  <polygon points="0 0, 8 3, 0 6" fill="hsl(var(--primary))" />
-                </marker>
-                <marker id="arrow-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                  <polygon points="0 0, 8 3, 0 6" fill="hsl(var(--destructive))" />
-                </marker>
-              </defs>
+      <CardContent className="flex justify-center">
+        <svg width={width} height={height} className="border rounded-lg bg-background shadow-sm">
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+              <polygon points="0 0, 10 4, 0 8" fill="hsl(var(--foreground))" />
+            </marker>
+            <marker id="arrow-flow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="hsl(var(--primary))" />
+            </marker>
+            <marker id="arrow-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="hsl(var(--destructive))" />
+            </marker>
+          </defs>
               
               {/* Grid lines */}
               {xTicks.map((tick, i) => (
@@ -580,107 +577,48 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                       markerEnd="url(#arrow-flow)"
                     />
                   </g>
-                </>
-              )}
-            </svg>
-          </div>
-          
-          {/* Legend and interpretation panel - optimized width */}
-          <div className="w-64 lg:w-72 space-y-4">
-            {/* Legend */}
-            <div className="p-4 bg-muted/30 rounded-lg">
-              <h4 className="text-sm font-semibold mb-3">Legend</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-1 bg-primary rounded"></div>
-                  <span>Species 1/{type === 'predator-prey' ? 'Prey' : 'Species 1'} nullcline (dN₁/dt = 0)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-1 bg-secondary rounded"></div>
-                  <span>Species 2/{type === 'predator-prey' ? 'Predator' : 'Species 2'} nullcline (dN₂/dt = 0)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-destructive rounded-full"></div>
-                  <span>Equilibrium point</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-primary">→</div>
-                  <span>Population flow direction</span>
-                </div>
-                {type === 'competition' && (
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-primary rounded-full opacity-70"></div>
-                    <span>Carrying capacities (K₁, K₂)</span>
-                  </div>
-                )}
-              </div>
-            </div>
+                 </>
+               )}
+               
+               {/* Embedded legend inside SVG */}
+          <g transform={`translate(${width - 200}, 20)`}>
+            <rect x="0" y="0" width="190" height="150" fill="hsl(var(--background))" stroke="hsl(var(--border))" strokeWidth="1" rx="4" opacity="0.95"/>
+            <text x="10" y="20" fontSize="12" fill="hsl(var(--foreground))" fontWeight="600">Legend</text>
             
-            {/* Model interpretation */}
-            <div className="p-4 bg-muted/30 rounded-lg">
-              <h4 className="text-sm font-semibold mb-3">Biological Interpretation</h4>
-              <div className="space-y-2 text-xs text-muted-foreground">
-                {type === 'competition' ? (
-                  <>
-                    <p><strong>Nullclines:</strong> Lines where one species' growth rate is zero</p>
-                    <p><strong>Equilibrium:</strong> {competition?.coexistencePossible ? 
-                      'Stable coexistence - both species persist' : 
-                      'Competitive exclusion - one species dominates'}</p>
-                    <p><strong>Flow arrows:</strong> Show how populations change over time</p>
-                    <p><strong>K₁, K₂:</strong> Carrying capacities when species grow alone</p>
-                  </>
-                ) : (
-                  <>
-                    <p><strong>Horizontal nullcline:</strong> Prey growth stops when predator density = r₁/a</p>
-                    <p><strong>Vertical nullcline:</strong> Predator growth stops when prey density = r₂/b</p>
-                    <p><strong>Equilibrium:</strong> Center point with neutral stability</p>
-                    <p><strong>Clockwise cycles:</strong> Populations oscillate in closed orbits</p>
-                    <p><strong>Regional dynamics:</strong> Different growth patterns in each quadrant</p>
-                  </>
-                )}
-              </div>
-            </div>
+            <line x1="10" y1="35" x2="25" y2="35" stroke="hsl(var(--primary))" strokeWidth="3"/>
+            <text x="30" y="38" fontSize="10" fill="hsl(var(--foreground))">
+              {type === 'competition' ? 'Species 1' : 'Prey'} nullcline
+            </text>
             
-            {/* Parameter display */}
-            <div className="p-4 bg-muted/30 rounded-lg">
-              <h4 className="text-sm font-semibold mb-3">Current Parameters</h4>
-              <div className="text-xs text-muted-foreground space-y-1">
-                {type === 'competition' ? (
-                  <>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span>K₁ = {p.K1.toFixed(1)}</span>
-                      <span>K₂ = {p.K2.toFixed(1)}</span>
-                      <span>α₁₂ = {p.a12.toFixed(3)}</span>
-                      <span>α₂₁ = {p.a21.toFixed(3)}</span>
-                      <span>r₁ = {p.r1.toFixed(2)}</span>
-                      <span>r₂ = {p.r2.toFixed(2)}</span>
-                    </div>
-                    <div className="mt-2 pt-2 border-t border-border">
-                      <span className={competition?.coexistencePossible ? 'text-green-600' : 'text-orange-600'}>
-                        {competition?.coexistencePossible ? 
-                          '✓ Coexistence possible' : 
-                          '⚠ Competitive exclusion'
-                        }
-                      </span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span>r₁ = {p.r1.toFixed(2)}</span>
-                      <span>r₂ = {p.r2.toFixed(2)}</span>
-                      <span>a = {p.a.toFixed(4)}</span>
-                      <span>b = {p.b.toFixed(4)}</span>
-                    </div>
-                    <div className="mt-2 pt-2 border-t border-border">
-                      <span className="text-blue-600">✓ Oscillatory dynamics</span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+            <line x1="10" y1="50" x2="25" y2="50" stroke="hsl(var(--secondary))" strokeWidth="3"/>
+            <text x="30" y="53" fontSize="10" fill="hsl(var(--foreground))">
+              {type === 'competition' ? 'Species 2' : 'Predator'} nullcline
+            </text>
+            
+            <circle cx="17" cy="65" r="3" fill="hsl(var(--destructive))"/>
+            <text x="30" y="68" fontSize="10" fill="hsl(var(--foreground))">Equilibrium point</text>
+            
+            <path d="M 10 80 L 25 80" stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
+            <text x="30" y="83" fontSize="10" fill="hsl(var(--foreground))">Flow direction</text>
+            
+            {type === 'competition' && (
+              <>
+                <circle cx="17" cy="95" r="2" fill="hsl(var(--primary))" opacity="0.7"/>
+                <text x="30" y="98" fontSize="10" fill="hsl(var(--foreground))">Carrying capacity</text>
+                
+                <text x="10" y="120" fontSize="9" fill="hsl(var(--muted-foreground))">
+                  {competition?.coexistencePossible ? '✓ Coexistence' : '⚠ Exclusion'}
+                </text>
+              </>
+            )}
+            
+            {type === 'predator-prey' && (
+              <text x="10" y="115" fontSize="9" fill="hsl(var(--muted-foreground))">
+                ✓ Oscillatory dynamics
+              </text>
+            )}
+          </g>
+        </svg>
       </CardContent>
     </Card>
   );
