@@ -211,9 +211,9 @@ const predatorPreyExercises: Exercise[] = [
         { id: "c", text: "Both populations reach a steady equilibrium" },
         { id: "d", text: "Only the predator population survives" }
       ],
-      correctAnswer: "b",
-      explanation: "With high growth rates (r₁ = 2.0, r₂ = 1.5) relative to interaction strengths, the system becomes unstable. The Lotka-Volterra model lacks density-dependent regulation, so high growth rates cause populations to spiral to unrealistic extremes.",
-      hint: "Consider whether the population sizes remain realistic over time"
+      correctAnswer: "a",
+      explanation: "The classic Lotka-Volterra model produces stable, periodic oscillations around the equilibrium point (N₁* = 75, N₂* = 40). Despite the relatively high growth rates, the system follows closed orbital paths that repeat indefinitely. The oscillation amplitude depends on initial conditions, but orbits remain stable. Spiraling behavior would require additional factors like density dependence or stochasticity.",
+      hint: "In the classic Lotka-Volterra model, trajectories form closed orbits around the equilibrium point"
     }
   },
   {
