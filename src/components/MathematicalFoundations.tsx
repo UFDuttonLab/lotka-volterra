@@ -88,8 +88,32 @@ const mathSections: MathSection[] = [
     }
   },
   {
+    id: "isoclines-flow-fields",
+    title: "Isoclines & Flow Fields",
+    icon: Target,
+    badge: "Critical",
+    content: {
+      introduction: "Isoclines are fundamental tools for understanding population dynamics. They show where population growth rates equal zero and reveal the directional flow of population changes throughout phase space.",
+      equations: [
+        "Competition N₁-nullcline: dN₁/dt = 0 → N₁ = K₁ - α₁₂N₂",
+        "Competition N₂-nullcline: dN₂/dt = 0 → N₂ = K₂ - α₂₁N₁",
+        "Predator-prey N₁-nullcline: dN₁/dt = 0 → N₂ = r₁/a (horizontal line)",
+        "Predator-prey N₂-nullcline: dN₂/dt = 0 → N₁ = r₂/b (vertical line)"
+      ],
+      explanations: [
+        "Nullclines divide phase space into regions with different population growth directions",
+        "In competition: N₁-nullcline has negative slope (-1/α₁₂), N₂-nullcline has negative slope (-α₂₁)",
+        "In predator-prey: Nullclines are perpendicular lines creating four quadrants with distinct flow patterns",
+        "Flow arrows point toward increasing populations: rightward for dN₁/dt > 0, upward for dN₂/dt > 0",
+        "Equilibrium points occur where nullclines intersect (both growth rates = 0)"
+      ],
+      biologicalMeaning: "Isoclines reveal the ecological 'landscape' of population dynamics. In competition, they show carrying capacity limits and competitive effects. In predator-prey, they represent the prey density needed to sustain predators (horizontal) and predator density that balances prey growth (vertical). Flow fields show how populations move through this landscape over time.",
+      examples: "Competition: If finch species 1 reaches its nullcline (N₁ = K₁ - α₁₂N₂), it stops growing and may decline if species 2 increases further. Predator-prey: When hare density equals r₁/a, lynx consumption exactly balances hare reproduction, creating the horizontal nullcline where lynx populations change direction."
+    }
+  },
+  {
     id: "competition-system",
-    title: "Competition Model Analysis",
+    title: "Competition Model Analysis", 
     icon: TreePine,
     badge: "Competition",
     content: {
