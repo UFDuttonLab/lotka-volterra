@@ -31,14 +31,14 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
               <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
                 <polygon points="0 0, 10 4, 0 8" fill="#374151" />
               </marker>
-              <marker id="arrow-red" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
-                <polygon points="0 0, 12 5, 0 10" fill="#ef4444" />
+              <marker id="arrow-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#ef4444" />
               </marker>
-              <marker id="arrow-green" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
-                <polygon points="0 0, 12 5, 0 10" fill="#22c55e" />
+              <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#22c55e" />
               </marker>
-              <marker id="arrow-blue" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
-                <polygon points="0 0, 12 5, 0 10" fill="#3b82f6" />
+              <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#3b82f6" />
               </marker>
             </defs>
             <rect width="240" height="220" fill="url(#grid)" />
@@ -97,22 +97,34 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
                 <line x1="193" y1="84" x2="203" y2="84" stroke="#22c55e" strokeWidth="2" markerEnd="url(#arrow-green)"/>
                 <text x="205" y="87" fontSize="5" fill="#22c55e">Coexistence</text>
                 
-                {/* Competition flow arrows - much more prominent */}
+                {/* Competition flow arrows with labels */}
                 {/* Upper left region - Species 1 wins */}
-                <path d="M 40 50 L 55 65" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
-                <path d="M 50 40 L 65 55" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
+                <rect x="35" y="35" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
+                <path d="M 45 50 L 60 65" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
+                <text x="55" y="45" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
+                  Species 1 wins
+                </text>
                 
                 {/* Upper right region - Species 2 wins */}
-                <path d="M 140 50 L 125 65" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
-                <path d="M 150 40 L 135 55" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
+                <rect x="125" y="35" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
+                <path d="M 155 50 L 140 65" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
+                <text x="145" y="45" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
+                  Species 2 wins
+                </text>
                 
                 {/* Lower left region - Species 1 wins */}
-                <path d="M 40 140 L 55 125" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
-                <path d="M 50 150 L 65 135" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
+                <rect x="35" y="135" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
+                <path d="M 45 150 L 60 135" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
+                <text x="55" y="155" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
+                  Species 1 wins
+                </text>
                 
                 {/* Lower right region - Coexistence */}
-                <path d="M 140 140 L 125 125" stroke="#22c55e" strokeWidth="4" markerEnd="url(#arrow-green)"/>
-                <path d="M 150 130 L 135 115" stroke="#22c55e" strokeWidth="4" markerEnd="url(#arrow-green)"/>
+                <rect x="125" y="135" width="40" height="25" fill="rgba(34, 197, 94, 0.1)" rx="3"/>
+                <path d="M 145 150 L 130 135" stroke="#22c55e" strokeWidth="2" markerEnd="url(#arrow-green)"/>
+                <text x="145" y="155" fontSize="6" fill="#22c55e" className="font-semibold" textAnchor="middle">
+                  Coexistence
+                </text>
               </>
             ) : (
               <>
@@ -163,42 +175,44 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
                 <text x="195" y="98" fontSize="4" fill="hsl(var(--muted-foreground))">Both ↑</text>
                 <text x="195" y="105" fontSize="4" fill="hsl(var(--muted-foreground))">Both ↓</text>
                 
-                {/* Predator-prey flow arrows - circular pattern */}
+                {/* Predator-prey flow arrows with region labels */}
                 {/* Upper right quadrant - Both increase */}
-                <path d="M 130 70 L 145 70" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
-                <path d="M 140 60 L 140 75" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
+                <rect x="115" y="40" width="50" height="35" fill="rgba(59, 130, 246, 0.1)" rx="3"/>
+                <path d="M 130 60 L 145 60" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <path d="M 140 50 L 140 65" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <text x="140" y="45" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  Prey ↑, Predator ↑
+                </text>
                 
                 {/* Upper left quadrant - Prey decrease, Predator increase */}
-                <path d="M 70 70 L 55 70" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
-                <path d="M 60 60 L 60 75" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
+                <rect x="35" y="40" width="50" height="35" fill="rgba(59, 130, 246, 0.1)" rx="3"/>
+                <path d="M 70 60 L 55 60" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <path d="M 60 50 L 60 65" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <text x="60" y="45" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  Prey ↓, Predator ↑
+                </text>
                 
                 {/* Lower left quadrant - Both decrease */}
-                <path d="M 70 130 L 55 130" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
-                <path d="M 60 140 L 60 125" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
+                <rect x="35" y="125" width="50" height="35" fill="rgba(59, 130, 246, 0.1)" rx="3"/>
+                <path d="M 70 145 L 55 145" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <path d="M 60 155 L 60 140" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <text x="60" y="172" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  Prey ↓, Predator ↓
+                </text>
                 
                 {/* Lower right quadrant - Prey increase, Predator decrease */}
-                <path d="M 130 130 L 145 130" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
-                <path d="M 140 140 L 140 125" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
+                <rect x="115" y="125" width="50" height="35" fill="rgba(59, 130, 246, 0.1)" rx="3"/>
+                <path d="M 130 145 L 145 145" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <path d="M 140 155 L 140 140" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <text x="140" y="172" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  Prey ↑, Predator ↓
+                </text>
                 
-                {/* Orbital flow indicators */}
-                <path d="M 120 80 Q 135 75 140 90" fill="none" stroke="#3b82f6" strokeWidth="3" markerEnd="url(#arrow-blue)"/>
-                <path d="M 80 80 Q 65 75 60 90" fill="none" stroke="#3b82f6" strokeWidth="3" markerEnd="url(#arrow-blue)"/>
-                <path d="M 80 120 Q 65 125 60 110" fill="none" stroke="#3b82f6" strokeWidth="3" markerEnd="url(#arrow-blue)"/>
-                <path d="M 120 120 Q 135 125 140 110" fill="none" stroke="#3b82f6" strokeWidth="3" markerEnd="url(#arrow-blue)"/>
-                
-                {/* Simplified flow direction labels */}
-                <text x="140" y="50" fontSize="5" fill="hsl(var(--muted-foreground))" className="font-medium">
-                  Both ↑
-                </text>
-                <text x="50" y="50" fontSize="5" fill="hsl(var(--muted-foreground))" className="font-medium">
-                  Prey ↓, Pred ↑
-                </text>
-                <text x="40" y="160" fontSize="5" fill="hsl(var(--muted-foreground))" className="font-medium">
-                  Both ↓
-                </text>
-                <text x="135" y="160" fontSize="5" fill="hsl(var(--muted-foreground))" className="font-medium">
-                  Prey ↑, Pred ↓
-                </text>
+                {/* Orbital flow indicators - simplified */}
+                <path d="M 115 85 Q 125 75 135 85" fill="none" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <path d="M 85 85 Q 75 75 65 85" fill="none" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <path d="M 85 115 Q 75 125 65 115" fill="none" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <path d="M 115 115 Q 125 125 135 115" fill="none" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
               </>
             )}
             
