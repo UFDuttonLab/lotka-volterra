@@ -36,10 +36,10 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
   
   const p = parameters || defaultParams;
   
-  // Increased chart dimensions and margins for better label visibility
-  const width = 500;
-  const height = 400;
-  const margin = { top: 60, right: 120, bottom: 80, left: 80 };
+  // Larger chart dimensions for better visibility and label management
+  const width = 800;
+  const height = 600;
+  const margin = { top: 80, right: 140, bottom: 100, left: 100 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   
@@ -126,10 +126,10 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-4">
-          {/* Main diagram */}
-          <div className="flex-1">
-            <svg width={width} height={height} className="border rounded-lg bg-background">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Main diagram - takes priority space */}
+          <div className="flex-1 min-h-[600px] flex justify-center">
+            <svg width={width} height={height} className="border rounded-lg bg-background shadow-sm">
               <defs>
                 <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
                   <polygon points="0 0, 10 4, 0 8" fill="hsl(var(--foreground))" />
@@ -461,42 +461,56 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                     N₁ = {predatorPrey.predatorNullcline.value.toFixed(1)}
                   </text>
                   
-                  {/* Regional flow labels - Better positioned to avoid overlap */}
-                  <text x={predatorPrey.equilibrium.x - 80} y={predatorPrey.equilibrium.y - 60} 
-                        fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="middle">
-                    Prey ↑
-                  </text>
-                  <text x={predatorPrey.equilibrium.x - 80} y={predatorPrey.equilibrium.y - 45} 
-                        fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="middle">
-                    Predator ↓
-                  </text>
-                  
-                  <text x={predatorPrey.equilibrium.x + 80} y={predatorPrey.equilibrium.y - 60} 
-                        fontSize="10" fill="hsl(var(--secondary))" fontWeight="600" textAnchor="middle">
-                    Prey ↓
-                  </text>
-                  <text x={predatorPrey.equilibrium.x + 80} y={predatorPrey.equilibrium.y - 45} 
-                        fontSize="10" fill="hsl(var(--secondary))" fontWeight="600" textAnchor="middle">
-                    Predator ↑
-                  </text>
-                  
-                  <text x={predatorPrey.equilibrium.x - 80} y={predatorPrey.equilibrium.y + 60} 
-                        fontSize="10" fill="hsl(var(--accent))" fontWeight="600" textAnchor="middle">
-                    Prey ↓
-                  </text>
-                  <text x={predatorPrey.equilibrium.x - 80} y={predatorPrey.equilibrium.y + 75} 
-                        fontSize="10" fill="hsl(var(--accent))" fontWeight="600" textAnchor="middle">
-                    Predator ↓
-                  </text>
-                  
-                  <text x={predatorPrey.equilibrium.x + 80} y={predatorPrey.equilibrium.y + 60} 
-                        fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="600" textAnchor="middle">
-                    Prey ↑
-                  </text>
-                  <text x={predatorPrey.equilibrium.x + 80} y={predatorPrey.equilibrium.y + 75} 
-                        fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="600" textAnchor="middle">
-                    Predator ↑
-                  </text>
+                  {/* Optimized quadrant labels with better spacing to avoid overlap */}
+                  {(() => {
+                    const eq = predatorPrey.equilibrium;
+                    const quadrantOffset = 70; // Increased distance from equilibrium
+                    const labelSpacing = 18;    // Space between label lines
+                    
+                    return (
+                      <>
+                        {/* Quadrant II (top-left): Prey increases, Predator decreases */}
+                        <text x={eq.x - quadrantOffset} y={eq.y - quadrantOffset} 
+                              fontSize="12" fill="hsl(var(--primary))" fontWeight="700" textAnchor="middle">
+                          Prey Growth
+                        </text>
+                        <text x={eq.x - quadrantOffset} y={eq.y - quadrantOffset + labelSpacing} 
+                              fontSize="10" fill="hsl(var(--primary))" textAnchor="middle">
+                          N₁↑, N₂↓
+                        </text>
+                        
+                        {/* Quadrant I (top-right): Both decrease initially */}
+                        <text x={eq.x + quadrantOffset} y={eq.y - quadrantOffset} 
+                              fontSize="12" fill="hsl(var(--secondary))" fontWeight="700" textAnchor="middle">
+                          Predator Growth
+                        </text>
+                        <text x={eq.x + quadrantOffset} y={eq.y - quadrantOffset + labelSpacing} 
+                              fontSize="10" fill="hsl(var(--secondary))" textAnchor="middle">
+                          N₁↓, N₂↑
+                        </text>
+                        
+                        {/* Quadrant III (bottom-left): Both decline */}
+                        <text x={eq.x - quadrantOffset} y={eq.y + quadrantOffset} 
+                              fontSize="12" fill="hsl(var(--accent))" fontWeight="700" textAnchor="middle">
+                          Both Decline
+                        </text>
+                        <text x={eq.x - quadrantOffset} y={eq.y + quadrantOffset + labelSpacing} 
+                              fontSize="10" fill="hsl(var(--accent))" textAnchor="middle">
+                          N₁↓, N₂↓
+                        </text>
+                        
+                        {/* Quadrant IV (bottom-right): Both grow */}
+                        <text x={eq.x + quadrantOffset} y={eq.y + quadrantOffset} 
+                              fontSize="12" fill="hsl(var(--muted-foreground))" fontWeight="700" textAnchor="middle">
+                          Both Grow
+                        </text>
+                        <text x={eq.x + quadrantOffset} y={eq.y + quadrantOffset + labelSpacing} 
+                              fontSize="10" fill="hsl(var(--muted-foreground))" textAnchor="middle">
+                          N₁↑, N₂↑
+                        </text>
+                      </>
+                    );
+                  })()}
                   
                   {/* Equilibrium point - Repositioned label */}
                   <circle 
@@ -571,8 +585,8 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
             </svg>
           </div>
           
-          {/* Legend and educational panel */}
-          <div className="w-80 space-y-4">
+          {/* Legend and interpretation panel - optimized width */}
+          <div className="w-64 lg:w-72 space-y-4">
             {/* Legend */}
             <div className="p-4 bg-muted/30 rounded-lg">
               <h4 className="text-sm font-semibold mb-3">Legend</h4>
