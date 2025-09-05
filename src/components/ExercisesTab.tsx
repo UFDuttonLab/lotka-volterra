@@ -123,8 +123,8 @@ const competitionExercises: Exercise[] = [
       r2: 1.1,
       K1: 150,
       K2: 90,
-      a12: 0.4,
-      a21: 1.3,
+      a12: 0.8,
+      a21: 0.5,
       N1_0: 140,
       N2_0: 5
     },
@@ -143,7 +143,7 @@ const competitionExercises: Exercise[] = [
         { id: "d", text: "The invasion depends on random environmental factors" }
       ],
       correctAnswer: "b",
-      explanation: "Species 2 can invade because α₂₁ = 1.3 > K₂/K₁ = 0.6, meaning Species 2 can grow even when Species 1 is at carrying capacity. Despite starting small, Species 2's competitive advantage allows it to eventually exclude Species 1.",
+      explanation: "Species 2 can invade because with α₂₁ = 0.5, when Species 1 is at carrying capacity (150), Species 2 can still grow: dN₂/dt = 1.1N₂(1 - 0.5×150/90) = 1.1N₂(0.17) > 0. Since Species 2 can grow when Species 1 is established and α₁₂ = 0.8 means Species 1 is significantly affected by Species 2, the invader will eventually exclude the resident.",
       hint: "For invasion analysis, check if the invading species can grow when the resident is at equilibrium"
     }
   }
