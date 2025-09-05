@@ -32,7 +32,7 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
   // Default parameters that ensure meaningful diagrams
   const defaultParams = {
     r1: 1.0, r2: 0.8, K1: 100, K2: 80, a12: 0.8, a21: 0.6,
-    a: 0.012, b: 0.008, N1_0: 50, N2_0: 20,
+    a: 0.1, b: 0.075, N1_0: 50, N2_0: 20,  // realistic predator-prey parameters
   };
   
   const p = parameters || defaultParams;
@@ -445,25 +445,25 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                      stroke="hsl(var(--primary))" 
                      strokeWidth="4"
                    />
-                   <text 
-                     x={margin.left + chartWidth * 0.25}
-                     y={predatorPrey.preyNullcline.y - 15}
-                     fontSize="11"
-                     fill="hsl(var(--primary))"
-                     fontWeight="600"
-                     textAnchor="middle"
-                   >
-                     N₂ = {predatorPrey.preyNullcline.value.toFixed(1)}
-                   </text>
-                   <text 
-                     x={margin.left + chartWidth * 0.75}
-                     y={predatorPrey.preyNullcline.y + 20}
-                     fontSize="9"
-                     fill="hsl(var(--primary))"
-                     textAnchor="middle"
-                   >
-                     dN₁/dt = 0
-                   </text>
+                    <text 
+                      x={margin.left + chartWidth * 0.25}
+                      y={predatorPrey.preyNullcline.y - 15}
+                      fontSize="11"
+                      fill="hsl(var(--primary))"
+                      fontWeight="600"
+                      textAnchor="middle"
+                    >
+                      Prey Nullcline: N₂ = {predatorPrey.preyNullcline.value.toFixed(1)}
+                    </text>
+                    <text 
+                      x={margin.left + chartWidth * 0.75}
+                      y={predatorPrey.preyNullcline.y + 20}
+                      fontSize="9"
+                      fill="hsl(var(--primary))"
+                      textAnchor="middle"
+                    >
+                      dN₁/dt = 0 (prey growth = predation)
+                    </text>
                    
                    {/* Predator nullcline (vertical) - Better spaced labels */}
                    <line 
@@ -474,25 +474,25 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                      stroke="hsl(var(--secondary))" 
                      strokeWidth="4"
                    />
-                   <text 
-                     x={predatorPrey.predatorNullcline.x + 25}
-                     y={margin.top + chartHeight * 0.25}
-                     fontSize="11"
-                     fill="hsl(var(--secondary))"
-                     fontWeight="600"
-                     transform={`rotate(-90, ${predatorPrey.predatorNullcline.x + 25}, ${margin.top + chartHeight * 0.25})`}
-                   >
-                     N₁ = {predatorPrey.predatorNullcline.value.toFixed(1)}
-                   </text>
-                   <text 
-                     x={predatorPrey.predatorNullcline.x - 25}
-                     y={margin.top + chartHeight * 0.75}
-                     fontSize="9"
-                     fill="hsl(var(--secondary))"
-                     transform={`rotate(-90, ${predatorPrey.predatorNullcline.x - 25}, ${margin.top + chartHeight * 0.75})`}
-                   >
-                     dN₂/dt = 0
-                   </text>
+                    <text 
+                      x={predatorPrey.predatorNullcline.x + 25}
+                      y={margin.top + chartHeight * 0.25}
+                      fontSize="11"
+                      fill="hsl(var(--secondary))"
+                      fontWeight="600"
+                      transform={`rotate(-90, ${predatorPrey.predatorNullcline.x + 25}, ${margin.top + chartHeight * 0.25})`}
+                    >
+                      Predator Nullcline: N₁ = {predatorPrey.predatorNullcline.value.toFixed(1)}
+                    </text>
+                    <text 
+                      x={predatorPrey.predatorNullcline.x - 25}
+                      y={margin.top + chartHeight * 0.75}
+                      fontSize="9"
+                      fill="hsl(var(--secondary))"
+                      transform={`rotate(-90, ${predatorPrey.predatorNullcline.x - 25}, ${margin.top + chartHeight * 0.75})`}
+                    >
+                      dN₂/dt = 0 (predator birth = death)
+                    </text>
                    
                    
                    {/* Equilibrium point - Repositioned to avoid overlap */}

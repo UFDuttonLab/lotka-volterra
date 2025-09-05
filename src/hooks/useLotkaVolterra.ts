@@ -40,9 +40,9 @@ export function useLotkaVolterra() {
     K2: 100,
     a12: 0.8,
     a21: 1.2,
-    // Predator-prey parameters - realistic populations with scaled dynamics
-    a: 0.012,
-    b: 0.008,
+    // Predator-prey parameters - realistic populations with biological dynamics
+    a: 0.1,   // predation efficiency - realistic for biological systems
+    b: 0.075, // conversion efficiency - realistic predator growth efficiency
     N1_0: 80,
     N2_0: 20,
   });
@@ -279,8 +279,8 @@ export function useLotkaVolterra() {
         ...prev,
         r1: 1.0, // prey growth rate
         r2: 1.0, // predator death rate
-        a: 0.012,  // predation rate - scaled for realistic populations
-        b: 0.008,  // predator efficiency - scaled for realistic populations
+        a: 0.1,    // predation efficiency - realistic for biological systems  
+        b: 0.075,  // conversion efficiency - realistic predator growth efficiency
         N1_0: 80, // initial prey - biologically meaningful population
         N2_0: 20,  // initial predators - biologically meaningful population
       }));
