@@ -68,6 +68,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
 
   return (
     <div className="space-y-4">
+      {/* Large Chart Card */}
       <Card className="shadow-card">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -87,7 +88,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
           </div>
         </CardHeader>
         <CardContent className="p-2">
-          <div className="h-80">
+          <div className="h-[700px] lg:h-[800px] xl:h-[85vh]">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart
                 data={phaseData}
@@ -369,52 +370,62 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
             </ResponsiveContainer>
           </div>
         </CardContent>
-        {/* Legend integrated within the same card */}
-        <div className="mt-4 pt-4 border-t border-border">
-          <div className="space-y-3 text-sm">
-            <div className="space-y-1">
-              <h4 className="font-semibold text-foreground">Phase Plane with Isoclines</h4>
-              <p className="text-muted-foreground text-xs">
-                Each point shows system state (N₁, N₂) at a time. Dashed lines are isoclines where growth rates equal zero.
-              </p>
-            </div>
-            
-            {modelType === 'predator-prey' ? (
-              <div className="space-y-2 text-xs">
-                <div className="p-3 bg-muted/50 rounded-lg border">
-                  <h5 className="font-medium text-foreground mb-2">Isoclines & Flow Pattern:</h5>
-                  <ul className="space-y-1 text-muted-foreground">
-                    <li>• <span className="font-medium text-accent">Horizontal line (N₂ = r₁/a):</span> Prey nullcline - predator population where prey growth = 0</li>
-                    <li>• <span className="font-medium text-secondary">Vertical line (N₁ = r₂/b):</span> Predator nullcline - prey population where predator growth = 0</li>
-                    <li>• <span className="font-medium">Clockwise flow:</span> Trajectories circulate around equilibrium intersection point</li>
-                    <li>• <span className="font-medium">Conserved orbits:</span> Each starting point creates a unique closed loop</li>
-                  </ul>
-                </div>
-                <p className="text-muted-foreground">
-                  <span className="inline-block w-2 h-2 bg-destructive rounded-full mr-1"></span>
-                  Red dot: Equilibrium (r₂/b, r₁/a) where isoclines intersect
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-2 text-xs">
-                <div className="p-3 bg-muted/50 rounded-lg border">
-                  <h5 className="font-medium text-foreground mb-2">Competition Dynamics:</h5>
-                  <ul className="space-y-1 text-muted-foreground">
-                    <li>• <span className="font-medium text-accent">Blue diagonal:</span> N₁-nullcline (dN₁/dt = 0) - where Species 1 stops growing</li>
-                    <li>• <span className="font-medium text-secondary">Orange diagonal:</span> N₂-nullcline (dN₂/dt = 0) - where Species 2 stops growing</li>
-                    <li>• <span className="font-medium">Flow patterns:</span> Trajectories move toward axes or intersection point</li>
-                    <li>• <span className="font-medium">Outcome depends on slopes:</span> Coexistence vs. competitive exclusion</li>
-                  </ul>
-                </div>
-                <p className="text-muted-foreground">
-                  <span className="inline-block w-2 h-2 bg-destructive rounded-full mr-1"></span>
-                  Red dot: Potential coexistence equilibrium (if positive)
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
       </Card>
+
+      {/* Collapsible Legend/Explanation */}
+      <Collapsible defaultOpen={false}>
+        <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left bg-muted/30 hover:bg-muted/50 rounded-lg border">
+          <span className="font-medium">Phase Plane Analysis Guide</span>
+          <ChevronDown className="h-4 w-4 transition-transform duration-200" />
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <Card className="mt-2">
+            <CardContent className="pt-4">
+              <div className="space-y-3 text-sm">
+                <div className="space-y-1">
+                  <h4 className="font-semibold text-foreground">Phase Plane with Isoclines</h4>
+                  <p className="text-muted-foreground text-xs">
+                    Each point shows system state (N₁, N₂) at a time. Dashed lines are isoclines where growth rates equal zero.
+                  </p>
+                </div>
+                
+                {modelType === 'predator-prey' ? (
+                  <div className="space-y-2 text-xs">
+                    <div className="p-3 bg-muted/50 rounded-lg border">
+                      <h5 className="font-medium text-foreground mb-2">Isoclines & Flow Pattern:</h5>
+                      <ul className="space-y-1 text-muted-foreground">
+                        <li>• <span className="font-medium text-accent">Horizontal line (N₂ = r₁/a):</span> Prey nullcline - predator population where prey growth = 0</li>
+                        <li>• <span className="font-medium text-secondary">Vertical line (N₁ = r₂/b):</span> Predator nullcline - prey population where predator growth = 0</li>
+                        <li>• <span className="font-medium">Clockwise flow:</span> Trajectories circulate around equilibrium intersection point</li>
+                        <li>• <span className="font-medium">Conserved orbits:</span> Each starting point creates a unique closed loop</li>
+                      </ul>
+                    </div>
+                    <p className="text-muted-foreground">
+                      <span className="inline-block w-2 h-2 bg-destructive rounded-full mr-1"></span>
+                      Red dot: Equilibrium (r₂/b, r₁/a) where isoclines intersect
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2 text-xs">
+                    <div className="p-3 bg-muted/50 rounded-lg border">
+                      <h5 className="font-medium text-foreground mb-2">Isoclines & Competitive Outcome:</h5>
+                      <ul className="space-y-1 text-muted-foreground">
+                        <li>• <span className="font-medium text-accent">N₁-nullcline (N₁ = K₁ - α₁₂N₂):</span> Species 1 stops growing on this line</li>
+                        <li>• <span className="font-medium text-secondary">N₂-nullcline (N₂ = K₂ - α₂₁N₁):</span> Species 2 stops growing on this line</li>
+                        <li>• <span className="font-medium">Flow direction:</span> Populations move toward lower-right (competitive exclusion) or intersection (coexistence)</li>
+                        <li>• <span className="font-medium">Intersection slopes:</span> Determine if coexistence is stable or unstable</li>
+                      </ul>
+                    </div>
+                    <p className="text-muted-foreground">
+                      Trajectory endpoint shows competitive outcome: exclusion of one species or stable coexistence
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 }
