@@ -37,9 +37,9 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
   const p = parameters || defaultParams;
   
   // Compact chart dimensions for proper grid layout
-  const width = 500;
-  const height = 350;
-  const margin = { top: 50, right: 60, bottom: 60, left: 60 };
+  const width = 400;
+  const height = 280;
+  const margin = { top: 40, right: 40, bottom: 40, left: 40 };
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   
@@ -580,40 +580,40 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                  </>
                )}
                
-               {/* Embedded legend inside SVG */}
-          <g transform={`translate(${width - 200}, 20)`}>
-            <rect x="0" y="0" width="190" height="150" fill="hsl(var(--background))" stroke="hsl(var(--border))" strokeWidth="1" rx="4" opacity="0.95"/>
-            <text x="10" y="20" fontSize="12" fill="hsl(var(--foreground))" fontWeight="600">Legend</text>
+                {/* Embedded legend inside SVG */}
+          <g transform={`translate(${width - 150}, 15)`}>
+            <rect x="0" y="0" width="140" height="120" fill="hsl(var(--background))" stroke="hsl(var(--border))" strokeWidth="1" rx="4" opacity="0.95"/>
+            <text x="8" y="15" fontSize="11" fill="hsl(var(--foreground))" fontWeight="600">Legend</text>
             
-            <line x1="10" y1="35" x2="25" y2="35" stroke="hsl(var(--primary))" strokeWidth="3"/>
-            <text x="30" y="38" fontSize="10" fill="hsl(var(--foreground))">
+            <line x1="8" y1="28" x2="20" y2="28" stroke="hsl(var(--primary))" strokeWidth="3"/>
+            <text x="24" y="31" fontSize="9" fill="hsl(var(--foreground))">
               {type === 'competition' ? 'Species 1' : 'Prey'} nullcline
             </text>
             
-            <line x1="10" y1="50" x2="25" y2="50" stroke="hsl(var(--secondary))" strokeWidth="3"/>
-            <text x="30" y="53" fontSize="10" fill="hsl(var(--foreground))">
+            <line x1="8" y1="40" x2="20" y2="40" stroke="hsl(var(--secondary))" strokeWidth="3"/>
+            <text x="24" y="43" fontSize="9" fill="hsl(var(--foreground))">
               {type === 'competition' ? 'Species 2' : 'Predator'} nullcline
             </text>
             
-            <circle cx="17" cy="65" r="3" fill="hsl(var(--destructive))"/>
-            <text x="30" y="68" fontSize="10" fill="hsl(var(--foreground))">Equilibrium point</text>
+            <circle cx="14" cy="52" r="2.5" fill="hsl(var(--destructive))"/>
+            <text x="24" y="55" fontSize="9" fill="hsl(var(--foreground))">Equilibrium point</text>
             
-            <path d="M 10 80 L 25 80" stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
-            <text x="30" y="83" fontSize="10" fill="hsl(var(--foreground))">Flow direction</text>
+            <path d="M 8 64 L 20 64" stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrow-flow)"/>
+            <text x="24" y="67" fontSize="9" fill="hsl(var(--foreground))">Flow direction</text>
             
             {type === 'competition' && (
               <>
-                <circle cx="17" cy="95" r="2" fill="hsl(var(--primary))" opacity="0.7"/>
-                <text x="30" y="98" fontSize="10" fill="hsl(var(--foreground))">Carrying capacity</text>
+                <circle cx="14" cy="76" r="2" fill="hsl(var(--primary))" opacity="0.7"/>
+                <text x="24" y="79" fontSize="9" fill="hsl(var(--foreground))">Carrying capacity</text>
                 
-                <text x="10" y="120" fontSize="9" fill="hsl(var(--muted-foreground))">
+                <text x="8" y="95" fontSize="8" fill="hsl(var(--muted-foreground))">
                   {competition?.coexistencePossible ? '✓ Coexistence' : '⚠ Exclusion'}
                 </text>
               </>
             )}
             
             {type === 'predator-prey' && (
-              <text x="10" y="115" fontSize="9" fill="hsl(var(--muted-foreground))">
+              <text x="8" y="90" fontSize="8" fill="hsl(var(--muted-foreground))">
                 ✓ Oscillatory dynamics
               </text>
             )}
