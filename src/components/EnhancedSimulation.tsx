@@ -375,9 +375,9 @@ export default function EnhancedSimulation({
         </TabsList>
 
         <TabsContent value="simulation" className="space-y-6">
-          {/* Desktop Layout - 2 column for larger charts */}
-          <div className="hidden lg:grid lg:grid-cols-5 gap-6">
-            <div className="lg:col-span-2 space-y-6">
+          {/* Desktop Layout */}
+          <div className="hidden lg:grid lg:grid-cols-3 gap-6">
+            <div className="space-y-6">
               <SimulationControls
                 modelType={modelType}
                 parameters={parameters}
@@ -393,7 +393,7 @@ export default function EnhancedSimulation({
                 currentPopulations={currentPopulations}
               />
             </div>
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-2 space-y-6">
               <SimulationChart 
                 data={data} 
                 isRunning={isRunning} 

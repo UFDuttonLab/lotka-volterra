@@ -125,17 +125,11 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="p-4">
-        <div className="flex flex-col lg:flex-row gap-4 items-start">
-          {/* Main diagram - responsive and properly sized */}
-          <div className="flex-1 max-w-full overflow-hidden">
-            <svg 
-              width="100%" 
-              height={height} 
-              viewBox={`0 0 ${width} ${height}`}
-              className="border rounded-lg bg-background w-full h-auto"
-              preserveAspectRatio="xMidYMid meet"
-            >
+      <CardContent>
+        <div className="flex gap-4">
+          {/* Main diagram */}
+          <div className="flex-1">
+            <svg width={width} height={height} className="border rounded-lg bg-background">
               <defs>
                 <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
                   <polygon points="0 0, 10 4, 0 8" fill="hsl(var(--foreground))" />
@@ -368,47 +362,30 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                     </>
                   ) : (
                     <>
-                      {/* Competitive exclusion indicators - Better positioned arrows and labels */}
+                      {/* Competitive exclusion indicators with aligned arrows */}
                       {(() => {
-                        // Calculate optimal positions based on available space and nullcline positions
-                        const centerX = (competition.n1Nullcline.start.x + competition.n2Nullcline.end.x) / 2;
-                        const centerY = (competition.n1Nullcline.end.y + competition.n2Nullcline.start.y) / 2;
-                        
-                        // Position arrows in clear regions away from nullclines
-                        const sp1WinX = scaleX(p.K1 * 0.8);
-                        const sp1WinY = scaleY(yMax * 0.15);
-                        const sp2WinX = scaleX(xMax * 0.15);
-                        const sp2WinY = scaleY(p.K2 * 0.8);
+                        const sp1WinX = scaleX(p.K1 * 0.7);
+                        const sp1WinY = scaleY(10);
+                        const sp2WinX = scaleX(10);
+                        const sp2WinY = scaleY(p.K2 * 0.7);
                         
                         return (
                           <>
-                            {/* Species 1 wins region - Arrow pointing toward axis */}
-                            <g>
-                              <path d={`M ${sp1WinX - 25} ${sp1WinY} L ${sp1WinX - 5} ${sp1WinY}`} 
-                                    stroke="hsl(var(--destructive))" strokeWidth="3" markerEnd="url(#arrow-red)"/>
-                              <text x={sp1WinX - 30} y={sp1WinY - 5} fontSize="11" fill="hsl(var(--destructive))" 
-                                    fontWeight="700" textAnchor="end">
-                                Species 1 Wins
-                              </text>
-                              <text x={sp1WinX - 30} y={sp1WinY + 10} fontSize="9" fill="hsl(var(--destructive))" 
-                                    textAnchor="end" opacity="0.8">
-                                N₂ → 0
-                              </text>
-                            </g>
+                            {/* Species 1 wins region */}
+                            <path d={`M ${sp1WinX - 30} ${sp1WinY + 20} L ${sp1WinX - 10} ${sp1WinY + 5}`} 
+                                  stroke="hsl(var(--destructive))" strokeWidth="3" markerEnd="url(#arrow-red)"/>
+                            <text x={sp1WinX - 35} y={sp1WinY + 25} fontSize="12" fill="hsl(var(--destructive))" 
+                                  fontWeight="700" textAnchor="end">
+                              Species 1 Wins
+                            </text>
                             
-                            {/* Species 2 wins region - Arrow pointing toward axis */}
-                            <g>
-                              <path d={`M ${sp2WinX} ${sp2WinY - 25} L ${sp2WinX} ${sp2WinY - 5}`} 
-                                    stroke="hsl(var(--destructive))" strokeWidth="3" markerEnd="url(#arrow-red)"/>
-                              <text x={sp2WinX + 5} y={sp2WinY - 30} fontSize="11" fill="hsl(var(--destructive))" 
-                                    fontWeight="700">
-                                Species 2 Wins
-                              </text>
-                              <text x={sp2WinX + 5} y={sp2WinY - 15} fontSize="9" fill="hsl(var(--destructive))" 
-                                    opacity="0.8">
-                                N₁ → 0
-                              </text>
-                            </g>
+                            {/* Species 2 wins region */}
+                            <path d={`M ${sp2WinX + 20} ${sp2WinY - 30} L ${sp2WinX + 5} ${sp2WinY - 10}`} 
+                                  stroke="hsl(var(--destructive))" strokeWidth="3" markerEnd="url(#arrow-red)"/>
+                            <text x={sp2WinX + 25} y={sp2WinY - 35} fontSize="12" fill="hsl(var(--destructive))" 
+                                  fontWeight="700">
+                              Species 2 Wins
+                            </text>
                           </>
                         );
                       })()}
@@ -484,34 +461,44 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                     N₁ = {predatorPrey.predatorNullcline.value.toFixed(1)}
                   </text>
                   
-                  {/* Regional flow labels - Consolidated to reduce overlap */}
-                  <g className="regional-labels">
-                    {/* Quadrant I: Top-right */}
-                    <text x={predatorPrey.equilibrium.x + 60} y={predatorPrey.equilibrium.y - 30} 
-                          fontSize="10" fill="hsl(var(--secondary))" fontWeight="600" textAnchor="middle">
-                      N₁ ↓, N₂ ↑
-                    </text>
-                    
-                    {/* Quadrant II: Top-left */}
-                    <text x={predatorPrey.equilibrium.x - 60} y={predatorPrey.equilibrium.y - 30} 
-                          fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="middle">
-                      N₁ ↑, N₂ ↓
-                    </text>
-                    
-                    {/* Quadrant III: Bottom-left */}
-                    <text x={predatorPrey.equilibrium.x - 60} y={predatorPrey.equilibrium.y + 45} 
-                          fontSize="10" fill="hsl(var(--accent))" fontWeight="600" textAnchor="middle">
-                      N₁ ↓, N₂ ↓
-                    </text>
-                    
-                    {/* Quadrant IV: Bottom-right */}
-                    <text x={predatorPrey.equilibrium.x + 60} y={predatorPrey.equilibrium.y + 45} 
-                          fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="600" textAnchor="middle">
-                      N₁ ↑, N₂ ↑
-                    </text>
-                  </g>
+                  {/* Regional flow labels - Better positioned to avoid overlap */}
+                  <text x={predatorPrey.equilibrium.x - 80} y={predatorPrey.equilibrium.y - 60} 
+                        fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="middle">
+                    Prey ↑
+                  </text>
+                  <text x={predatorPrey.equilibrium.x - 80} y={predatorPrey.equilibrium.y - 45} 
+                        fontSize="10" fill="hsl(var(--primary))" fontWeight="600" textAnchor="middle">
+                    Predator ↓
+                  </text>
                   
-                  {/* Equilibrium point - Better positioned label to avoid overlap */}
+                  <text x={predatorPrey.equilibrium.x + 80} y={predatorPrey.equilibrium.y - 60} 
+                        fontSize="10" fill="hsl(var(--secondary))" fontWeight="600" textAnchor="middle">
+                    Prey ↓
+                  </text>
+                  <text x={predatorPrey.equilibrium.x + 80} y={predatorPrey.equilibrium.y - 45} 
+                        fontSize="10" fill="hsl(var(--secondary))" fontWeight="600" textAnchor="middle">
+                    Predator ↑
+                  </text>
+                  
+                  <text x={predatorPrey.equilibrium.x - 80} y={predatorPrey.equilibrium.y + 60} 
+                        fontSize="10" fill="hsl(var(--accent))" fontWeight="600" textAnchor="middle">
+                    Prey ↓
+                  </text>
+                  <text x={predatorPrey.equilibrium.x - 80} y={predatorPrey.equilibrium.y + 75} 
+                        fontSize="10" fill="hsl(var(--accent))" fontWeight="600" textAnchor="middle">
+                    Predator ↓
+                  </text>
+                  
+                  <text x={predatorPrey.equilibrium.x + 80} y={predatorPrey.equilibrium.y + 60} 
+                        fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="600" textAnchor="middle">
+                    Prey ↑
+                  </text>
+                  <text x={predatorPrey.equilibrium.x + 80} y={predatorPrey.equilibrium.y + 75} 
+                        fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="600" textAnchor="middle">
+                    Predator ↑
+                  </text>
+                  
+                  {/* Equilibrium point - Repositioned label */}
                   <circle 
                     cx={predatorPrey.equilibrium.x}
                     cy={predatorPrey.equilibrium.y}
@@ -521,19 +508,21 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                     strokeWidth="2"
                   />
                   <text 
-                    x={predatorPrey.equilibrium.x + 25}
-                    y={predatorPrey.equilibrium.y - 8}
-                    fontSize="11"
+                    x={predatorPrey.equilibrium.x - 15}
+                    y={predatorPrey.equilibrium.y - 15}
+                    fontSize="10"
                     fill="hsl(var(--foreground))"
-                    fontWeight="700"
+                    fontWeight="600"
+                    textAnchor="end"
                   >
-                    Equilibrium Point
+                    Equilibrium
                   </text>
                   <text 
-                    x={predatorPrey.equilibrium.x + 25}
-                    y={predatorPrey.equilibrium.y + 8}
+                    x={predatorPrey.equilibrium.x - 15}
+                    y={predatorPrey.equilibrium.y - 2}
                     fontSize="9"
                     fill="hsl(var(--muted-foreground))"
+                    textAnchor="end"
                   >
                     ({predatorPrey.equilibrium.n1.toFixed(1)}, {predatorPrey.equilibrium.n2.toFixed(1)})
                   </text>
@@ -582,19 +571,19 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
             </svg>
           </div>
           
-          {/* Legend and educational panel - More compact */}
-          <div className="w-64 flex-shrink-0 space-y-3">
+          {/* Legend and educational panel */}
+          <div className="w-80 space-y-4">
             {/* Legend */}
-            <div className="p-3 bg-muted/30 rounded-lg">
-              <h4 className="text-sm font-semibold mb-2">Legend</h4>
-              <div className="space-y-1.5 text-xs">
+            <div className="p-4 bg-muted/30 rounded-lg">
+              <h4 className="text-sm font-semibold mb-3">Legend</h4>
+              <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-1 bg-primary rounded"></div>
-                  <span>Species 1/{type === 'predator-prey' ? 'Prey' : 'Species 1'} nullcline</span>
+                  <span>Species 1/{type === 'predator-prey' ? 'Prey' : 'Species 1'} nullcline (dN₁/dt = 0)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-1 bg-secondary rounded"></div>
-                  <span>Species 2/{type === 'predator-prey' ? 'Predator' : 'Species 2'} nullcline</span>
+                  <span>Species 2/{type === 'predator-prey' ? 'Predator' : 'Species 2'} nullcline (dN₂/dt = 0)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-destructive rounded-full"></div>
@@ -602,70 +591,75 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="text-primary">→</div>
-                  <span>Flow direction</span>
+                  <span>Population flow direction</span>
                 </div>
                 {type === 'competition' && (
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-primary rounded-full opacity-70"></div>
-                    <span>Carrying capacities</span>
+                    <span>Carrying capacities (K₁, K₂)</span>
                   </div>
                 )}
               </div>
             </div>
             
-            {/* Model interpretation - More concise */}
-            <div className="p-3 bg-muted/30 rounded-lg">
-              <h4 className="text-sm font-semibold mb-2">Key Insights</h4>
-              <div className="space-y-1.5 text-xs text-muted-foreground">
+            {/* Model interpretation */}
+            <div className="p-4 bg-muted/30 rounded-lg">
+              <h4 className="text-sm font-semibold mb-3">Biological Interpretation</h4>
+              <div className="space-y-2 text-xs text-muted-foreground">
                 {type === 'competition' ? (
                   <>
-                    <p><strong>Outcome:</strong> {competition?.coexistencePossible ? 
-                      'Stable coexistence' : 
-                      'Competitive exclusion'}</p>
-                    <p><strong>Nullclines:</strong> Zero growth lines</p>
-                    <p><strong>Flow:</strong> Population trajectories</p>
+                    <p><strong>Nullclines:</strong> Lines where one species' growth rate is zero</p>
+                    <p><strong>Equilibrium:</strong> {competition?.coexistencePossible ? 
+                      'Stable coexistence - both species persist' : 
+                      'Competitive exclusion - one species dominates'}</p>
+                    <p><strong>Flow arrows:</strong> Show how populations change over time</p>
+                    <p><strong>K₁, K₂:</strong> Carrying capacities when species grow alone</p>
                   </>
                 ) : (
                   <>
-                    <p><strong>Dynamics:</strong> Oscillatory cycles</p>
-                    <p><strong>Stability:</strong> Neutral equilibrium</p>
-                    <p><strong>Pattern:</strong> Clockwise orbits</p>
+                    <p><strong>Horizontal nullcline:</strong> Prey growth stops when predator density = r₁/a</p>
+                    <p><strong>Vertical nullcline:</strong> Predator growth stops when prey density = r₂/b</p>
+                    <p><strong>Equilibrium:</strong> Center point with neutral stability</p>
+                    <p><strong>Clockwise cycles:</strong> Populations oscillate in closed orbits</p>
+                    <p><strong>Regional dynamics:</strong> Different growth patterns in each quadrant</p>
                   </>
                 )}
               </div>
             </div>
             
-            {/* Parameter display - Compact */}
-            <div className="p-3 bg-muted/30 rounded-lg">
-              <h4 className="text-sm font-semibold mb-2">Parameters</h4>
+            {/* Parameter display */}
+            <div className="p-4 bg-muted/30 rounded-lg">
+              <h4 className="text-sm font-semibold mb-3">Current Parameters</h4>
               <div className="text-xs text-muted-foreground space-y-1">
                 {type === 'competition' ? (
                   <>
-                    <div className="grid grid-cols-2 gap-1 text-xs">
+                    <div className="grid grid-cols-2 gap-2">
                       <span>K₁ = {p.K1.toFixed(1)}</span>
                       <span>K₂ = {p.K2.toFixed(1)}</span>
                       <span>α₁₂ = {p.a12.toFixed(3)}</span>
                       <span>α₂₁ = {p.a21.toFixed(3)}</span>
+                      <span>r₁ = {p.r1.toFixed(2)}</span>
+                      <span>r₂ = {p.r2.toFixed(2)}</span>
                     </div>
-                    <div className="mt-2 pt-1 border-t border-border">
-                      <span className={`text-xs ${competition?.coexistencePossible ? 'text-green-600' : 'text-orange-600'}`}>
+                    <div className="mt-2 pt-2 border-t border-border">
+                      <span className={competition?.coexistencePossible ? 'text-green-600' : 'text-orange-600'}>
                         {competition?.coexistencePossible ? 
-                          '✓ Coexistence' : 
-                          '⚠ Exclusion'
+                          '✓ Coexistence possible' : 
+                          '⚠ Competitive exclusion'
                         }
                       </span>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="grid grid-cols-2 gap-1 text-xs">
+                    <div className="grid grid-cols-2 gap-2">
                       <span>r₁ = {p.r1.toFixed(2)}</span>
                       <span>r₂ = {p.r2.toFixed(2)}</span>
                       <span>a = {p.a.toFixed(4)}</span>
                       <span>b = {p.b.toFixed(4)}</span>
                     </div>
-                    <div className="mt-2 pt-1 border-t border-border">
-                      <span className="text-blue-600 text-xs">✓ Oscillatory</span>
+                    <div className="mt-2 pt-2 border-t border-border">
+                      <span className="text-blue-600">✓ Oscillatory dynamics</span>
                     </div>
                   </>
                 )}

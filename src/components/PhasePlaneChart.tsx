@@ -1,8 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, ReferenceLine } from 'recharts';
 import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
 
 interface DataPoint {
   time: number;
@@ -67,365 +65,348 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
   const yLabel = modelType === 'predator-prey' ? 'Predator Population (N₂)' : 'Species 2 Population (N₂)';
 
   return (
-    <div className="space-y-4">
-      {/* Large Chart Card */}
-      <Card className="shadow-card">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold">{chartTitle}</CardTitle>
-            <div className="flex items-center gap-2">
-              {isRunning && (
-                <Badge variant="outline" className="animate-pulse">
-                  Drawing trajectory...
-                </Badge>
-              )}
-              {modelType === 'predator-prey' && equilibrium && (
-                <Badge variant="secondary" className="text-xs">
-                  Equilibrium: ({equilibrium.x.toFixed(2)}, {equilibrium.y.toFixed(2)})
-                </Badge>
-              )}
-            </div>
+    <Card className="shadow-card">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base font-semibold">{chartTitle}</CardTitle>
+          <div className="flex items-center gap-2">
+            {isRunning && (
+              <Badge variant="outline" className="animate-pulse">
+                Drawing trajectory...
+              </Badge>
+            )}
+            {modelType === 'predator-prey' && equilibrium && (
+              <Badge variant="secondary" className="text-xs">
+                Equilibrium: ({equilibrium.x.toFixed(2)}, {equilibrium.y.toFixed(2)})
+              </Badge>
+            )}
           </div>
-        </CardHeader>
-        <CardContent className="p-2">
-          <div className="h-[700px] lg:h-[800px] xl:h-[85vh]">
-            <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart
-                data={phaseData}
-                margin={{ top: 50, right: 80, left: 100, bottom: 80 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis 
-                  type="number" 
-                  dataKey="prey" 
-                  name={xLabel}
-                  stroke="hsl(var(--foreground))"
-                  fontSize={18}
-                  fontWeight={500}
-                  label={{ 
-                    value: xLabel, 
-                    position: 'insideBottom', 
-                    offset: -20,
-                    style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '18px', fontWeight: '600' }
-                  }}
-                />
-                <YAxis 
-                  type="number" 
-                  dataKey="predator" 
-                  name={yLabel}
-                  stroke="hsl(var(--foreground))"
-                  fontSize={18}
-                  fontWeight={500}
-                  label={{ 
-                    value: yLabel, 
-                    angle: -90, 
-                    position: 'insideLeft',
-                    style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '18px', fontWeight: '600' }
-                  }}
-                />
-                <Tooltip 
-                  cursor={{ strokeDasharray: '3 3' }}
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0].payload;
-                      return (
-                        <div className="bg-card p-4 rounded-lg border shadow-lg">
-                          <p className="text-base font-medium">Time: {data.time?.toFixed(2)}</p>
-                          <p className="text-base text-primary">
-                            {modelType === 'predator-prey' ? 'Prey' : 'Species 1'}: {data.prey?.toFixed(2)}
-                          </p>
-                          <p className="text-base text-secondary">
-                            {modelType === 'predator-prey' ? 'Predator' : 'Species 2'}: {data.predator?.toFixed(2)}
-                          </p>
-                        </div>
-                      );
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <ScatterChart
+              data={phaseData}
+              margin={{ top: 30, right: 50, left: 60, bottom: 50 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis 
+                type="number" 
+                dataKey="prey" 
+                name={xLabel}
+                stroke="hsl(var(--foreground))"
+                fontSize={13}
+                fontWeight={500}
+                label={{ 
+                  value: xLabel, 
+                  position: 'insideBottom', 
+                  offset: -10,
+                  style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '14px', fontWeight: '600' }
+                }}
+              />
+              <YAxis 
+                type="number" 
+                dataKey="predator" 
+                name={yLabel}
+                stroke="hsl(var(--foreground))"
+                fontSize={13}
+                fontWeight={500}
+                label={{ 
+                  value: yLabel, 
+                  angle: -90, 
+                  position: 'insideLeft',
+                  style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '14px', fontWeight: '600' }
+                }}
+              />
+              <Tooltip 
+                cursor={{ strokeDasharray: '3 3' }}
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="bg-card p-3 rounded-lg border shadow-lg">
+                        <p className="text-sm font-medium">Time: {data.time?.toFixed(2)}</p>
+                        <p className="text-sm text-primary">
+                          {modelType === 'predator-prey' ? 'Prey' : 'Species 1'}: {data.prey?.toFixed(2)}
+                        </p>
+                        <p className="text-sm text-secondary">
+                          {modelType === 'predator-prey' ? 'Predator' : 'Species 2'}: {data.predator?.toFixed(2)}
+                        </p>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              
+              {/* Trajectory line */}
+              <Scatter 
+                dataKey="predator" 
+                fill="hsl(var(--primary))" 
+                fillOpacity={0.6}
+                stroke="hsl(var(--primary))"
+                strokeWidth={1}
+              />
+              
+              {/* Enhanced Isoclines with flow indicators */}
+              {modelType === 'predator-prey' && isoclines && (
+                <>
+                  {/* Prey nullcline: horizontal line with enhanced styling */}
+                  <ReferenceLine 
+                    y={isoclines.preyNullcline}
+                    stroke="hsl(var(--accent))"
+                    strokeDasharray="12 6"
+                    strokeWidth={3}
+                    label={{
+                      value: `Prey nullcline: N₂ = ${isoclines.preyNullcline.toFixed(2)} (dN₁/dt = 0)`,
+                      position: 'top',
+                      style: { 
+                        fontSize: '12px', 
+                        fill: 'hsl(var(--accent))', 
+                        fontWeight: '600',
+                        textShadow: '1px 1px 2px hsl(var(--background))'
+                      }
+                    }}
+                  />
+                  {/* Predator nullcline: vertical line with enhanced styling */}
+                  <ReferenceLine 
+                    x={isoclines.predatorNullcline}
+                    stroke="hsl(var(--secondary))"
+                    strokeDasharray="12 6" 
+                    strokeWidth={3}
+                    label={{
+                      value: `Predator nullcline: N₁ = ${isoclines.predatorNullcline.toFixed(2)} (dN₂/dt = 0)`,
+                      position: 'top',
+                      angle: -90,
+                      style: { 
+                        fontSize: '12px', 
+                        fill: 'hsl(var(--secondary))',
+                        fontWeight: '600',
+                        textShadow: '1px 1px 2px hsl(var(--background))'
+                      }
+                    }}
+                  />
+                  
+                  {/* Flow direction indicators for predator-prey */}
+                  <g className="flow-indicators">
+                    {/* Quadrant labels with flow directions */}
+                    <text 
+                      x={isoclines.predatorNullcline * 1.3} 
+                      y={isoclines.preyNullcline * 0.7} 
+                      fontSize="10" 
+                      fill="hsl(var(--muted-foreground))" 
+                      className="font-medium"
+                      textAnchor="middle"
+                    >
+                      Both ↑
+                    </text>
+                    <text 
+                      x={isoclines.predatorNullcline * 0.7} 
+                      y={isoclines.preyNullcline * 0.7} 
+                      fontSize="10" 
+                      fill="hsl(var(--muted-foreground))" 
+                      className="font-medium"
+                      textAnchor="middle"
+                    >
+                      Prey ↓, Pred ↑
+                    </text>
+                    <text 
+                      x={isoclines.predatorNullcline * 0.7} 
+                      y={isoclines.preyNullcline * 1.3} 
+                      fontSize="10" 
+                      fill="hsl(var(--muted-foreground))" 
+                      className="font-medium"
+                      textAnchor="middle"
+                    >
+                      Both ↓
+                    </text>
+                    <text 
+                      x={isoclines.predatorNullcline * 1.3} 
+                      y={isoclines.preyNullcline * 1.3} 
+                      fontSize="10" 
+                      fill="hsl(var(--muted-foreground))" 
+                      className="font-medium"
+                      textAnchor="middle"
+                    >
+                      Prey ↑, Pred ↓
+                    </text>
+                  </g>
+                </>
+              )}
+
+              {modelType === 'competition' && isoclines && (
+                <>
+                  {/* N₁-nullcline: N₁ = K₁ - α₁₂*N₂ with enhanced styling */}
+                  <ReferenceLine 
+                    segment={[
+                      { x: 0, y: isoclines.K1 }, 
+                      { x: isoclines.K1 / isoclines.alpha12, y: 0 }
+                    ]}
+                    stroke="hsl(var(--accent))"
+                    strokeDasharray="12 6"
+                    strokeWidth={3}
+                    label={{
+                      value: `N₁-nullcline (dN₁/dt = 0)`,
+                      position: 'top',
+                      style: { 
+                        fontSize: '12px', 
+                        fill: 'hsl(var(--accent))',
+                        fontWeight: '600',
+                        textShadow: '1px 1px 2px hsl(var(--background))'
+                      }
+                    }}
+                  />
+                  {/* N₂-nullcline: N₂ = K₂ - α₂₁*N₁ with enhanced styling */}
+                  <ReferenceLine 
+                    segment={[
+                      { x: 0, y: isoclines.K2 }, 
+                      { x: isoclines.K2 / isoclines.alpha21, y: 0 }
+                    ]}
+                    stroke="hsl(var(--secondary))"
+                    strokeDasharray="12 6"
+                    strokeWidth={3}
+                    label={{
+                      value: `N₂-nullcline (dN₂/dt = 0)`,
+                      position: 'bottom',
+                      style: { 
+                        fontSize: '12px', 
+                        fill: 'hsl(var(--secondary))',
+                        fontWeight: '600',
+                        textShadow: '1px 1px 2px hsl(var(--background))'
+                      }
+                    }}
+                  />
+                  
+                  {/* Competition equilibrium point */}
+                  {(() => {
+                    const denominator = 1 - isoclines.alpha12 * isoclines.alpha21;
+                    if (Math.abs(denominator) > 0.001) {
+                      const eqN1 = (isoclines.K1 - isoclines.alpha12 * isoclines.K2) / denominator;
+                      const eqN2 = (isoclines.K2 - isoclines.alpha21 * isoclines.K1) / denominator;
+                      if (eqN1 > 0 && eqN2 > 0) {
+                        return (
+                          <ReferenceDot 
+                            x={eqN1} 
+                            y={eqN2} 
+                            r={6} 
+                            fill="hsl(var(--destructive))" 
+                            stroke="hsl(var(--background))"
+                            strokeWidth={2}
+                          />
+                        );
+                      }
                     }
                     return null;
-                  }}
-                />
-                
-                {/* Trajectory line */}
-                <Scatter 
-                  dataKey="predator" 
-                  fill="hsl(var(--primary))" 
-                  fillOpacity={0.8}
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={3}
-                  r={6}
-                />
-                
-                {/* Enhanced Isoclines with flow indicators */}
-                {modelType === 'predator-prey' && isoclines && (
-                  <>
-                    {/* Prey nullcline: horizontal line with enhanced styling */}
-                    <ReferenceLine 
-                      y={isoclines.preyNullcline}
-                      stroke="hsl(var(--accent))"
-                      strokeDasharray="12 6"
-                      strokeWidth={4}
-                      label={{
-                        value: `Prey nullcline: N₂ = ${isoclines.preyNullcline.toFixed(2)} (dN₁/dt = 0)`,
-                        position: 'top',
-                        style: { 
-                          fontSize: '16px', 
-                          fill: 'hsl(var(--accent))', 
-                          fontWeight: '600',
-                          textShadow: '1px 1px 2px hsl(var(--background))'
-                        }
-                      }}
-                    />
-                    {/* Predator nullcline: vertical line with enhanced styling */}
-                    <ReferenceLine 
-                      x={isoclines.predatorNullcline}
-                      stroke="hsl(var(--secondary))"
-                      strokeDasharray="12 6" 
-                      strokeWidth={4}
-                      label={{
-                        value: `Predator nullcline: N₁ = ${isoclines.predatorNullcline.toFixed(2)} (dN₂/dt = 0)`,
-                        position: 'top',
-                        angle: -90,
-                        style: { 
-                          fontSize: '16px', 
-                          fill: 'hsl(var(--secondary))',
-                          fontWeight: '600',
-                          textShadow: '1px 1px 2px hsl(var(--background))'
-                        }
-                      }}
-                    />
-                    
-                    {/* Flow direction indicators for predator-prey */}
-                    <g className="flow-indicators">
-                      {/* Quadrant labels with flow directions */}
-                      <text 
-                        x={isoclines.predatorNullcline * 1.3} 
-                        y={isoclines.preyNullcline * 0.7} 
-                        fontSize="12" 
-                        fill="hsl(var(--muted-foreground))" 
-                        className="font-medium"
-                        textAnchor="middle"
-                      >
-                        Both ↑
-                      </text>
-                      <text 
-                        x={isoclines.predatorNullcline * 0.7} 
-                        y={isoclines.preyNullcline * 0.7} 
-                        fontSize="12" 
-                        fill="hsl(var(--muted-foreground))" 
-                        className="font-medium"
-                        textAnchor="middle"
-                      >
-                        Prey ↓, Pred ↑
-                      </text>
-                      <text 
-                        x={isoclines.predatorNullcline * 0.7} 
-                        y={isoclines.preyNullcline * 1.3} 
-                        fontSize="12" 
-                        fill="hsl(var(--muted-foreground))" 
-                        className="font-medium"
-                        textAnchor="middle"
-                      >
-                        Both ↓
-                      </text>
-                      <text 
-                        x={isoclines.predatorNullcline * 1.3} 
-                        y={isoclines.preyNullcline * 1.3} 
-                        fontSize="12" 
-                        fill="hsl(var(--muted-foreground))" 
-                        className="font-medium"
-                        textAnchor="middle"
-                      >
-                        Prey ↑, Pred ↓
-                      </text>
-                    </g>
-                  </>
-                )}
-
-                {modelType === 'competition' && isoclines && (
-                  <>
-                    {/* N₁-nullcline: N₁ = K₁ - α₁₂*N₂ with enhanced styling */}
-                    <ReferenceLine 
-                      segment={[
-                        { x: 0, y: isoclines.K1 }, 
-                        { x: isoclines.K1 / isoclines.alpha12, y: 0 }
-                      ]}
-                      stroke="hsl(var(--accent))"
-                      strokeDasharray="12 6"
-                      strokeWidth={4}
-                      label={{
-                        value: `N₁-nullcline (dN₁/dt = 0)`,
-                        position: 'top',
-                        style: { 
-                          fontSize: '14px', 
-                          fill: 'hsl(var(--accent))',
-                          fontWeight: '600',
-                          textShadow: '1px 1px 2px hsl(var(--background))'
-                        }
-                      }}
-                    />
-                    {/* N₂-nullcline: N₂ = K₂ - α₂₁*N₁ with enhanced styling */}
-                    <ReferenceLine 
-                      segment={[
-                        { x: 0, y: isoclines.K2 }, 
-                        { x: isoclines.K2 / isoclines.alpha21, y: 0 }
-                      ]}
-                      stroke="hsl(var(--secondary))"
-                      strokeDasharray="12 6"
-                      strokeWidth={4}
-                      label={{
-                        value: `N₂-nullcline (dN₂/dt = 0)`,
-                        position: 'bottom',
-                        style: { 
-                          fontSize: '14px', 
-                          fill: 'hsl(var(--secondary))',
-                          fontWeight: '600',
-                          textShadow: '1px 1px 2px hsl(var(--background))'
-                        }
-                      }}
-                    />
-                    
-                    {/* Competition equilibrium point */}
+                  })()}
+                  
+                  {/* Flow direction regions for competition */}
+                  <g className="competition-regions">
                     {(() => {
-                      const denominator = 1 - isoclines.alpha12 * isoclines.alpha21;
-                      if (Math.abs(denominator) > 0.001) {
-                        const eqN1 = (isoclines.K1 - isoclines.alpha12 * isoclines.K2) / denominator;
-                        const eqN2 = (isoclines.K2 - isoclines.alpha21 * isoclines.K1) / denominator;
-                        if (eqN1 > 0 && eqN2 > 0) {
-                          return (
-                            <ReferenceDot 
-                              x={eqN1} 
-                              y={eqN2} 
-                              r={8} 
-                              fill="hsl(var(--destructive))" 
-                              stroke="hsl(var(--background))"
-                              strokeWidth={3}
-                            />
-                          );
-                        }
-                      }
-                      return null;
+                      const midX = (isoclines.K1 / isoclines.alpha12 + isoclines.K2 / isoclines.alpha21) / 4;
+                      const midY = (isoclines.K1 + isoclines.K2) / 4;
+                      return (
+                        <>
+                          <text 
+                            x={midX * 0.5} 
+                            y={midY * 0.5} 
+                            fontSize="9" 
+                            fill="hsl(var(--muted-foreground))" 
+                            className="font-medium"
+                          >
+                            Region I
+                          </text>
+                          <text 
+                            x={midX * 3} 
+                            y={midY * 0.5} 
+                            fontSize="9" 
+                            fill="hsl(var(--muted-foreground))" 
+                            className="font-medium"
+                          >
+                            Region II
+                          </text>
+                          <text 
+                            x={midX * 0.5} 
+                            y={midY * 3} 
+                            fontSize="9" 
+                            fill="hsl(var(--muted-foreground))" 
+                            className="font-medium"
+                          >
+                            Region III
+                          </text>
+                          <text 
+                            x={midX * 3} 
+                            y={midY * 3} 
+                            fontSize="9" 
+                            fill="hsl(var(--muted-foreground))" 
+                            className="font-medium"
+                          >
+                            Region IV
+                          </text>
+                        </>
+                      );
                     })()}
-                    
-                    {/* Flow direction regions for competition */}
-                    <g className="competition-regions">
-                      {(() => {
-                        const midX = (isoclines.K1 / isoclines.alpha12 + isoclines.K2 / isoclines.alpha21) / 4;
-                        const midY = (isoclines.K1 + isoclines.K2) / 4;
-                        return (
-                          <>
-                            <text 
-                              x={midX * 0.5} 
-                              y={midY * 0.5} 
-                              fontSize="11" 
-                              fill="hsl(var(--muted-foreground))" 
-                              className="font-medium"
-                            >
-                              Region I
-                            </text>
-                            <text 
-                              x={midX * 3} 
-                              y={midY * 0.5} 
-                              fontSize="11" 
-                              fill="hsl(var(--muted-foreground))" 
-                              className="font-medium"
-                            >
-                              Region II
-                            </text>
-                            <text 
-                              x={midX * 0.5} 
-                              y={midY * 3} 
-                              fontSize="11" 
-                              fill="hsl(var(--muted-foreground))" 
-                              className="font-medium"
-                            >
-                              Region III
-                            </text>
-                            <text 
-                              x={midX * 3} 
-                              y={midY * 3} 
-                              fontSize="11" 
-                              fill="hsl(var(--muted-foreground))" 
-                              className="font-medium"
-                            >
-                              Region IV
-                            </text>
-                          </>
-                        );
-                      })()}
-                    </g>
-                  </>
-                )}
-                
-                {/* Equilibrium point for predator-prey */}
-                {modelType === 'predator-prey' && equilibrium && (
-                  <ReferenceDot 
-                    x={equilibrium.x} 
-                    y={equilibrium.y} 
-                    r={10} 
-                    fill="hsl(var(--destructive))" 
-                    stroke="hsl(var(--background))"
-                    strokeWidth={4}
-                  />
-                )}
-              </ScatterChart>
-            </ResponsiveContainer>
+                  </g>
+                </>
+              )}
+              
+              {/* Equilibrium point for predator-prey */}
+              {modelType === 'predator-prey' && equilibrium && (
+                <ReferenceDot 
+                  x={equilibrium.x} 
+                  y={equilibrium.y} 
+                  r={8} 
+                  fill="hsl(var(--destructive))" 
+                  stroke="hsl(var(--background))"
+                  strokeWidth={3}
+                />
+              )}
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
+        
+        <div className="mt-4 space-y-3 text-sm">
+          <div className="space-y-1">
+            <h4 className="font-semibold text-foreground">Phase Plane with Isoclines</h4>
+            <p className="text-muted-foreground text-xs">
+              Each point shows system state (N₁, N₂) at a time. Dashed lines are isoclines where growth rates equal zero.
+            </p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Collapsible Legend/Explanation */}
-      <Collapsible defaultOpen={false}>
-        <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left bg-muted/30 hover:bg-muted/50 rounded-lg border">
-          <span className="font-medium">Phase Plane Analysis Guide</span>
-          <ChevronDown className="h-4 w-4 transition-transform duration-200" />
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <Card className="mt-2">
-            <CardContent className="pt-4">
-              <div className="space-y-3 text-sm">
-                <div className="space-y-1">
-                  <h4 className="font-semibold text-foreground">Phase Plane with Isoclines</h4>
-                  <p className="text-muted-foreground text-xs">
-                    Each point shows system state (N₁, N₂) at a time. Dashed lines are isoclines where growth rates equal zero.
-                  </p>
-                </div>
-                
-                {modelType === 'predator-prey' ? (
-                  <div className="space-y-2 text-xs">
-                    <div className="p-3 bg-muted/50 rounded-lg border">
-                      <h5 className="font-medium text-foreground mb-2">Isoclines & Flow Pattern:</h5>
-                      <ul className="space-y-1 text-muted-foreground">
-                        <li>• <span className="font-medium text-accent">Horizontal line (N₂ = r₁/a):</span> Prey nullcline - predator population where prey growth = 0</li>
-                        <li>• <span className="font-medium text-secondary">Vertical line (N₁ = r₂/b):</span> Predator nullcline - prey population where predator growth = 0</li>
-                        <li>• <span className="font-medium">Clockwise flow:</span> Trajectories circulate around equilibrium intersection point</li>
-                        <li>• <span className="font-medium">Conserved orbits:</span> Each starting point creates a unique closed loop</li>
-                      </ul>
-                    </div>
-                    <p className="text-muted-foreground">
-                      <span className="inline-block w-2 h-2 bg-destructive rounded-full mr-1"></span>
-                      Red dot: Equilibrium (r₂/b, r₁/a) where isoclines intersect
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-2 text-xs">
-                    <div className="p-3 bg-muted/50 rounded-lg border">
-                      <h5 className="font-medium text-foreground mb-2">Isoclines & Competitive Outcome:</h5>
-                      <ul className="space-y-1 text-muted-foreground">
-                        <li>• <span className="font-medium text-accent">N₁-nullcline (N₁ = K₁ - α₁₂N₂):</span> Species 1 stops growing on this line</li>
-                        <li>• <span className="font-medium text-secondary">N₂-nullcline (N₂ = K₂ - α₂₁N₁):</span> Species 2 stops growing on this line</li>
-                        <li>• <span className="font-medium">Flow direction:</span> Populations move toward lower-right (competitive exclusion) or intersection (coexistence)</li>
-                        <li>• <span className="font-medium">Intersection slopes:</span> Determine if coexistence is stable or unstable</li>
-                      </ul>
-                    </div>
-                    <p className="text-muted-foreground">
-                      Trajectory endpoint shows competitive outcome: exclusion of one species or stable coexistence
-                    </p>
-                  </div>
-                )}
+          
+          {modelType === 'predator-prey' ? (
+            <div className="space-y-2 text-xs">
+              <div className="p-3 bg-muted/50 rounded-lg border">
+                <h5 className="font-medium text-foreground mb-2">Isoclines & Flow Pattern:</h5>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• <span className="font-medium text-accent">Horizontal line (N₂ = r₁/a):</span> Prey nullcline - predator population where prey growth = 0</li>
+                  <li>• <span className="font-medium text-secondary">Vertical line (N₁ = r₂/b):</span> Predator nullcline - prey population where predator growth = 0</li>
+                  <li>• <span className="font-medium">Clockwise flow:</span> Trajectories circulate around equilibrium intersection point</li>
+                  <li>• <span className="font-medium">Conserved orbits:</span> Each starting point creates a unique closed loop</li>
+                </ul>
               </div>
-            </CardContent>
-          </Card>
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
+              <p className="text-muted-foreground">
+                <span className="inline-block w-2 h-2 bg-destructive rounded-full mr-1"></span>
+                Red dot: Equilibrium (r₂/b, r₁/a) where isoclines intersect
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2 text-xs">
+              <div className="p-3 bg-muted/50 rounded-lg border">
+                <h5 className="font-medium text-foreground mb-2">Isoclines & Competitive Outcome:</h5>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• <span className="font-medium text-accent">N₁-nullcline (N₁ = K₁ - α₁₂N₂):</span> Species 1 stops growing on this line</li>
+                  <li>• <span className="font-medium text-secondary">N₂-nullcline (N₂ = K₂ - α₂₁N₁):</span> Species 2 stops growing on this line</li>
+                  <li>• <span className="font-medium">Flow direction:</span> Populations move toward lower-right (competitive exclusion) or intersection (coexistence)</li>
+                  <li>• <span className="font-medium">Intersection slopes:</span> Determine if coexistence is stable or unstable</li>
+                </ul>
+              </div>
+              <p className="text-muted-foreground">
+                Trajectory endpoint shows competitive outcome: exclusion of one species or stable coexistence
+              </p>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
