@@ -28,11 +28,17 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
               <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
                 <path d="M 20 0 L 0 0 0 20" fill="none" stroke="hsl(var(--border))" strokeWidth="0.5"/>
               </pattern>
-              <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                <polygon points="0 0, 8 3, 0 6" fill="hsl(var(--foreground))" />
+              <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                <polygon points="0 0, 10 4, 0 8" fill="#374151" />
               </marker>
-              <marker id="arrowhead-small" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
-                <polygon points="0 0, 6 2.5, 0 5" fill="hsl(var(--primary))" />
+              <marker id="arrow-red" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+                <polygon points="0 0, 12 5, 0 10" fill="#ef4444" />
+              </marker>
+              <marker id="arrow-green" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+                <polygon points="0 0, 12 5, 0 10" fill="#22c55e" />
+              </marker>
+              <marker id="arrow-blue" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+                <polygon points="0 0, 12 5, 0 10" fill="#3b82f6" />
               </marker>
             </defs>
             <rect width="240" height="220" fill="url(#grid)" />
@@ -85,15 +91,28 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
                 <circle cx="198" cy="58" r="2" fill="hsl(var(--destructive))"/>
                 <text x="203" y="61" fontSize="5" fill="hsl(var(--foreground))">Equilibrium</text>
                 
-                <text x="195" y="72" fontSize="5" fill="hsl(var(--muted-foreground))">Flow:</text>
-                <text x="195" y="80" fontSize="5" fill="hsl(var(--destructive))">→ Exclusion</text>
-                <text x="195" y="87" fontSize="5" fill="hsl(var(--primary))">→ Coexistence</text>
+                <text x="195" y="72" fontSize="5" fill="#6b7280">Flow:</text>
+                <line x1="193" y1="77" x2="203" y2="77" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
+                <text x="205" y="80" fontSize="5" fill="#ef4444">Exclusion</text>
+                <line x1="193" y1="84" x2="203" y2="84" stroke="#22c55e" strokeWidth="2" markerEnd="url(#arrow-green)"/>
+                <text x="205" y="87" fontSize="5" fill="#22c55e">Coexistence</text>
                 
-                {/* Simplified flow arrows */}
-                <path d="M 50 70 L 55 75" stroke="hsl(var(--destructive))" strokeWidth="2" markerEnd="url(#arrowhead-small)"/>
-                <path d="M 130 70 L 135 75" stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrowhead-small)"/>
-                <path d="M 50 130 L 55 125" stroke="hsl(var(--secondary))" strokeWidth="2" markerEnd="url(#arrowhead-small)"/>
-                <path d="M 130 130 L 125 125" stroke="hsl(var(--primary))" strokeWidth="2" markerEnd="url(#arrowhead-small)"/>
+                {/* Competition flow arrows - much more prominent */}
+                {/* Upper left region - Species 1 wins */}
+                <path d="M 40 50 L 55 65" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
+                <path d="M 50 40 L 65 55" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
+                
+                {/* Upper right region - Species 2 wins */}
+                <path d="M 140 50 L 125 65" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
+                <path d="M 150 40 L 135 55" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
+                
+                {/* Lower left region - Species 1 wins */}
+                <path d="M 40 140 L 55 125" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
+                <path d="M 50 150 L 65 135" stroke="#ef4444" strokeWidth="4" markerEnd="url(#arrow-red)"/>
+                
+                {/* Lower right region - Coexistence */}
+                <path d="M 140 140 L 125 125" stroke="#22c55e" strokeWidth="4" markerEnd="url(#arrow-green)"/>
+                <path d="M 150 130 L 135 115" stroke="#22c55e" strokeWidth="4" markerEnd="url(#arrow-green)"/>
               </>
             ) : (
               <>
@@ -135,47 +154,37 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
                 <circle cx="198" cy="58" r="2" fill="hsl(var(--destructive))"/>
                 <text x="203" y="61" fontSize="5" fill="hsl(var(--foreground))">Equilibrium</text>
                 
-                <text x="195" y="72" fontSize="5" fill="hsl(var(--muted-foreground))">Flow:</text>
-                <circle cx="198" cy="78" r="1" fill="hsl(var(--primary))"/>
-                <path d="M 200 78 Q 202 76 204 78" fill="none" stroke="hsl(var(--primary))" strokeWidth="1"/>
-                <text x="206" y="81" fontSize="5" fill="hsl(var(--primary))">Cycles</text>
+                <text x="195" y="72" fontSize="5" fill="#6b7280">Flow:</text>
+                <circle cx="198" cy="78" r="2" fill="#3b82f6"/>
+                <path d="M 200 78 Q 205 76 208 78" fill="none" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                <text x="210" y="81" fontSize="5" fill="#3b82f6">Cycles</text>
                 
                 <text x="195" y="90" fontSize="5" fill="hsl(var(--muted-foreground))">Regions:</text>
                 <text x="195" y="98" fontSize="4" fill="hsl(var(--muted-foreground))">Both ↑</text>
                 <text x="195" y="105" fontSize="4" fill="hsl(var(--muted-foreground))">Both ↓</text>
                 
-                {/* Circular flow arrows showing oscillatory dynamics */}
-                <path 
-                  d="M 130 70 Q 140 60 150 70" 
-                  fill="none" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth="2" 
-                  markerEnd="url(#arrowhead-small)"
-                />
+                {/* Predator-prey flow arrows - circular pattern */}
+                {/* Upper right quadrant - Both increase */}
+                <path d="M 130 70 L 145 70" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
+                <path d="M 140 60 L 140 75" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
                 
-                <path 
-                  d="M 70 70 Q 60 60 70 50" 
-                  fill="none" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth="2" 
-                  markerEnd="url(#arrowhead-small)"
-                />
+                {/* Upper left quadrant - Prey decrease, Predator increase */}
+                <path d="M 70 70 L 55 70" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
+                <path d="M 60 60 L 60 75" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
                 
-                <path 
-                  d="M 70 130 Q 60 140 50 130" 
-                  fill="none" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth="2" 
-                  markerEnd="url(#arrowhead-small)"
-                />
+                {/* Lower left quadrant - Both decrease */}
+                <path d="M 70 130 L 55 130" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
+                <path d="M 60 140 L 60 125" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
                 
-                <path 
-                  d="M 130 130 Q 140 140 130 150" 
-                  fill="none" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth="2" 
-                  markerEnd="url(#arrowhead-small)"
-                />
+                {/* Lower right quadrant - Prey increase, Predator decrease */}
+                <path d="M 130 130 L 145 130" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
+                <path d="M 140 140 L 140 125" stroke="#3b82f6" strokeWidth="4" markerEnd="url(#arrow-blue)"/>
+                
+                {/* Orbital flow indicators */}
+                <path d="M 120 80 Q 135 75 140 90" fill="none" stroke="#3b82f6" strokeWidth="3" markerEnd="url(#arrow-blue)"/>
+                <path d="M 80 80 Q 65 75 60 90" fill="none" stroke="#3b82f6" strokeWidth="3" markerEnd="url(#arrow-blue)"/>
+                <path d="M 80 120 Q 65 125 60 110" fill="none" stroke="#3b82f6" strokeWidth="3" markerEnd="url(#arrow-blue)"/>
+                <path d="M 120 120 Q 135 125 140 110" fill="none" stroke="#3b82f6" strokeWidth="3" markerEnd="url(#arrow-blue)"/>
                 
                 {/* Simplified flow direction labels */}
                 <text x="140" y="50" fontSize="5" fill="hsl(var(--muted-foreground))" className="font-medium">

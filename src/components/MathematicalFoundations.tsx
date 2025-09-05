@@ -290,10 +290,6 @@ export default function MathematicalFoundations() {
                     {section.id === "isoclines-flow-fields" && (
                       <div className="space-y-4">
                         <ComparisonDiagram />
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <IsoclineDiagram type="competition" />
-                          <IsoclineDiagram type="predator-prey" />
-                        </div>
                       </div>
                     )}
                     
