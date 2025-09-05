@@ -357,31 +357,51 @@ export default function IsoclineDiagram({ type, parameters, className }: Isoclin
                         })()}
                       </g>
                     </>
-                  ) : (
+                   ) : (
                     <>
-                      {/* Competitive exclusion indicators with aligned arrows */}
+                      {/* Regional background colors for exclusion */}
                       {(() => {
-                        const sp1WinX = scaleX(p.K1 * 0.7);
-                        const sp1WinY = scaleY(10);
-                        const sp2WinX = scaleX(10);
-                        const sp2WinY = scaleY(p.K2 * 0.7);
+                        const n1Int = scaleX(p.K1 / p.a12);
+                        const n2Int = scaleX(p.K2 / p.a21);
+                        const k1Y = scaleY(p.K1);
+                        const k2Y = scaleY(p.K2);
+                        
+                        // Determine which species wins based on nullcline positions
+                        const species1Wins = p.K1 / p.a12 > p.K2 / p.a21;
                         
                         return (
                           <>
-                            {/* Species 1 wins region */}
-                            <path d={`M ${sp1WinX - 30} ${sp1WinY + 20} L ${sp1WinX - 10} ${sp1WinY + 5}`} 
-                                  stroke="hsl(var(--destructive))" strokeWidth="3" markerEnd="url(#arrow-red)"/>
-                            <text x={sp1WinX - 35} y={sp1WinY + 25} fontSize="12" fill="hsl(var(--destructive))" 
-                                  fontWeight="700" textAnchor="end">
-                              Species 1 Wins
+                            {/* Background regions */}
+                            <rect x={margin.left} y={margin.top} 
+                                  width={chartWidth} height={chartHeight}
+                                  fill={species1Wins ? "hsl(var(--primary) / 0.08)" : "hsl(var(--secondary) / 0.08)"}/>
+                            
+                            {/* Regional labels */}
+                            <text x={margin.left + chartWidth * 0.3} y={margin.top + chartHeight * 0.2} 
+                                  fontSize="12" fill="hsl(var(--primary))" fontWeight="600" textAnchor="middle">
+                              Both species grow
+                            </text>
+                            <text x={margin.left + chartWidth * 0.3} y={margin.top + chartHeight * 0.3} 
+                                  fontSize="10" fill="hsl(var(--muted-foreground))" textAnchor="middle">
+                              toward carrying capacity
                             </text>
                             
-                            {/* Species 2 wins region */}
-                            <path d={`M ${sp2WinX + 20} ${sp2WinY - 30} L ${sp2WinX + 5} ${sp2WinY - 10}`} 
-                                  stroke="hsl(var(--destructive))" strokeWidth="3" markerEnd="url(#arrow-red)"/>
-                            <text x={sp2WinX + 25} y={sp2WinY - 35} fontSize="12" fill="hsl(var(--destructive))" 
-                                  fontWeight="700">
-                              Species 2 Wins
+                            <text x={margin.left + chartWidth * 0.7} y={margin.top + chartHeight * 0.4} 
+                                  fontSize="12" fill="hsl(var(--destructive))" fontWeight="600" textAnchor="middle">
+                              {species1Wins ? "Species 1 Wins" : "Species 2 Wins"}
+                            </text>
+                            <text x={margin.left + chartWidth * 0.7} y={margin.top + chartHeight * 0.5} 
+                                  fontSize="10" fill="hsl(var(--muted-foreground))" textAnchor="middle">
+                              Competitive exclusion
+                            </text>
+                            
+                            <text x={margin.left + chartWidth * 0.2} y={margin.top + chartHeight * 0.7} 
+                                  fontSize="12" fill="hsl(var(--destructive))" fontWeight="600" textAnchor="middle">
+                              {species1Wins ? "Species 1 Wins" : "Species 2 Wins"}
+                            </text>
+                            <text x={margin.left + chartWidth * 0.2} y={margin.top + chartHeight * 0.8} 
+                                  fontSize="10" fill="hsl(var(--muted-foreground))" textAnchor="middle">
+                              Competitive exclusion
                             </text>
                           </>
                         );
