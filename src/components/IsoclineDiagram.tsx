@@ -175,44 +175,32 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
                 <text x="195" y="98" fontSize="4" fill="hsl(var(--muted-foreground))">Both ↑</text>
                 <text x="195" y="105" fontSize="4" fill="hsl(var(--muted-foreground))">Both ↓</text>
                 
-                {/* Predator-prey flow arrows with region labels */}
-                {/* Upper right quadrant - Both increase */}
-                <rect x="115" y="40" width="50" height="35" fill="rgba(59, 130, 246, 0.1)" rx="3"/>
-                <path d="M 130 60 L 145 60" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <path d="M 140 50 L 140 65" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <text x="140" y="45" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  Prey ↑, Predator ↑
+                {/* Predator-prey flow arrows - simplified orbital flow */}
+                {/* Subtle background regions */}
+                <rect x="105" y="25" width="70" height="70" fill="rgba(59, 130, 246, 0.05)" rx="3"/>
+                <rect x="25" y="25" width="70" height="70" fill="rgba(59, 130, 246, 0.05)" rx="3"/>
+                <rect x="25" y="105" width="70" height="70" fill="rgba(59, 130, 246, 0.05)" rx="3"/>
+                <rect x="105" y="105" width="70" height="70" fill="rgba(59, 130, 246, 0.05)" rx="3"/>
+                
+                {/* Regional labels in corners */}
+                <text x="140" y="35" fontSize="7" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  ↑↑
+                </text>
+                <text x="60" y="35" fontSize="7" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  ↓↑
+                </text>
+                <text x="60" y="170" fontSize="7" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  ↓↓
+                </text>
+                <text x="140" y="170" fontSize="7" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                  ↑↓
                 </text>
                 
-                {/* Upper left quadrant - Prey decrease, Predator increase */}
-                <rect x="35" y="40" width="50" height="35" fill="rgba(59, 130, 246, 0.1)" rx="3"/>
-                <path d="M 70 60 L 55 60" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <path d="M 60 50 L 60 65" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <text x="60" y="45" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  Prey ↓, Predator ↑
-                </text>
-                
-                {/* Lower left quadrant - Both decrease */}
-                <rect x="35" y="125" width="50" height="35" fill="rgba(59, 130, 246, 0.1)" rx="3"/>
-                <path d="M 70 145 L 55 145" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <path d="M 60 155 L 60 140" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <text x="60" y="172" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  Prey ↓, Predator ↓
-                </text>
-                
-                {/* Lower right quadrant - Prey increase, Predator decrease */}
-                <rect x="115" y="125" width="50" height="35" fill="rgba(59, 130, 246, 0.1)" rx="3"/>
-                <path d="M 130 145 L 145 145" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <path d="M 140 155 L 140 140" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <text x="140" y="172" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  Prey ↑, Predator ↓
-                </text>
-                
-                {/* Orbital flow indicators - simplified */}
-                <path d="M 115 85 Q 125 75 135 85" fill="none" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <path d="M 85 85 Q 75 75 65 85" fill="none" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <path d="M 85 115 Q 75 125 65 115" fill="none" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
-                <path d="M 115 115 Q 125 125 135 115" fill="none" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrow-blue)"/>
+                {/* Improved orbital flow indicators - better positioned and sized */}
+                <path d="M 125 75 Q 135 65 145 75" fill="none" stroke="#3b82f6" strokeWidth="2.5" markerEnd="url(#arrow-blue)"/>
+                <path d="M 75 75 Q 65 65 55 75" fill="none" stroke="#3b82f6" strokeWidth="2.5" markerEnd="url(#arrow-blue)"/>
+                <path d="M 75 125 Q 65 135 55 125" fill="none" stroke="#3b82f6" strokeWidth="2.5" markerEnd="url(#arrow-blue)"/>
+                <path d="M 125 125 Q 135 135 145 125" fill="none" stroke="#3b82f6" strokeWidth="2.5" markerEnd="url(#arrow-blue)"/>
               </>
             )}
             
