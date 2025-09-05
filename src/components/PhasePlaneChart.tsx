@@ -188,50 +188,6 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                     }}
                   />
                   
-                  {/* Flow direction indicators for predator-prey */}
-                  <g className="flow-indicators">
-                    {/* Quadrant labels with flow directions */}
-                    <text 
-                      x={isoclines.predatorNullcline * 1.3} 
-                      y={isoclines.preyNullcline * 0.7} 
-                      fontSize="10" 
-                      fill="hsl(var(--muted-foreground))" 
-                      className="font-medium"
-                      textAnchor="middle"
-                    >
-                      Both ↑
-                    </text>
-                    <text 
-                      x={isoclines.predatorNullcline * 0.7} 
-                      y={isoclines.preyNullcline * 0.7} 
-                      fontSize="10" 
-                      fill="hsl(var(--muted-foreground))" 
-                      className="font-medium"
-                      textAnchor="middle"
-                    >
-                      Prey ↓, Pred ↑
-                    </text>
-                    <text 
-                      x={isoclines.predatorNullcline * 0.7} 
-                      y={isoclines.preyNullcline * 1.3} 
-                      fontSize="10" 
-                      fill="hsl(var(--muted-foreground))" 
-                      className="font-medium"
-                      textAnchor="middle"
-                    >
-                      Both ↓
-                    </text>
-                    <text 
-                      x={isoclines.predatorNullcline * 1.3} 
-                      y={isoclines.preyNullcline * 1.3} 
-                      fontSize="10" 
-                      fill="hsl(var(--muted-foreground))" 
-                      className="font-medium"
-                      textAnchor="middle"
-                    >
-                      Prey ↑, Pred ↓
-                    </text>
-                  </g>
                 </>
               )}
 
@@ -300,53 +256,6 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                     return null;
                   })()}
                   
-                  {/* Flow direction regions for competition */}
-                  <g className="competition-regions">
-                    {(() => {
-                      const midX = (isoclines.K1 / isoclines.alpha12 + isoclines.K2 / isoclines.alpha21) / 4;
-                      const midY = (isoclines.K1 + isoclines.K2) / 4;
-                      return (
-                        <>
-                          <text 
-                            x={midX * 0.5} 
-                            y={midY * 0.5} 
-                            fontSize="9" 
-                            fill="hsl(var(--muted-foreground))" 
-                            className="font-medium"
-                          >
-                            Region I
-                          </text>
-                          <text 
-                            x={midX * 3} 
-                            y={midY * 0.5} 
-                            fontSize="9" 
-                            fill="hsl(var(--muted-foreground))" 
-                            className="font-medium"
-                          >
-                            Region II
-                          </text>
-                          <text 
-                            x={midX * 0.5} 
-                            y={midY * 3} 
-                            fontSize="9" 
-                            fill="hsl(var(--muted-foreground))" 
-                            className="font-medium"
-                          >
-                            Region III
-                          </text>
-                          <text 
-                            x={midX * 3} 
-                            y={midY * 3} 
-                            fontSize="9" 
-                            fill="hsl(var(--muted-foreground))" 
-                            className="font-medium"
-                          >
-                            Region IV
-                          </text>
-                        </>
-                      );
-                    })()}
-                  </g>
                 </>
               )}
               

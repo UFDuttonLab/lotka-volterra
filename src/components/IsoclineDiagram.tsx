@@ -257,21 +257,23 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                     strokeWidth="4"
                   />
                   <text 
-                    x={competition.n1Nullcline.start.x + 15}
-                    y={competition.n1Nullcline.start.y - 15}
+                    x={(competition.n1Nullcline.start.x + competition.n1Nullcline.end.x) / 2}
+                    y={(competition.n1Nullcline.start.y + competition.n1Nullcline.end.y) / 2 - 15}
                     fontSize="12"
                     fill="hsl(var(--primary))"
                     fontWeight="700"
-                  >
-                    dN₁/dt = 0
-                  </text>
-                  <text 
-                    x={competition.n1Nullcline.start.x + 15}
-                    y={competition.n1Nullcline.start.y - 2}
-                    fontSize="10"
-                    fill="hsl(var(--primary))"
+                    textAnchor="middle"
                   >
                     N₁ = K₁ - α₁₂N₂
+                  </text>
+                  <text 
+                    x={(competition.n1Nullcline.start.x + competition.n1Nullcline.end.x) / 2}
+                    y={(competition.n1Nullcline.start.y + competition.n1Nullcline.end.y) / 2 - 2}
+                    fontSize="10"
+                    fill="hsl(var(--primary))"
+                    textAnchor="middle"
+                  >
+                    dN₁/dt = 0
                   </text>
                   
                   {/* Species 2 nullcline */}
@@ -284,23 +286,23 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                     strokeWidth="4"
                   />
                   <text 
-                    x={competition.n2Nullcline.end.x - 15}
-                    y={competition.n2Nullcline.end.y + 30}
+                    x={(competition.n2Nullcline.start.x + competition.n2Nullcline.end.x) / 2}
+                    y={(competition.n2Nullcline.start.y + competition.n2Nullcline.end.y) / 2 + 25}
                     fontSize="12"
                     fill="hsl(var(--secondary))"
                     fontWeight="700"
-                    textAnchor="end"
-                  >
-                    dN₂/dt = 0
-                  </text>
-                  <text 
-                    x={competition.n2Nullcline.end.x - 15}
-                    y={competition.n2Nullcline.end.y + 45}
-                    fontSize="10"
-                    fill="hsl(var(--secondary))"
-                    textAnchor="end"
+                    textAnchor="middle"
                   >
                     N₂ = K₂ - α₂₁N₁
+                  </text>
+                  <text 
+                    x={(competition.n2Nullcline.start.x + competition.n2Nullcline.end.x) / 2}
+                    y={(competition.n2Nullcline.start.y + competition.n2Nullcline.end.y) / 2 + 40}
+                    fontSize="10"
+                    fill="hsl(var(--secondary))"
+                    textAnchor="middle"
+                  >
+                    dN₂/dt = 0
                   </text>
                   
                   {/* Regional flow indicators */}
@@ -443,13 +445,23 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                     strokeWidth="4"
                   />
                   <text 
-                    x={margin.left + 20}
+                    x={margin.left + chartWidth / 2}
                     y={predatorPrey.preyNullcline.y - 8}
-                    fontSize="11"
+                    fontSize="12"
                     fill="hsl(var(--primary))"
                     fontWeight="700"
+                    textAnchor="middle"
                   >
-                    dN₁/dt = 0: N₂ = {predatorPrey.preyNullcline.value.toFixed(1)}
+                    N₂ = {predatorPrey.preyNullcline.value.toFixed(1)}
+                  </text>
+                  <text 
+                    x={margin.left + chartWidth / 2}
+                    y={predatorPrey.preyNullcline.y + 15}
+                    fontSize="10"
+                    fill="hsl(var(--primary))"
+                    textAnchor="middle"
+                  >
+                    dN₁/dt = 0
                   </text>
                   
                   {/* Predator nullcline (vertical) - Consolidated labels */}
@@ -462,73 +474,25 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                     strokeWidth="4"
                   />
                   <text 
-                    x={predatorPrey.predatorNullcline.x + 8}
-                    y={margin.top + 20}
-                    fontSize="11"
+                    x={predatorPrey.predatorNullcline.x + 15}
+                    y={margin.top + chartHeight / 2}
+                    fontSize="12"
                     fill="hsl(var(--secondary))"
                     fontWeight="700"
-                  >
-                    dN₂/dt = 0
-                  </text>
-                  <text 
-                    x={predatorPrey.predatorNullcline.x + 8}
-                    y={margin.top + 35}
-                    fontSize="10"
-                    fill="hsl(var(--secondary))"
+                    transform={`rotate(-90, ${predatorPrey.predatorNullcline.x + 15}, ${margin.top + chartHeight / 2})`}
                   >
                     N₁ = {predatorPrey.predatorNullcline.value.toFixed(1)}
                   </text>
+                  <text 
+                    x={predatorPrey.predatorNullcline.x - 15}
+                    y={margin.top + chartHeight / 2}
+                    fontSize="10"
+                    fill="hsl(var(--secondary))"
+                    transform={`rotate(-90, ${predatorPrey.predatorNullcline.x - 15}, ${margin.top + chartHeight / 2})`}
+                  >
+                    dN₂/dt = 0
+                  </text>
                   
-                  {/* Optimized quadrant labels with better spacing to avoid overlap */}
-                  {(() => {
-                    const eq = predatorPrey.equilibrium;
-                    const quadrantOffset = 70; // Increased distance from equilibrium
-                    const labelSpacing = 18;    // Space between label lines
-                    
-                    return (
-                      <>
-                        {/* Quadrant II (top-left): Prey increases, Predator decreases */}
-                        <text x={eq.x - quadrantOffset} y={eq.y - quadrantOffset} 
-                              fontSize="12" fill="hsl(var(--primary))" fontWeight="700" textAnchor="middle">
-                          Prey Growth
-                        </text>
-                        <text x={eq.x - quadrantOffset} y={eq.y - quadrantOffset + labelSpacing} 
-                              fontSize="10" fill="hsl(var(--primary))" textAnchor="middle">
-                          N₁↑, N₂↓
-                        </text>
-                        
-                        {/* Quadrant I (top-right): Both decrease initially */}
-                        <text x={eq.x + quadrantOffset} y={eq.y - quadrantOffset} 
-                              fontSize="12" fill="hsl(var(--secondary))" fontWeight="700" textAnchor="middle">
-                          Predator Growth
-                        </text>
-                        <text x={eq.x + quadrantOffset} y={eq.y - quadrantOffset + labelSpacing} 
-                              fontSize="10" fill="hsl(var(--secondary))" textAnchor="middle">
-                          N₁↓, N₂↑
-                        </text>
-                        
-                        {/* Quadrant III (bottom-left): Both decline */}
-                        <text x={eq.x - quadrantOffset} y={eq.y + quadrantOffset} 
-                              fontSize="12" fill="hsl(var(--accent))" fontWeight="700" textAnchor="middle">
-                          Both Decline
-                        </text>
-                        <text x={eq.x - quadrantOffset} y={eq.y + quadrantOffset + labelSpacing} 
-                              fontSize="10" fill="hsl(var(--accent))" textAnchor="middle">
-                          N₁↓, N₂↓
-                        </text>
-                        
-                        {/* Quadrant IV (bottom-right): Both grow */}
-                        <text x={eq.x + quadrantOffset} y={eq.y + quadrantOffset} 
-                              fontSize="12" fill="hsl(var(--muted-foreground))" fontWeight="700" textAnchor="middle">
-                          Both Grow
-                        </text>
-                        <text x={eq.x + quadrantOffset} y={eq.y + quadrantOffset + labelSpacing} 
-                              fontSize="10" fill="hsl(var(--muted-foreground))" textAnchor="middle">
-                          N₁↑, N₂↑
-                        </text>
-                      </>
-                    );
-                  })()}
                   
                   {/* Equilibrium point - Repositioned label */}
                   <circle 
