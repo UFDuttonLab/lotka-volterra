@@ -84,11 +84,11 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-64">
+        <div className="h-[500px] lg:h-[600px]">
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart
               data={phaseData}
-              margin={{ top: 30, right: 50, left: 60, bottom: 50 }}
+              margin={{ top: 40, right: 70, left: 80, bottom: 60 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis 
@@ -96,13 +96,13 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 dataKey="prey" 
                 name={xLabel}
                 stroke="hsl(var(--foreground))"
-                fontSize={13}
+                fontSize={16}
                 fontWeight={500}
                 label={{ 
                   value: xLabel, 
                   position: 'insideBottom', 
-                  offset: -10,
-                  style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '14px', fontWeight: '600' }
+                  offset: -15,
+                  style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '16px', fontWeight: '600' }
                 }}
               />
               <YAxis 
@@ -110,13 +110,13 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 dataKey="predator" 
                 name={yLabel}
                 stroke="hsl(var(--foreground))"
-                fontSize={13}
+                fontSize={16}
                 fontWeight={500}
                 label={{ 
                   value: yLabel, 
                   angle: -90, 
                   position: 'insideLeft',
-                  style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '14px', fontWeight: '600' }
+                  style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))', fontSize: '16px', fontWeight: '600' }
                 }}
               />
               <Tooltip 
@@ -144,9 +144,10 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
               <Scatter 
                 dataKey="predator" 
                 fill="hsl(var(--primary))" 
-                fillOpacity={0.6}
+                fillOpacity={0.8}
                 stroke="hsl(var(--primary))"
-                strokeWidth={1}
+                strokeWidth={2}
+                r={4}
               />
               
               {/* Enhanced Isoclines with flow indicators */}
@@ -162,7 +163,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                       value: `Prey nullcline: N₂ = ${isoclines.preyNullcline.toFixed(2)} (dN₁/dt = 0)`,
                       position: 'top',
                       style: { 
-                        fontSize: '12px', 
+                        fontSize: '14px', 
                         fill: 'hsl(var(--accent))', 
                         fontWeight: '600',
                         textShadow: '1px 1px 2px hsl(var(--background))'
@@ -180,7 +181,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                       position: 'top',
                       angle: -90,
                       style: { 
-                        fontSize: '12px', 
+                        fontSize: '14px', 
                         fill: 'hsl(var(--secondary))',
                         fontWeight: '600',
                         textShadow: '1px 1px 2px hsl(var(--background))'
