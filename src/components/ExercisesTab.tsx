@@ -142,8 +142,8 @@ const competitionExercises: Exercise[] = [
         { id: "c", text: "Yes, Species 2 can invade and both species will coexist" },
         { id: "d", text: "The invasion depends on random environmental factors" }
       ],
-      correctAnswer: "b",
-      explanation: "Species 2 can invade because with α₂₁ = 0.5, when Species 1 is at carrying capacity (150), Species 2 can still grow: dN₂/dt = 1.1N₂(1 - 0.5×150/90) = 1.1N₂(0.17) > 0. Since Species 2 can grow when Species 1 is established and α₁₂ = 0.8 means Species 1 is significantly affected by Species 2, the invader will eventually exclude the resident.",
+      correctAnswer: "c",
+      explanation: "Species 2 can successfully invade because α₂₁ = 0.5 < K₂/K₁ = 0.6, allowing growth when Species 1 is at carrying capacity: dN₂/dt = 1.1N₂(1 - 0.5×150/90) = 1.1N₂(0.17) > 0. However, since α₁₂ = 0.8 < K₁/K₂ = 1.67 AND α₂₁ = 0.5 < K₂/K₁ = 0.6, both inequality conditions for coexistence are met. Both species will reach a stable equilibrium together.",
       hint: "For invasion analysis, check if the invading species can grow when the resident is at equilibrium"
     }
   }
