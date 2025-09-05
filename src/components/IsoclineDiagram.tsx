@@ -2,12 +2,84 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ArrowUp, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
+interface CompetitionParameters {
+  r1: number;
+  r2: number;
+  K1: number;
+  K2: number;
+  a12: number;
+  a21: number;
+  N1_0: number;
+  N2_0: number;
+}
+
+interface PredatorPreyParameters {
+  r1: number;
+  r2: number;
+  a: number;
+  b: number;
+  N1_0: number;
+  N2_0: number;
+}
+
 interface IsoclineDiagramProps {
   type: "competition" | "predator-prey";
+  parameters?: CompetitionParameters & PredatorPreyParameters;
   className?: string;
 }
 
-export default function IsoclineDiagram({ type, className }: IsoclineDiagramProps) {
+export default function IsoclineDiagram({ type, parameters, className }: IsoclineDiagramProps) {
+  // Default parameters for display when none provided
+  const defaultParams = {
+    r1: 1.0, r2: 0.8, K1: 100, K2: 100, a12: 0.8, a21: 1.2,
+    a: 0.012, b: 0.008, N1_0: 80, N2_0: 20,
+  };
+  
+  const p = parameters || defaultParams;
+  
+  // Calculate mathematically accurate isocline positions
+  const viewBoxWidth = 240;
+  const viewBoxHeight = 220;
+  const chartWidth = 160;
+  const chartHeight = 160;
+  const originX = 20;
+  const originY = 180;
+  
+  // Scale parameters to fit chart dimensions
+  const scaleX = chartWidth / (type === 'competition' ? Math.max(p.K1, p.K2) * 1.2 : Math.max(p.N1_0 * 3, p.r2/p.b * 2));
+  const scaleY = chartHeight / (type === 'competition' ? Math.max(p.K1, p.K2) * 1.2 : Math.max(p.N2_0 * 3, p.r1/p.a * 2));
+  
+  // Competition model calculations
+  const competitionCalcs = type === 'competition' ? {
+    // N1-nullcline: N1 = K1 - a12*N2, rearranged: N2 = (K1 - N1)/a12
+    n1NullclineStart: { x: originX, y: originY - (p.K1/p.a12) * scaleY },
+    n1NullclineEnd: { x: originX + p.K1 * scaleX, y: originY },
+    
+    // N2-nullcline: N2 = K2 - a21*N1, rearranged: N2 = K2 - a21*N1
+    n2NullclineStart: { x: originX, y: originY - p.K2 * scaleY },
+    n2NullclineEnd: { x: originX + (p.K2/p.a21) * scaleX, y: originY },
+    
+    // Equilibrium point: intersection of nullclines
+    equilibrium: {
+      x: originX + ((p.K1 - p.a12 * p.K2) / (1 - p.a12 * p.a21)) * scaleX,
+      y: originY - ((p.K2 - p.a21 * p.K1) / (1 - p.a12 * p.a21)) * scaleY
+    }
+  } : null;
+  
+  // Predator-prey model calculations  
+  const predatorPreyCalcs = type === 'predator-prey' ? {
+    // Prey nullcline: horizontal line at N2 = r1/a
+    preyNullclineY: originY - (p.r1/p.a) * scaleY,
+    
+    // Predator nullcline: vertical line at N1 = r2/b
+    predatorNullclineX: originX + (p.r2/p.b) * scaleX,
+    
+    // Equilibrium point
+    equilibrium: {
+      x: originX + (p.r2/p.b) * scaleX,
+      y: originY - (p.r1/p.a) * scaleY
+    }
+  } : null;
   return (
     <Card className={`shadow-card ${className}`}>
       <CardHeader className="pb-3">
@@ -51,36 +123,53 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
             <rect x="190" y="30" width="45" height={type === 'competition' ? '60' : '80'} fill="hsl(var(--background))" stroke="hsl(var(--border))" strokeWidth="1" rx="4"/>
             <text x="195" y="42" fontSize="7" fill="hsl(var(--foreground))" className="font-semibold">Legend</text>
             
-            {type === 'competition' ? (
+            {type === 'competition' && competitionCalcs ? (
               <>
-                {/* Competition isoclines - diagonal lines */}
-                {/* N₁-nullcline: negative slope */}
+                {/* Competition isoclines - mathematically accurate */}
+                {/* N₁-nullcline: N1 = K1 - a12*N2 */}
                 <line 
-                  x1="20" y1="60" 
-                  x2="140" y2="180" 
+                  x1={competitionCalcs.n1NullclineStart.x} 
+                  y1={Math.max(20, Math.min(180, competitionCalcs.n1NullclineStart.y))}
+                  x2={competitionCalcs.n1NullclineEnd.x} 
+                  y2={competitionCalcs.n1NullclineEnd.y}
                   stroke="hsl(var(--accent))" 
                   strokeWidth="3" 
                   strokeDasharray="8,4"
                 />
                 <text x="70" y="55" fontSize="7" fill="hsl(var(--accent))" className="font-medium">
-                  N₁-nullcline
+                  N₁ = {p.K1.toFixed(0)} - {p.a12.toFixed(1)}N₂
                 </text>
                 
-                {/* N₂-nullcline: negative slope */}
+                {/* N₂-nullcline: N2 = K2 - a21*N1 */}
                 <line 
-                  x1="60" y1="20" 
-                  x2="180" y2="140" 
+                  x1={competitionCalcs.n2NullclineStart.x}
+                  y1={Math.max(20, Math.min(180, competitionCalcs.n2NullclineStart.y))}
+                  x2={competitionCalcs.n2NullclineEnd.x}
+                  y2={competitionCalcs.n2NullclineEnd.y}
                   stroke="hsl(var(--secondary))" 
                   strokeWidth="3" 
                   strokeDasharray="8,4"
                 />
                 <text x="130" y="35" fontSize="7" fill="hsl(var(--secondary))" className="font-medium">
-                  N₂-nullcline
+                  N₂ = {p.K2.toFixed(0)} - {p.a21.toFixed(1)}N₁
                 </text>
                 
-                {/* Intersection point */}
-                <circle cx="100" cy="100" r="3" fill="hsl(var(--destructive))" stroke="hsl(var(--background))" strokeWidth="1"/>
-                <text x="105" y="96" fontSize="6" fill="hsl(var(--foreground))" className="font-medium">
+                {/* Mathematically calculated intersection point */}
+                <circle 
+                  cx={Math.max(20, Math.min(180, competitionCalcs.equilibrium.x))} 
+                  cy={Math.max(20, Math.min(180, competitionCalcs.equilibrium.y))} 
+                  r="3" 
+                  fill="hsl(var(--destructive))" 
+                  stroke="hsl(var(--background))" 
+                  strokeWidth="1"
+                />
+                <text 
+                  x={Math.max(25, Math.min(175, competitionCalcs.equilibrium.x + 5))} 
+                  y={Math.max(25, Math.min(175, competitionCalcs.equilibrium.y - 4))} 
+                  fontSize="6" 
+                  fill="hsl(var(--foreground))" 
+                  className="font-medium"
+                >
                   Equilibrium
                 </text>
                 
@@ -97,65 +186,130 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
                 <line x1="193" y1="84" x2="203" y2="84" stroke="#22c55e" strokeWidth="2" markerEnd="url(#arrow-green)"/>
                 <text x="205" y="87" fontSize="5" fill="#22c55e">Coexistence</text>
                 
-                {/* Competition flow arrows with labels */}
-                {/* Upper left region - Species 1 wins */}
-                <rect x="35" y="35" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
-                <path d="M 45 50 L 60 65" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
-                <text x="55" y="45" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
-                  Species 1 wins
-                </text>
-                
-                {/* Upper right region - Species 2 wins */}
-                <rect x="125" y="35" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
-                <path d="M 155 50 L 140 65" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
-                <text x="145" y="45" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
-                  Species 2 wins
-                </text>
-                
-                {/* Lower left region - Species 1 wins */}
-                <rect x="35" y="135" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
-                <path d="M 45 150 L 60 135" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
-                <text x="55" y="155" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
-                  Species 1 wins
-                </text>
-                
-                {/* Lower right region - Coexistence */}
-                <rect x="125" y="135" width="40" height="25" fill="rgba(34, 197, 94, 0.1)" rx="3"/>
-                <path d="M 145 150 L 130 135" stroke="#22c55e" strokeWidth="2" markerEnd="url(#arrow-green)"/>
-                <text x="145" y="155" fontSize="6" fill="#22c55e" className="font-semibold" textAnchor="middle">
-                  Coexistence
-                </text>
+                {/* Competition flow arrows - mathematically determined */}
+                {(() => {
+                  const coexistenceCondition = (1 - p.a12 * p.a21) > 0 && 
+                    ((p.K1 - p.a12 * p.K2) / (1 - p.a12 * p.a21)) > 0 && 
+                    ((p.K2 - p.a21 * p.K1) / (1 - p.a12 * p.a21)) > 0;
+                  
+                  return coexistenceCondition ? (
+                    <>
+                      {/* All regions flow toward coexistence equilibrium */}
+                      <rect x="35" y="35" width="40" height="25" fill="rgba(34, 197, 94, 0.1)" rx="3"/>
+                      <path d="M 45 50 L 60 65" stroke="#22c55e" strokeWidth="2" markerEnd="url(#arrow-green)"/>
+                      <text x="55" y="45" fontSize="6" fill="#22c55e" className="font-semibold" textAnchor="middle">
+                        → Coexistence
+                      </text>
+                      
+                      <rect x="125" y="35" width="40" height="25" fill="rgba(34, 197, 94, 0.1)" rx="3"/>
+                      <path d="M 155 50 L 140 65" stroke="#22c55e" strokeWidth="2" markerEnd="url(#arrow-green)"/>
+                      <text x="145" y="45" fontSize="6" fill="#22c55e" className="font-semibold" textAnchor="middle">
+                        → Coexistence
+                      </text>
+                      
+                      <rect x="35" y="135" width="40" height="25" fill="rgba(34, 197, 94, 0.1)" rx="3"/>
+                      <path d="M 45 150 L 60 135" stroke="#22c55e" strokeWidth="2" markerEnd="url(#arrow-green)"/>
+                      <text x="55" y="155" fontSize="6" fill="#22c55e" className="font-semibold" textAnchor="middle">
+                        → Coexistence
+                      </text>
+                      
+                      <rect x="125" y="135" width="40" height="25" fill="rgba(34, 197, 94, 0.1)" rx="3"/>
+                      <path d="M 145 150 L 130 135" stroke="#22c55e" strokeWidth="2" markerEnd="url(#arrow-green)"/>
+                      <text x="145" y="155" fontSize="6" fill="#22c55e" className="font-semibold" textAnchor="middle">
+                        → Coexistence
+                      </text>
+                    </>
+                  ) : (
+                    <>
+                      {/* Competitive exclusion scenario */}
+                      <rect x="35" y="35" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
+                      <path d="M 45 50 L 30 35" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
+                      <text x="55" y="45" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
+                        Species {p.a12 > p.a21 ? '2' : '1'} wins
+                      </text>
+                      
+                      <rect x="125" y="35" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
+                      <path d="M 155 50 L 170 35" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
+                      <text x="145" y="45" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
+                        Species {p.a12 > p.a21 ? '2' : '1'} wins
+                      </text>
+                      
+                      <rect x="35" y="135" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
+                      <path d="M 45 150 L 30 165" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
+                      <text x="55" y="155" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
+                        Species {p.a12 > p.a21 ? '2' : '1'} wins
+                      </text>
+                      
+                      <rect x="125" y="135" width="40" height="25" fill="rgba(239, 68, 68, 0.1)" rx="3"/>
+                      <path d="M 145 150 L 170 165" stroke="#ef4444" strokeWidth="2" markerEnd="url(#arrow-red)"/>
+                      <text x="145" y="155" fontSize="6" fill="#ef4444" className="font-semibold" textAnchor="middle">
+                        Species {p.a12 > p.a21 ? '2' : '1'} wins
+                      </text>
+                    </>
+                  );
+                })()}
               </>
-            ) : (
+            ) : predatorPreyCalcs ? (
               <>
-                {/* Predator-prey isoclines - perpendicular lines */}
-                {/* Prey nullcline: horizontal line */}
+                {/* Predator-prey isoclines - mathematically accurate */}
+                {/* Prey nullcline: horizontal line at N2 = r1/a */}
                 <line 
-                  x1="20" y1="100" 
-                  x2="180" y2="100" 
+                  x1="20" 
+                  y1={Math.max(20, Math.min(180, predatorPreyCalcs.preyNullclineY))}
+                  x2="180" 
+                  y2={Math.max(20, Math.min(180, predatorPreyCalcs.preyNullclineY))}
                   stroke="hsl(var(--accent))" 
                   strokeWidth="3" 
                   strokeDasharray="8,4"
                 />
-                <text x="90" y="92" fontSize="6" fill="hsl(var(--accent))" className="font-medium" textAnchor="middle">
-                  Prey nullcline
+                <text 
+                  x="90" 
+                  y={Math.max(25, Math.min(175, predatorPreyCalcs.preyNullclineY - 8))} 
+                  fontSize="6" 
+                  fill="hsl(var(--accent))" 
+                  className="font-medium" 
+                  textAnchor="middle"
+                >
+                  Prey nullcline: N₂ = {(p.r1/p.a).toFixed(1)}
                 </text>
                 
-                {/* Predator nullcline: vertical line */}
+                {/* Predator nullcline: vertical line at N1 = r2/b */}
                 <line 
-                  x1="100" y1="20" 
-                  x2="100" y2="180" 
+                  x1={Math.max(20, Math.min(180, predatorPreyCalcs.predatorNullclineX))}
+                  y1="20" 
+                  x2={Math.max(20, Math.min(180, predatorPreyCalcs.predatorNullclineX))}
+                  y2="180" 
                   stroke="hsl(var(--secondary))" 
                   strokeWidth="3" 
                   strokeDasharray="8,4"
                 />
-                <text x="110" y="50" fontSize="6" fill="hsl(var(--secondary))" className="font-medium">
-                  Predator nullcline
+                <text 
+                  x={Math.max(25, Math.min(175, predatorPreyCalcs.predatorNullclineX + 8))} 
+                  y="50" 
+                  fontSize="6" 
+                  fill="hsl(var(--secondary))" 
+                  className="font-medium"
+                  transform={`rotate(-90, ${Math.max(25, Math.min(175, predatorPreyCalcs.predatorNullclineX + 8))}, 50)`}
+                >
+                  Predator nullcline: N₁ = {(p.r2/p.b).toFixed(1)}
                 </text>
                 
-                {/* Intersection point */}
-                <circle cx="100" cy="100" r="3" fill="hsl(var(--destructive))" stroke="hsl(var(--background))" strokeWidth="1"/>
-                <text x="105" y="96" fontSize="6" fill="hsl(var(--foreground))" className="font-medium">
+                {/* Mathematically calculated intersection point */}
+                <circle 
+                  cx={Math.max(20, Math.min(180, predatorPreyCalcs.equilibrium.x))} 
+                  cy={Math.max(20, Math.min(180, predatorPreyCalcs.equilibrium.y))} 
+                  r="3" 
+                  fill="hsl(var(--destructive))" 
+                  stroke="hsl(var(--background))" 
+                  strokeWidth="1"
+                />
+                <text 
+                  x={Math.max(25, Math.min(175, predatorPreyCalcs.equilibrium.x + 5))} 
+                  y={Math.max(25, Math.min(175, predatorPreyCalcs.equilibrium.y - 4))} 
+                  fontSize="6" 
+                  fill="hsl(var(--foreground))" 
+                  className="font-medium"
+                >
                   Equilibrium
                 </text>
                 
@@ -182,27 +336,40 @@ export default function IsoclineDiagram({ type, className }: IsoclineDiagramProp
                 <rect x="25" y="105" width="70" height="70" fill="rgba(59, 130, 246, 0.05)" rx="3"/>
                 <rect x="105" y="105" width="70" height="70" fill="rgba(59, 130, 246, 0.05)" rx="3"/>
                 
-                {/* Regional labels in corners */}
-                <text x="140" y="35" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  Prey ↑, Predator ↑
-                </text>
-                <text x="60" y="35" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  Prey ↓, Predator ↑
-                </text>
-                <text x="60" y="170" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  Prey ↓, Predator ↓
-                </text>
-                <text x="140" y="170" fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
-                  Prey ↑, Predator ↓
-                </text>
-                
-                {/* Improved orbital flow indicators - better positioned and sized */}
-                <path d="M 125 75 Q 135 65 145 75" fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
-                <path d="M 75 75 Q 65 65 55 75" fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
-                <path d="M 75 125 Q 65 135 55 125" fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
-                <path d="M 125 125 Q 135 135 145 125" fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
+                {/* Mathematically correct regional flow labels */}
+                {(() => {
+                  const eqX = predatorPreyCalcs.equilibrium.x;
+                  const eqY = predatorPreyCalcs.equilibrium.y;
+                  
+                  return (
+                    <>
+                      {/* Upper right quadrant: Both populations increasing */}
+                      <text x={Math.min(160, eqX + 30)} y={Math.max(35, eqY - 30)} fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                        Prey ↑, Predator ↑
+                      </text>
+                      {/* Upper left quadrant: Prey decreasing, Predator increasing */}
+                      <text x={Math.max(40, eqX - 30)} y={Math.max(35, eqY - 30)} fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                        Prey ↓, Predator ↑
+                      </text>
+                      {/* Lower left quadrant: Both populations decreasing */}
+                      <text x={Math.max(40, eqX - 30)} y={Math.min(170, eqY + 30)} fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                        Prey ↓, Predator ↓
+                      </text>
+                      {/* Lower right quadrant: Prey increasing, Predator decreasing */}
+                      <text x={Math.min(160, eqX + 30)} y={Math.min(170, eqY + 30)} fontSize="6" fill="#3b82f6" className="font-semibold" textAnchor="middle">
+                        Prey ↑, Predator ↓
+                      </text>
+                      
+                      {/* Clockwise orbital flow indicators around equilibrium */}
+                      <path d={`M ${eqX + 25} ${eqY - 25} Q ${eqX + 35} ${eqY - 35} ${eqX + 45} ${eqY - 25}`} fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
+                      <path d={`M ${eqX - 25} ${eqY - 25} Q ${eqX - 35} ${eqY - 35} ${eqX - 45} ${eqY - 25}`} fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
+                      <path d={`M ${eqX - 25} ${eqY + 25} Q ${eqX - 35} ${eqY + 35} ${eqX - 45} ${eqY + 25}`} fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
+                      <path d={`M ${eqX + 25} ${eqY + 25} Q ${eqX + 35} ${eqY + 35} ${eqX + 45} ${eqY + 25}`} fill="none" stroke="#3b82f6" strokeWidth="1.5" markerEnd="url(#arrow-blue)"/>
+                    </>
+                  );
+                })()}
               </>
-            )}
+            ) : null}
             
             {/* Axis labels */}
             <text x="190" y="185" fontSize="8" fill="hsl(var(--foreground))" className="font-medium">

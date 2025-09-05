@@ -3,7 +3,31 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import IsoclineDiagram from "./IsoclineDiagram";
 
-export default function ComparisonDiagram() {
+interface CompetitionParameters {
+  r1: number;
+  r2: number;
+  K1: number;
+  K2: number;
+  a12: number;
+  a21: number;
+  N1_0: number;
+  N2_0: number;
+}
+
+interface PredatorPreyParameters {
+  r1: number;
+  r2: number;
+  a: number;
+  b: number;
+  N1_0: number;
+  N2_0: number;
+}
+
+interface ComparisonDiagramProps {
+  parameters?: CompetitionParameters & PredatorPreyParameters;
+}
+
+export default function ComparisonDiagram({ parameters }: ComparisonDiagramProps) {
   return (
     <Card className="shadow-card">
       <CardHeader>
@@ -21,8 +45,8 @@ export default function ComparisonDiagram() {
           
           <TabsContent value="side-by-side" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <IsoclineDiagram type="competition" />
-              <IsoclineDiagram type="predator-prey" />
+              <IsoclineDiagram type="competition" parameters={parameters} />
+              <IsoclineDiagram type="predator-prey" parameters={parameters} />
             </div>
           </TabsContent>
           
@@ -46,8 +70,8 @@ export default function ComparisonDiagram() {
                   <div className="p-3 bg-muted/30 rounded-lg">
                     <h4 className="font-medium text-foreground">Equations:</h4>
                     <p className="text-muted-foreground font-mono text-xs">
-                      N₁ = K₁ - α₁₂N₂<br/>
-                      N₂ = K₂ - α₂₁N₁
+                      N₁ = {parameters ? `${parameters.K1.toFixed(0)} - ${parameters.a12.toFixed(1)}N₂` : 'K₁ - α₁₂N₂'}<br/>
+                      N₂ = {parameters ? `${parameters.K2.toFixed(0)} - ${parameters.a21.toFixed(1)}N₁` : 'K₂ - α₂₁N₁'}
                     </p>
                   </div>
                 </div>
@@ -71,8 +95,8 @@ export default function ComparisonDiagram() {
                   <div className="p-3 bg-muted/30 rounded-lg">
                     <h4 className="font-medium text-foreground">Equations:</h4>
                     <p className="text-muted-foreground font-mono text-xs">
-                      N₂ = r₁/a (horizontal)<br/>
-                      N₁ = r₂/b (vertical)
+                      N₂ = {parameters ? `${(parameters.r1/parameters.a).toFixed(1)}` : 'r₁/a'} (horizontal)<br/>
+                      N₁ = {parameters ? `${(parameters.r2/parameters.b).toFixed(1)}` : 'r₂/b'} (vertical)
                     </p>
                   </div>
                 </div>

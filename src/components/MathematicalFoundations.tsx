@@ -6,6 +6,30 @@ import { useState } from "react";
 import ComparisonDiagram from "./ComparisonDiagram";
 import IsoclineDiagram from "./IsoclineDiagram";
 
+interface CompetitionParameters {
+  r1: number;
+  r2: number;
+  K1: number;
+  K2: number;
+  a12: number;
+  a21: number;
+  N1_0: number;
+  N2_0: number;
+}
+
+interface PredatorPreyParameters {
+  r1: number;
+  r2: number;
+  a: number;
+  b: number;
+  N1_0: number;
+  N2_0: number;
+}
+
+interface MathematicalFoundationsProps {
+  parameters?: CompetitionParameters & PredatorPreyParameters;
+}
+
 interface MathSection {
   id: string;
   title: string;
@@ -228,7 +252,7 @@ const mathSections: MathSection[] = [
   }
 ];
 
-export default function MathematicalFoundations() {
+export default function MathematicalFoundations({ parameters }: MathematicalFoundationsProps) {
   const [openSections, setOpenSections] = useState<string[]>(["parameter-definitions"]);
 
   const toggleSection = (sectionId: string) => {
@@ -289,7 +313,7 @@ export default function MathematicalFoundations() {
                     {/* Add interactive visual diagrams for isoclines section */}
                     {section.id === "isoclines-flow-fields" && (
                       <div className="space-y-4">
-                        <ComparisonDiagram />
+                        <ComparisonDiagram parameters={parameters} />
                       </div>
                     )}
                     
