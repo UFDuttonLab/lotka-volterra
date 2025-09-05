@@ -149,69 +149,204 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 strokeWidth={1}
               />
               
-              {/* Isoclines */}
+              {/* Enhanced Isoclines with flow indicators */}
               {modelType === 'predator-prey' && isoclines && (
                 <>
-                  {/* Prey nullcline: horizontal line */}
+                  {/* Prey nullcline: horizontal line with enhanced styling */}
                   <ReferenceLine 
                     y={isoclines.preyNullcline}
                     stroke="hsl(var(--accent))"
-                    strokeDasharray="8 4"
-                    strokeWidth={2}
+                    strokeDasharray="12 6"
+                    strokeWidth={3}
                     label={{
-                      value: `Prey nullcline: N₂ = ${isoclines.preyNullcline.toFixed(2)}`,
+                      value: `Prey nullcline: N₂ = ${isoclines.preyNullcline.toFixed(2)} (dN₁/dt = 0)`,
                       position: 'top',
-                      style: { fontSize: '11px', fill: 'hsl(var(--accent))' }
+                      style: { 
+                        fontSize: '12px', 
+                        fill: 'hsl(var(--accent))', 
+                        fontWeight: '600',
+                        textShadow: '1px 1px 2px hsl(var(--background))'
+                      }
                     }}
                   />
-                  {/* Predator nullcline: vertical line */}
+                  {/* Predator nullcline: vertical line with enhanced styling */}
                   <ReferenceLine 
                     x={isoclines.predatorNullcline}
                     stroke="hsl(var(--secondary))"
-                    strokeDasharray="8 4" 
-                    strokeWidth={2}
+                    strokeDasharray="12 6" 
+                    strokeWidth={3}
                     label={{
-                      value: `Predator nullcline: N₁ = ${isoclines.predatorNullcline.toFixed(2)}`,
+                      value: `Predator nullcline: N₁ = ${isoclines.predatorNullcline.toFixed(2)} (dN₂/dt = 0)`,
                       position: 'top',
                       angle: -90,
-                      style: { fontSize: '11px', fill: 'hsl(var(--secondary))' }
+                      style: { 
+                        fontSize: '12px', 
+                        fill: 'hsl(var(--secondary))',
+                        fontWeight: '600',
+                        textShadow: '1px 1px 2px hsl(var(--background))'
+                      }
                     }}
                   />
+                  
+                  {/* Flow direction indicators for predator-prey */}
+                  <g className="flow-indicators">
+                    {/* Quadrant labels with flow directions */}
+                    <text 
+                      x={isoclines.predatorNullcline * 1.3} 
+                      y={isoclines.preyNullcline * 0.7} 
+                      fontSize="10" 
+                      fill="hsl(var(--muted-foreground))" 
+                      className="font-medium"
+                      textAnchor="middle"
+                    >
+                      Both ↑
+                    </text>
+                    <text 
+                      x={isoclines.predatorNullcline * 0.7} 
+                      y={isoclines.preyNullcline * 0.7} 
+                      fontSize="10" 
+                      fill="hsl(var(--muted-foreground))" 
+                      className="font-medium"
+                      textAnchor="middle"
+                    >
+                      Prey ↓, Pred ↑
+                    </text>
+                    <text 
+                      x={isoclines.predatorNullcline * 0.7} 
+                      y={isoclines.preyNullcline * 1.3} 
+                      fontSize="10" 
+                      fill="hsl(var(--muted-foreground))" 
+                      className="font-medium"
+                      textAnchor="middle"
+                    >
+                      Both ↓
+                    </text>
+                    <text 
+                      x={isoclines.predatorNullcline * 1.3} 
+                      y={isoclines.preyNullcline * 1.3} 
+                      fontSize="10" 
+                      fill="hsl(var(--muted-foreground))" 
+                      className="font-medium"
+                      textAnchor="middle"
+                    >
+                      Prey ↑, Pred ↓
+                    </text>
+                  </g>
                 </>
               )}
 
               {modelType === 'competition' && isoclines && (
                 <>
-                  {/* N₁-nullcline: N₁ = K₁ - α₁₂*N₂ */}
+                  {/* N₁-nullcline: N₁ = K₁ - α₁₂*N₂ with enhanced styling */}
                   <ReferenceLine 
                     segment={[
                       { x: 0, y: isoclines.K1 }, 
                       { x: isoclines.K1 / isoclines.alpha12, y: 0 }
                     ]}
                     stroke="hsl(var(--accent))"
-                    strokeDasharray="8 4"
-                    strokeWidth={2}
+                    strokeDasharray="12 6"
+                    strokeWidth={3}
                     label={{
-                      value: `N₁-nullcline`,
+                      value: `N₁-nullcline (dN₁/dt = 0)`,
                       position: 'top',
-                      style: { fontSize: '11px', fill: 'hsl(var(--accent))' }
+                      style: { 
+                        fontSize: '12px', 
+                        fill: 'hsl(var(--accent))',
+                        fontWeight: '600',
+                        textShadow: '1px 1px 2px hsl(var(--background))'
+                      }
                     }}
                   />
-                  {/* N₂-nullcline: N₂ = K₂ - α₂₁*N₁ */}
+                  {/* N₂-nullcline: N₂ = K₂ - α₂₁*N₁ with enhanced styling */}
                   <ReferenceLine 
                     segment={[
                       { x: 0, y: isoclines.K2 }, 
                       { x: isoclines.K2 / isoclines.alpha21, y: 0 }
                     ]}
                     stroke="hsl(var(--secondary))"
-                    strokeDasharray="8 4"
-                    strokeWidth={2}
+                    strokeDasharray="12 6"
+                    strokeWidth={3}
                     label={{
-                      value: `N₂-nullcline`,
+                      value: `N₂-nullcline (dN₂/dt = 0)`,
                       position: 'bottom',
-                      style: { fontSize: '11px', fill: 'hsl(var(--secondary))' }
+                      style: { 
+                        fontSize: '12px', 
+                        fill: 'hsl(var(--secondary))',
+                        fontWeight: '600',
+                        textShadow: '1px 1px 2px hsl(var(--background))'
+                      }
                     }}
                   />
+                  
+                  {/* Competition equilibrium point */}
+                  {(() => {
+                    const denominator = 1 - isoclines.alpha12 * isoclines.alpha21;
+                    if (Math.abs(denominator) > 0.001) {
+                      const eqN1 = (isoclines.K1 - isoclines.alpha12 * isoclines.K2) / denominator;
+                      const eqN2 = (isoclines.K2 - isoclines.alpha21 * isoclines.K1) / denominator;
+                      if (eqN1 > 0 && eqN2 > 0) {
+                        return (
+                          <ReferenceDot 
+                            x={eqN1} 
+                            y={eqN2} 
+                            r={6} 
+                            fill="hsl(var(--destructive))" 
+                            stroke="hsl(var(--background))"
+                            strokeWidth={2}
+                          />
+                        );
+                      }
+                    }
+                    return null;
+                  })()}
+                  
+                  {/* Flow direction regions for competition */}
+                  <g className="competition-regions">
+                    {(() => {
+                      const midX = (isoclines.K1 / isoclines.alpha12 + isoclines.K2 / isoclines.alpha21) / 4;
+                      const midY = (isoclines.K1 + isoclines.K2) / 4;
+                      return (
+                        <>
+                          <text 
+                            x={midX * 0.5} 
+                            y={midY * 0.5} 
+                            fontSize="9" 
+                            fill="hsl(var(--muted-foreground))" 
+                            className="font-medium"
+                          >
+                            Region I
+                          </text>
+                          <text 
+                            x={midX * 3} 
+                            y={midY * 0.5} 
+                            fontSize="9" 
+                            fill="hsl(var(--muted-foreground))" 
+                            className="font-medium"
+                          >
+                            Region II
+                          </text>
+                          <text 
+                            x={midX * 0.5} 
+                            y={midY * 3} 
+                            fontSize="9" 
+                            fill="hsl(var(--muted-foreground))" 
+                            className="font-medium"
+                          >
+                            Region III
+                          </text>
+                          <text 
+                            x={midX * 3} 
+                            y={midY * 3} 
+                            fontSize="9" 
+                            fill="hsl(var(--muted-foreground))" 
+                            className="font-medium"
+                          >
+                            Region IV
+                          </text>
+                        </>
+                      );
+                    })()}
+                  </g>
                 </>
               )}
               

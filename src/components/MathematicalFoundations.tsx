@@ -3,6 +3,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown, ChevronRight, Calculator, TreePine, Waves, TrendingUp, Target, Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import ComparisonDiagram from "./ComparisonDiagram";
+import IsoclineDiagram from "./IsoclineDiagram";
 
 interface MathSection {
   id: string;
@@ -93,22 +95,23 @@ const mathSections: MathSection[] = [
     icon: Target,
     badge: "Critical",
     content: {
-      introduction: "Isoclines are fundamental tools for understanding population dynamics. They show where population growth rates equal zero and reveal the directional flow of population changes throughout phase space.",
+      introduction: "Isoclines are fundamental tools for understanding population dynamics. They show where population growth rates equal zero and reveal the directional flow of population changes throughout phase space. The geometric differences between models create dramatically different ecological outcomes.",
       equations: [
-        "Competition N₁-nullcline: dN₁/dt = 0 → N₁ = K₁ - α₁₂N₂",
-        "Competition N₂-nullcline: dN₂/dt = 0 → N₂ = K₂ - α₂₁N₁",
+        "Competition N₁-nullcline: dN₁/dt = 0 → N₁ = K₁ - α₁₂N₂ (diagonal line, slope = -1/α₁₂)",
+        "Competition N₂-nullcline: dN₂/dt = 0 → N₂ = K₂ - α₂₁N₁ (diagonal line, slope = -α₂₁)",
         "Predator-prey N₁-nullcline: dN₁/dt = 0 → N₂ = r₁/a (horizontal line)",
         "Predator-prey N₂-nullcline: dN₂/dt = 0 → N₁ = r₂/b (vertical line)"
       ],
       explanations: [
-        "Nullclines divide phase space into regions with different population growth directions",
-        "In competition: N₁-nullcline has negative slope (-1/α₁₂), N₂-nullcline has negative slope (-α₂₁)",
-        "In predator-prey: Nullclines are perpendicular lines creating four quadrants with distinct flow patterns",
-        "Flow arrows point toward increasing populations: rightward for dN₁/dt > 0, upward for dN₂/dt > 0",
-        "Equilibrium points occur where nullclines intersect (both growth rates = 0)"
+        "GEOMETRIC DIFFERENCE: Competition creates intersecting diagonal lines; predator-prey creates perpendicular lines",
+        "Competition nullclines: Both have negative slopes determined by competition coefficients α₁₂ and α₂₁",
+        "Predator-prey nullclines: Always perpendicular (90°) regardless of parameter values",
+        "Flow directions: Competition flows converge to equilibria; predator-prey flows circulate in closed orbits",
+        "Equilibrium stability: Competition can have stable points; predator-prey has neutral stability with persistent cycles",
+        "Parameter dependence: Competition isocline positions depend on K₁, K₂, α₁₂, α₂₁; predator-prey positions depend only on r₁/a and r₂/b"
       ],
-      biologicalMeaning: "Isoclines reveal the ecological 'landscape' of population dynamics. In competition, they show carrying capacity limits and competitive effects. In predator-prey, they represent the prey density needed to sustain predators (horizontal) and predator density that balances prey growth (vertical). Flow fields show how populations move through this landscape over time.",
-      examples: "Competition: If finch species 1 reaches its nullcline (N₁ = K₁ - α₁₂N₂), it stops growing and may decline if species 2 increases further. Predator-prey: When hare density equals r₁/a, lynx consumption exactly balances hare reproduction, creating the horizontal nullcline where lynx populations change direction."
+      biologicalMeaning: "The contrasting isocline geometries reflect fundamentally different ecological mechanisms. Competition's diagonal lines represent resource limitation—as one species increases, the other's carrying capacity decreases proportionally. Predator-prey's perpendicular lines represent consumer-resource dynamics—prey density affects predator growth independently of predator effects on prey mortality. This geometric distinction explains why competition leads to competitive exclusion or coexistence, while predator-prey systems maintain population cycles.",
+      examples: "Visualization key: In competition diagrams, watch how diagonal isoclines create 'wedge' regions leading to exclusion or coexistence. In predator-prey diagrams, observe how perpendicular isoclines create 'quadrants' with circular flow patterns. Darwin's finches (competition) show convergent flows to stable densities, while lynx-hare (predator-prey) show rotational flows creating the famous 10-year cycles."
     }
   },
   {
@@ -282,6 +285,17 @@ export default function MathematicalFoundations() {
                 <CollapsibleContent>
                   <CardContent className="pt-0 space-y-6">
                     <p className="text-sm leading-relaxed">{section.content.introduction}</p>
+                    
+                    {/* Add interactive visual diagrams for isoclines section */}
+                    {section.id === "isoclines-flow-fields" && (
+                      <div className="space-y-4">
+                        <ComparisonDiagram />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <IsoclineDiagram type="competition" />
+                          <IsoclineDiagram type="predator-prey" />
+                        </div>
+                      </div>
+                    )}
                     
                     <div className="space-y-3">
                       <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
