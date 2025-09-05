@@ -16,6 +16,8 @@ interface PhasePlaneChartProps {
     r2: number;
     a: number;
     b: number;
+    a12: number;
+    a21: number;
     K1?: number;
     K2?: number;
   };
@@ -38,12 +40,12 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
       }
     : parameters.K1 && parameters.K2 
     ? {
-        // Competition N₁-nullcline: N₁ = K₁ - a*N₂
-        // Competition N₂-nullcline: N₂ = K₂ - b*N₁
+        // Competition N₁-nullcline: N₁ = K₁ - α₁₂*N₂
+        // Competition N₂-nullcline: N₂ = K₂ - α₂₁*N₁
         K1: parameters.K1,
         K2: parameters.K2,
-        alpha12: parameters.a, // effect of species 2 on species 1
-        alpha21: parameters.b   // effect of species 1 on species 2
+        alpha12: parameters.a12, // effect of species 2 on species 1
+        alpha21: parameters.a21   // effect of species 1 on species 2
       }
     : null;
 
