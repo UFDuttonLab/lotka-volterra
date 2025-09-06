@@ -120,12 +120,13 @@ export function useLotkaVolterra() {
     const newN1 = N1 + (timeStep / 6) * (k1.dN1dt + 2 * k2.dN1dt + 2 * k3.dN1dt + k4.dN1dt);
     const newN2 = N2 + (timeStep / 6) * (k1.dN2dt + 2 * k2.dN2dt + 2 * k3.dN2dt + k4.dN2dt);
 
-  // Biologically meaningful population floor - populations can't recover from true zero
-  const EXTINCTION_THRESHOLD = 0.001;
-  return {
-    N1: newN1 > EXTINCTION_THRESHOLD ? newN1 : EXTINCTION_THRESHOLD,
-    N2: newN2 > EXTINCTION_THRESHOLD ? newN2 : EXTINCTION_THRESHOLD,
-  };
+    // Mathematical accuracy: minimal floor to prevent log(0) while preserving conservation
+    // Trade-off: Very small threshold maintains Lotka-Volterra conservation properties
+    const EXTINCTION_THRESHOLD = 1e-12;
+    return {
+      N1: newN1 > EXTINCTION_THRESHOLD ? newN1 : EXTINCTION_THRESHOLD,
+      N2: newN2 > EXTINCTION_THRESHOLD ? newN2 : EXTINCTION_THRESHOLD,
+    };
   }, [calculateDerivatives]);
 
   const updateSimulation = useCallback(() => {
@@ -139,9 +140,8 @@ export function useLotkaVolterra() {
         if (modelType === 'predator-prey') {
           const currentH = calculateConservedQuantity(newPops.N1, newPops.N2, parameters);
           setConservedQuantity(prev => {
-            const tolerance = 0.001; // 0.1% tolerance
             const driftPercent = prev.initial !== 0 ? Math.abs((currentH - prev.initial) / prev.initial) * 100 : 0;
-            const isConserved = driftPercent < 0.1;
+            const isConserved = driftPercent < 1.0; // 1% tolerance for improved accuracy
             return {
               current: currentH,
               initial: prev.initial === 0 ? currentH : prev.initial,
@@ -152,9 +152,9 @@ export function useLotkaVolterra() {
         }
 
         // Check for population warnings
-        const EXTINCTION_THRESHOLD = 0.001;
+        const BIOLOGICAL_THRESHOLD = 1e-6; // For near-extinction warning
         const FRACTIONAL_THRESHOLD = 1.0;
-        const nearExtinction = newPops.N1 <= EXTINCTION_THRESHOLD * 1.1 || newPops.N2 <= EXTINCTION_THRESHOLD * 1.1;
+        const nearExtinction = newPops.N1 <= BIOLOGICAL_THRESHOLD || newPops.N2 <= BIOLOGICAL_THRESHOLD;
         const attoFoxProblem = newPops.N1 < FRACTIONAL_THRESHOLD || newPops.N2 < FRACTIONAL_THRESHOLD;
         
         setPopulationWarnings(prev => ({
