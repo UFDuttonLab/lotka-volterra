@@ -6,6 +6,7 @@ interface TimelineEvent {
   year: number;
   title: string;
   description: string;
+  detailedContext?: string;
   figure: string;
   category: "theory" | "application" | "collaboration" | "modern";
   details: string[];
@@ -16,6 +17,7 @@ const timelineEvents: TimelineEvent[] = [
       year: 1925,
       title: "Alfred Lotka's Foundational Work",
       description: "Published 'Elements of Physical Biology' introducing mathematical models for population dynamics",
+      detailedContext: "In the 1920s, biology was largely descriptive - scientists observed and categorized life, but rarely used mathematics to predict biological phenomena. Lotka, a chemist turned mathematician, had a revolutionary idea: what if we could use equations (like those in physics) to understand how populations of animals and plants change over time? His work was groundbreaking because it showed that the natural world follows mathematical patterns. Think of it like discovering that the chaos of a forest or ocean actually follows hidden rules that we can write down and use to make predictions.",
       figure: "Alfred J. Lotka",
       category: "theory",
       details: [
@@ -31,6 +33,7 @@ const timelineEvents: TimelineEvent[] = [
       year: 1926,
       title: "Volterra's Independent Discovery",
       description: "Vito Volterra independently derived similar equations while studying fish populations in the Adriatic Sea",
+      detailedContext: "During World War I, fishing in the Adriatic Sea was heavily restricted due to naval warfare. When the war ended and fishing resumed, something unexpected happened: there were more predatory fish (like sharks) than usual, and fewer of the smaller fish they eat. A fisherman's son, who happened to be dating Volterra's daughter, brought this puzzle to the famous mathematician. Volterra realized he could use mathematics to explain why this happened - fewer fishermen meant more small fish survived, which then supported larger populations of predators. This was a 'eureka moment' showing how math could explain real-world ecological mysteries.",
       figure: "Vito Volterra",
       category: "application",
       details: [
@@ -46,6 +49,7 @@ const timelineEvents: TimelineEvent[] = [
     year: 1928,
     title: "The Lotka-Volterra Collaboration",
     description: "Recognition of parallel work led to joint naming and further development of competition equations",
+    detailedContext: "In an era before instant global communication, it was remarkable when two scientists on different continents independently discovered the same mathematical truth. When Lotka and Volterra learned about each other's work, they did something wonderful for science: instead of fighting over who was first, they celebrated their shared discovery. This collaboration was significant because it showed that their mathematical approach was robust - if two people could independently arrive at the same equations, those equations probably captured something fundamental about nature. Their joint work extended beyond predator-prey relationships to explore how species compete for the same resources.",
     figure: "Lotka & Volterra",
     category: "collaboration",
     details: [
@@ -59,6 +63,7 @@ const timelineEvents: TimelineEvent[] = [
       year: 1934,
       title: "G.F. Gause's Experimental Validation",
       description: "First experimental tests of competitive exclusion principle using laboratory populations",
+      detailedContext: "Having mathematical equations is one thing, but proving they work in real life is another. Russian biologist Georgii Gause decided to test Lotka-Volterra predictions by creating miniature ecosystems in laboratory flasks. He used microscopic creatures called Paramecium - think of them as tiny, single-celled animals that you can only see under a microscope. By carefully controlling their environment and food supply, Gause could watch what happened when two similar species competed for the same resources. His experiments were revolutionary because they proved that mathematical predictions could actually match biological reality. The term 'competitive exclusion' means that two very similar species usually can't coexist in the same place - one will always outcompete the other unless they find ways to use different resources.",
       figure: "Georgii F. Gause",
       category: "application",
       details: [
@@ -74,6 +79,7 @@ const timelineEvents: TimelineEvent[] = [
     year: 1950,
     title: "MacArthur's Resource Competition Theory",
     description: "Robert MacArthur extended competition models to include resource partitioning",
+    detailedContext: "Robert MacArthur wondered why the natural world was so diverse - if competitive exclusion was true, why didn't one 'best' species take over everything? His breakthrough insight was about resource partitioning, which is essentially nature's way of sharing. Imagine a forest where different bird species all eat insects, but some specialize in insects on tree bark, others prefer insects in leaves, and still others hunt flying insects. By dividing up resources this way, multiple species can coexist in the same habitat. MacArthur's mathematical framework showed exactly how this worked and predicted how many species could coexist based on how finely they could divide up available resources. This was a major breakthrough that explained the incredible diversity we see in nature.",
     figure: "Robert MacArthur",
     category: "theory",
     details: [
@@ -87,6 +93,7 @@ const timelineEvents: TimelineEvent[] = [
       year: 1970,
       title: "Modern Applications in Conservation",
       description: "Application to endangered species management and habitat conservation",
+      detailedContext: "By the 1970s, the world was waking up to an environmental crisis - species were going extinct at alarming rates, and natural habitats were disappearing. Conservation biologists realized they needed more than good intentions; they needed mathematical tools to make smart decisions about how to save species. Lotka-Volterra models became practical tools for real-world problems: Should we reintroduce wolves to Yellowstone? How much habitat does a tiger population need to survive? What happens if we remove an invasive species? These equations, born from abstract mathematical thinking, suddenly became essential for wildlife management. Conservation biologists could now predict outcomes and avoid costly mistakes in species recovery programs.",
       figure: "Conservation Biologists",
       category: "modern",
       details: [
@@ -102,6 +109,7 @@ const timelineEvents: TimelineEvent[] = [
       year: 2000,
       title: "Computational Ecology Era",
       description: "Integration with modern computational methods and big data approaches",
+      detailedContext: "The digital revolution transformed ecology just like every other field. With powerful computers and vast databases, scientists could now track millions of animals using GPS collars, satellite imagery, and genetic analysis. Instead of simple two-species models, researchers could simulate entire ecosystems with hundreds of interacting species. Climate change added new urgency - scientists needed to predict how global warming would affect biodiversity. Modern Lotka-Volterra models became part of massive computer simulations that help us understand everything from coral reef collapse to forest responses to changing rainfall patterns. What started as elegant mathematical equations now helps us tackle some of the biggest environmental challenges facing our planet.",
       figure: "Modern Ecologists",
       category: "modern",
       details: [
@@ -176,6 +184,13 @@ export default function HistoricalTimeline() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <p className="text-sm leading-relaxed">{event.description}</p>
+                    {event.detailedContext && (
+                      <div className="bg-muted/30 p-4 rounded-lg border-l-4 border-primary/30">
+                        <p className="text-sm leading-relaxed text-foreground/90">
+                          {event.detailedContext}
+                        </p>
+                      </div>
+                    )}
                     <div className="space-y-2">
                       <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
                         Key Contributions:
