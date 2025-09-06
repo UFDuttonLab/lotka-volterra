@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight, Calculator, TreePine, Waves, TrendingUp, Target, Lightbulb } from "lucide-react";
+import { ChevronDown, ChevronRight, Calculator, TreePine, Waves, TrendingUp, Target, Lightbulb, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import ComparisonDiagram from "./ComparisonDiagram";
@@ -43,6 +43,7 @@ interface MathSection {
     explanations: string[];
     biologicalMeaning: string;
     examples: string;
+    conservationImplications?: string;
   };
 }
 
@@ -205,7 +206,8 @@ const mathSections: MathSection[] = [
         "The mathematical beauty: H acts like nature's accounting system - it keeps perfect track of the ecological 'energy budget' so nothing is ever lost or gained"
       ],
       biologicalMeaning: "H is nature's memory system - it's why predator-prey cycles are so persistent and predictable. Imagine you're watching a lynx-hare ecosystem: H determines whether you'll see gentle population waves or dramatic boom-bust cycles that swing from near-extinction to population explosions. The system never 'forgets' its starting conditions because H stays constant, creating the endless cycles we observe in nature. This is fundamentally different from competitive species, which eventually reach a stable balance and stop changing.",
-      examples: "Real-world impact: In Canadian forests, H determines whether lynx-hare cycles swing gently between 1,000-10,000 hares per region, or dramatically between 100-100,000 hares. Ecosystems with higher H values show those famous 'boom-bust' cycles where populations crash to near-zero then explode back. In agriculture, H explains why some pest-predator systems show mild fluctuations (easy to manage) while others create dramatic outbreaks followed by total pest crashes (harder to predict and control). Wildlife managers use H-like concepts to predict whether reintroduced predators will create stable, manageable cycles or extreme population swings."
+      examples: "Real-world impact: In Canadian forests, H determines whether lynx-hare cycles swing gently between 1,000-10,000 hares per region, or dramatically between 100-100,000 hares. Ecosystems with higher H values show those famous 'boom-bust' cycles where populations crash to near-zero then explode back. In agriculture, H explains why some pest-predator systems show mild fluctuations (easy to manage) while others create dramatic outbreaks followed by total pest crashes (harder to predict and control). Wildlife managers use H-like concepts to predict whether reintroduced predators will create stable, manageable cycles or extreme population swings.",
+      conservationImplications: "Can you change H? In theory no, in practice YES! While the pure mathematical model treats H as unchangeable (like energy conservation in physics), real ecosystems constantly experience 'H resets' from environmental disturbances. Disease outbreaks, habitat destruction, climate shifts, human intervention, migration events, and evolution all act like 'memory erasers' - they change the H value to something completely new. This is fantastic news for conservation! It means we can intervene to change problematic H values. If an ecosystem is stuck in extreme boom-bust cycles (high H) that threaten species survival, conservationists can strategically introduce changes to shift it toward gentler cycles (lower H). Examples include: habitat restoration to change carrying capacities, predator reintroduction programs, controlled hunting to reset population ratios, or creating wildlife corridors to allow migration. The key insight: H represents the current 'trajectory' of the ecosystem, but that trajectory can be changed through thoughtful intervention. This makes H a powerful tool for ecosystem management and restoration efforts."
     }
   },
   {
@@ -373,6 +375,16 @@ export default function MathematicalFoundations({ parameters }: MathematicalFoun
                       </h4>
                       <p className="text-sm leading-relaxed">{section.content.examples}</p>
                     </div>
+                    
+                    {section.content.conservationImplications && (
+                      <div className="bg-green-50 dark:bg-green-950/20 rounded-lg p-4 border border-green-200 dark:border-green-800/30">
+                        <h4 className="text-sm font-semibold mb-2 flex items-center gap-2 text-green-700 dark:text-green-300">
+                          <Shield className="h-4 w-4" />
+                          Why H Matters for Conservation:
+                        </h4>
+                        <p className="text-sm leading-relaxed text-green-800 dark:text-green-200">{section.content.conservationImplications}</p>
+                      </div>
+                    )}
                   </CardContent>
                 </CollapsibleContent>
               </Collapsible>
