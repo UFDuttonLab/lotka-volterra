@@ -321,12 +321,16 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                     <>
                       {/* Competitive exclusion scenario - simplified */}
                       {(() => {
-                        // Calculate nullcline intersections with axes
-                        const n1NullclineXInt = p.K1 / p.a12; // Where Species 1 nullcline hits x-axis
-                        const n2NullclineXInt = p.K2 / p.a21; // Where Species 2 nullcline hits x-axis
+                        // Use standard competition theory to determine winner
+                        // Species 1 wins when: a12 < K1/K2 AND a21 > K2/K1
+                        // Species 2 wins when: a12 > K1/K2 AND a21 < K2/K1
+                        const species1Condition1 = p.a12 < p.K1 / p.K2;
+                        const species1Condition2 = p.a21 > p.K2 / p.K1;
+                        const species2Condition1 = p.a12 > p.K1 / p.K2;
+                        const species2Condition2 = p.a21 < p.K2 / p.K1;
                         
-                        // Determine winner based on nullcline positions
-                        const species1Wins = n1NullclineXInt > n2NullclineXInt;
+                        // Determine winner based on standard ecological conditions
+                        const species1Wins = species1Condition1 && species1Condition2;
                         const winnerEndpoint = species1Wins ? 
                           { x: scaleX(p.K1), y: scaleY(0), label: "(K₁, 0)" } :
                           { x: scaleX(0), y: scaleY(p.K2), label: "(0, K₂)" };
