@@ -321,17 +321,7 @@ export default function EnhancedSimulation({
 
   return (
     <div className="space-y-6">
-      {/* Model Equation Display */}
-      <EquationDisplay modelType={modelType} onModelChange={onModelChange} />
-
-      {/* Exercise Banner */}
-      {activeExercise && onDismissExercise && (
-        <ExerciseBanner
-          exercise={activeExercise}
-          onDismiss={onDismissExercise}
-        />
-      )}
-
+      {/* Laboratory Title */}
       <Card className="shadow-card">
         <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -343,6 +333,17 @@ export default function EnhancedSimulation({
           </p>
         </CardHeader>
       </Card>
+
+      {/* Model Equation Display */}
+      <EquationDisplay modelType={modelType} onModelChange={onModelChange} />
+
+      {/* Exercise Banner */}
+      {activeExercise && onDismissExercise && (
+        <ExerciseBanner
+          exercise={activeExercise}
+          onDismiss={onDismissExercise}
+        />
+      )}
 
       {/* Atto-Fox Warning */}
       <AttoFoxWarning 
