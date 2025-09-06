@@ -67,10 +67,10 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
   
   // Competition model calculations
   const competition = type === 'competition' ? {
-    // Species 1 nullcline: dN1/dt = 0 → N1 = K1 - a12*N2
+    // Species 1 nullcline: dN1/dt = 0 → N1 = K1 - a12*N2 → N2 = (K1 - N1)/a12
     n1Nullcline: {
-      start: { x: scaleX(0), y: scaleY(p.K1) },
-      end: { x: scaleX(p.K1 / p.a12), y: scaleY(0) }
+      start: { x: scaleX(0), y: scaleY(p.K1 / p.a12) },
+      end: { x: scaleX(p.K1), y: scaleY(0) }
     },
     // Species 2 nullcline: dN2/dt = 0 → N2 = K2 - a21*N1  
     n2Nullcline: {
