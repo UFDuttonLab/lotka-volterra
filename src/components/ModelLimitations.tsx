@@ -15,6 +15,11 @@ interface ModelLimitationsProps {
 export default function ModelLimitations({ modelType, currentPopulations }: ModelLimitationsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Check for Atto-Fox Problem (predator-prey only)
+  const FRACTIONAL_THRESHOLD = 1.0;
+  const hasAttoFoxProblem = modelType === 'predator-prey' && currentPopulations && 
+    (currentPopulations.N1 < FRACTIONAL_THRESHOLD || currentPopulations.N2 < FRACTIONAL_THRESHOLD);
+
   const checkBiologicalRealism = () => {
     const issues: string[] = [];
     
@@ -42,8 +47,37 @@ export default function ModelLimitations({ modelType, currentPopulations }: Mode
   const realismIssues = checkBiologicalRealism();
 
   return (
-    <Card className="shadow-card">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <div className="space-y-4">
+      {/* Atto-Fox Problem Alert (always visible when active) */}
+      {hasAttoFoxProblem && (
+        <Alert className="border-destructive bg-destructive/10 shadow-lg">
+          <AlertTriangle className="h-5 w-5 text-destructive" />
+          <AlertDescription className="text-sm">
+            <div className="space-y-2">
+              <div className="font-semibold text-destructive text-base">
+                ⚠️ "Atto-Fox Problem" Detected
+              </div>
+              <p className="text-destructive/90 leading-relaxed">
+                <strong>Warning:</strong> This continuous model can predict fractional organisms (e.g., 0.001 foxes), which is biologically impossible. 
+                In reality, populations below 1-10 individuals face extinction from demographic stochasticity.
+              </p>
+              <div className="text-xs text-destructive/80 bg-destructive/5 p-3 rounded border">
+                <p className="mb-1"><strong>Why this matters:</strong></p>
+                <p>• The model assumes infinite population divisibility, which breaks down at low densities</p>
+                <p>• Real populations need minimum viable sizes (50-500 individuals) to avoid genetic bottlenecks</p>
+                <p>• Demographic randomness can cause extinction even when the model predicts recovery</p>
+              </div>
+              <p className="text-xs text-destructive/70 italic">
+                Current populations: Prey: {currentPopulations?.N1.toFixed(3)}, 
+                Predator: {currentPopulations?.N2.toFixed(3)}
+              </p>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <Card className="shadow-card">
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <CardHeader className="cursor-pointer hover:bg-muted/30 transition-colors">
             <div className="flex items-center justify-between">
@@ -210,5 +244,6 @@ export default function ModelLimitations({ modelType, currentPopulations }: Mode
         </CollapsibleContent>
       </Collapsible>
     </Card>
+    </div>
   );
 }

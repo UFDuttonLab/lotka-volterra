@@ -12,7 +12,7 @@ import ParameterValidation from "./ParameterValidation";
 import ModelLimitations from "./ModelLimitations";
 import TechnicalDetails from "./TechnicalDetails";
 import { Play, RotateCcw, Lightbulb, Target, TrendingUp, Activity } from "lucide-react";
-import AttoFoxWarning from "./AttoFoxWarning";
+
 import EquationDisplay from "./EquationDisplay";
 
 type ModelType = 'competition' | 'predator-prey';
@@ -345,11 +345,6 @@ export default function EnhancedSimulation({
         />
       )}
 
-      {/* Atto-Fox Warning */}
-      <AttoFoxWarning 
-        currentPopulations={currentPopulations}
-        modelType={modelType}
-      />
 
       {/* Current Status */}
       <Card className="shadow-card">
