@@ -324,13 +324,55 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                         // Use standard competition theory to determine winner
                         // Species 1 wins when: a12 < K1/K2 AND a21 > K2/K1
                         // Species 2 wins when: a12 > K1/K2 AND a21 < K2/K1
+                        // Bistability when: a12 > K1/K2 AND a21 > K2/K1
                         const species1Condition1 = p.a12 < p.K1 / p.K2;
                         const species1Condition2 = p.a21 > p.K2 / p.K1;
                         const species2Condition1 = p.a12 > p.K1 / p.K2;
                         const species2Condition2 = p.a21 < p.K2 / p.K1;
+                        const bistabilityCondition1 = p.a12 > p.K1 / p.K2;
+                        const bistabilityCondition2 = p.a21 > p.K2 / p.K1;
                         
-                        // Determine winner based on standard ecological conditions
+                        // Determine outcome based on standard ecological conditions
                         const species1Wins = species1Condition1 && species1Condition2;
+                        const species2Wins = species2Condition1 && species2Condition2;
+                        const isBistable = bistabilityCondition1 && bistabilityCondition2;
+                        
+                        if (isBistable) {
+                          return (
+                            <>
+                              {/* Subtle background shading for bistability */}
+                              <rect x={margin.left} y={margin.top} 
+                                    width={chartWidth} height={chartHeight}
+                                    fill="hsl(var(--accent) / 0.08)"/>
+                              
+                              {/* Both endpoints are stable */}
+                              <circle 
+                                cx={scaleX(p.K1)} 
+                                cy={scaleY(0)} 
+                                r="8" 
+                                fill="hsl(var(--destructive))" 
+                                stroke="white" 
+                                strokeWidth="3"/>
+                              <circle 
+                                cx={scaleX(0)} 
+                                cy={scaleY(p.K2)} 
+                                r="8" 
+                                fill="hsl(var(--destructive))" 
+                                stroke="white" 
+                                strokeWidth="3"/>
+                              <text 
+                                x={scaleX(p.K1/2)} 
+                                y={scaleY(p.K2/2)} 
+                                fontSize="13" 
+                                fill="hsl(var(--destructive))" 
+                                fontWeight="700" 
+                                textAnchor="middle">
+                                Bistability
+                              </text>
+                            </>
+                          );
+                        }
+                        
                         const winnerEndpoint = species1Wins ? 
                           { x: scaleX(p.K1), y: scaleY(0), label: "(K₁, 0)" } :
                           { x: scaleX(0), y: scaleY(p.K2), label: "(0, K₂)" };
@@ -358,24 +400,6 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                               fontWeight="700" 
                               textAnchor="middle">
                               {species1Wins ? "Species 1 Wins" : "Species 2 Wins"}
-                            </text>
-                            
-                            {/* Simple regional labels without arrows */}
-                            <text x={margin.left + 30} y={margin.top + chartHeight - 20} 
-                                  fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
-                              Both grow
-                            </text>
-                            <text x={margin.left + chartWidth - 30} y={margin.top + chartHeight - 20} 
-                                  fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500" textAnchor="end">
-                              Species 1 declines, Species 2 grows
-                            </text>
-                            <text x={margin.left + chartWidth - 30} y={margin.top + 30} 
-                                  fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500" textAnchor="end">
-                              Both decline
-                            </text>
-                            <text x={margin.left + 30} y={margin.top + 30} 
-                                  fontSize="10" fill="hsl(var(--muted-foreground))" fontWeight="500">
-                              Species 1 grows, Species 2 declines
                             </text>
                           </>
                         );
