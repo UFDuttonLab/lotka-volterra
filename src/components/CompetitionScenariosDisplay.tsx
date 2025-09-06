@@ -31,7 +31,7 @@ const competitionScenarios: CompetitionScenario[] = [
       a: 0.1, b: 0.075 // dummy predator-prey params
     },
     condition: "0.4 < 1.2 and 0.5 < 0.83",
-    outcome: "Both species coexist at stable equilibrium. Nullclines intersect in positive quadrant, creating a stable interior equilibrium."
+    outcome: "Both species are 'good neighbors' - they compete but not too strongly, so they can live together peacefully. This happens because both competition coefficients (α₁₂=0.4, α₂₁=0.5) are relatively small compared to the carrying capacity ratios. When α₁₂ < K₁/K₂ and α₂₁ < K₂/K₁, neither species can push the other to extinction. The nullclines intersect in the positive quadrant, creating a stable interior equilibrium where both species persist."
   },
   {
     label: "Species 1 Wins",
@@ -42,7 +42,7 @@ const competitionScenarios: CompetitionScenario[] = [
       a: 0.1, b: 0.075 // dummy predator-prey params
     },
     condition: "0.3 < 1.875 and 2.0 > 0.53",
-    outcome: "Species 1 excludes Species 2. Species 1 nullcline is visually dominant, forming the outer boundary of feasible region."
+    outcome: "Species 1 is the stronger competitor and always wins, no matter where they start. This happens because Species 2 is strongly affected by Species 1 (α₂₁=2.0 is high), while Species 1 barely feels the competition from Species 2 (α₁₂=0.3 is low). The asymmetric competition strength (α₁₂ < K₁/K₂ but α₂₁ > K₂/K₁) creates a predictable winner. Species 1's nullcline forms the outer boundary, showing its competitive dominance."
   },
   {
     label: "Species 2 Wins", 
@@ -53,7 +53,7 @@ const competitionScenarios: CompetitionScenario[] = [
       a: 0.1, b: 0.075 // dummy predator-prey params
     },
     condition: "2.2 > 0.67 and 0.4 < 1.5",
-    outcome: "Species 2 excludes Species 1. Species 2 nullcline is visually dominant, forming the outer boundary of feasible region."
+    outcome: "Species 2 is the stronger competitor and always wins, no matter where they start. This is the reverse of the previous scenario - now Species 1 is strongly affected by Species 2 (α₁₂=2.2 is high), while Species 2 barely feels the competition from Species 1 (α₂₁=0.4 is low). The asymmetric competition strength (α₁₂ > K₁/K₂ but α₂₁ < K₂/K₁) guarantees Species 2's victory. Species 2's nullcline forms the outer boundary, demonstrating its competitive superiority."
   },
   {
     label: "Bistability",
@@ -64,7 +64,7 @@ const competitionScenarios: CompetitionScenario[] = [
       a: 0.1, b: 0.075 // dummy predator-prey params
     },
     condition: "1.8 > 1.0 and 1.8 > 1.0",
-    outcome: "Winner depends on initial conditions. Both nullclines intersect, creating two alternative stable equilibria at the axes. Shaded regions show stability basins."
+    outcome: "Both species are strong competitors, so whoever gets a 'head start' (larger initial population) wins - it's like a race where the early leader usually stays ahead. This occurs because both competition coefficients are high (α₁₂=1.8, α₂₁=1.8), meaning each species strongly affects the other. When α₁₂ > K₁/K₂ and α₂₁ > K₂/K₁, mutual strong competition creates winner-take-all dynamics. The nullclines intersect, creating two stable equilibria at the axes. Shaded regions show stability basins - the areas where different starting conditions lead to predictable outcomes."
   }
 ];
 
