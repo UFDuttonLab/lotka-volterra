@@ -26,45 +26,45 @@ const competitionScenarios: CompetitionScenario[] = [
     label: "Stable Coexistence",
     description: "α₁₂ < K₁/K₂ and α₂₁ < K₂/K₁",
     parameters: {
-      r1: 1.0, r2: 0.8, K1: 100, K2: 80,
-      a12: 0.5, a21: 0.6, N1_0: 50, N2_0: 40,
+      r1: 1.0, r2: 0.8, K1: 120, K2: 100,
+      a12: 0.4, a21: 0.5, N1_0: 50, N2_0: 40,
       a: 0.1, b: 0.075 // dummy predator-prey params
     },
-    condition: "0.5 < 1.25 and 0.6 < 0.8",
-    outcome: "Both species coexist at stable equilibrium. Interspecific competition is weaker than intraspecific competition for both species."
+    condition: "0.4 < 1.2 and 0.5 < 0.83",
+    outcome: "Both species coexist at stable equilibrium. Nullclines intersect in positive quadrant, creating a stable interior equilibrium."
   },
   {
     label: "Species 1 Wins",
     description: "α₁₂ < K₁/K₂ and α₂₁ > K₂/K₁",
     parameters: {
-      r1: 1.0, r2: 0.8, K1: 100, K2: 80,
-      a12: 0.3, a21: 1.5, N1_0: 50, N2_0: 40,
+      r1: 1.0, r2: 0.8, K1: 150, K2: 80,
+      a12: 0.3, a21: 2.0, N1_0: 50, N2_0: 40,
       a: 0.1, b: 0.075 // dummy predator-prey params
     },
-    condition: "0.3 < 1.25 and 1.5 > 0.8",
-    outcome: "Species 1 excludes Species 2. Species 1 is the superior competitor and drives Species 2 to extinction."
+    condition: "0.3 < 1.875 and 2.0 > 0.53",
+    outcome: "Species 1 excludes Species 2. Species 1 nullcline is visually dominant, forming the outer boundary of feasible region."
   },
   {
     label: "Species 2 Wins", 
     description: "α₁₂ > K₁/K₂ and α₂₁ < K₂/K₁",
     parameters: {
-      r1: 1.0, r2: 0.8, K1: 100, K2: 80,
-      a12: 1.5, a21: 0.3, N1_0: 50, N2_0: 40,
+      r1: 1.0, r2: 0.8, K1: 80, K2: 120,
+      a12: 2.2, a21: 0.4, N1_0: 50, N2_0: 40,
       a: 0.1, b: 0.075 // dummy predator-prey params
     },
-    condition: "1.5 > 1.25 and 0.3 < 0.8",
-    outcome: "Species 2 excludes Species 1. Species 2 is the superior competitor despite having a lower carrying capacity."
+    condition: "2.2 > 0.67 and 0.4 < 1.5",
+    outcome: "Species 2 excludes Species 1. Species 2 nullcline is visually dominant, forming the outer boundary of feasible region."
   },
     {
       label: "Bistability",
       description: "α₁₂ > K₁/K₂ and α₂₁ > K₂/K₁",
       parameters: {
-        r1: 1.0, r2: 0.8, K1: 100, K2: 80,
-        a12: 1.4, a21: 1.2, N1_0: 50, N2_0: 40,
+        r1: 1.0, r2: 0.8, K1: 100, K2: 100,
+        a12: 1.8, a21: 1.8, N1_0: 50, N2_0: 50,
         a: 0.1, b: 0.075 // dummy predator-prey params
       },
-      condition: "1.4 > 1.25 and 1.2 > 0.8",
-      outcome: "Winner depends on initial conditions. Both species are strong interspecific competitors, creating alternative stable states."
+      condition: "1.8 > 1.0 and 1.8 > 1.0",
+      outcome: "Winner depends on initial conditions. Both nullclines intersect, creating two alternative stable equilibria at the axes."
     }
 ];
 
