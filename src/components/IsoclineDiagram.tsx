@@ -338,36 +338,100 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                         const isBistable = bistabilityCondition1 && bistabilityCondition2;
                         
                         if (isBistable) {
+                          // Calculate intersection point (unstable equilibrium)
+                          const denom = 1 - p.a12 * p.a21;
+                          const n1_eq = (p.K1 - p.a12 * p.K2) / denom;
+                          const n2_eq = (p.K2 - p.a21 * p.K1) / denom;
+                          const intersectionX = scaleX(n1_eq);
+                          const intersectionY = scaleY(n2_eq);
+                          
                           return (
                             <>
-                              {/* Subtle background shading for bistability */}
-                              <rect x={margin.left} y={margin.top} 
-                                    width={chartWidth} height={chartHeight}
-                                    fill="hsl(var(--accent) / 0.08)"/>
+                              {/* Stability basins - shaded regions showing where each species wins */}
+                              <defs>
+                                <linearGradient id="basin1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" style={{stopColor: "hsl(var(--primary))", stopOpacity: 0.15}} />
+                                  <stop offset="100%" style={{stopColor: "hsl(var(--primary))", stopOpacity: 0.05}} />
+                                </linearGradient>
+                                <linearGradient id="basin2" x1="0%" y1="100%" x2="100%" y2="0%">
+                                  <stop offset="0%" style={{stopColor: "hsl(var(--secondary))", stopOpacity: 0.15}} />
+                                  <stop offset="100%" style={{stopColor: "hsl(var(--secondary))", stopOpacity: 0.05}} />
+                                </linearGradient>
+                              </defs>
                               
-                              {/* Both endpoints are stable */}
+                              {/* Species 1 basin (lower triangle) */}
+                              <polygon 
+                                points={`${margin.left},${margin.top + chartHeight} ${scaleX(p.K1)},${scaleY(0)} ${intersectionX},${intersectionY}`}
+                                fill="url(#basin1)"
+                                stroke="hsl(var(--primary))"
+                                strokeWidth="1"
+                                strokeDasharray="3,3"
+                                opacity="0.8"
+                              />
+                              
+                              {/* Species 2 basin (upper triangle) */}
+                              <polygon 
+                                points={`${margin.left},${margin.top + chartHeight} ${scaleX(0)},${scaleY(p.K2)} ${intersectionX},${intersectionY}`}
+                                fill="url(#basin2)"
+                                stroke="hsl(var(--secondary))"
+                                strokeWidth="1"
+                                strokeDasharray="3,3"
+                                opacity="0.8"
+                              />
+                              
+                              {/* Unstable interior equilibrium */}
+                              <circle 
+                                cx={intersectionX}
+                                cy={intersectionY}
+                                r="4"
+                                fill="white"
+                                stroke="hsl(var(--destructive))"
+                                strokeWidth="2"
+                                strokeDasharray="2,2"
+                              />
+                              
+                              {/* Stable endpoints */}
                               <circle 
                                 cx={scaleX(p.K1)} 
                                 cy={scaleY(0)} 
                                 r="8" 
-                                fill="hsl(var(--destructive))" 
+                                fill="hsl(var(--primary))" 
                                 stroke="white" 
                                 strokeWidth="3"/>
                               <circle 
                                 cx={scaleX(0)} 
                                 cy={scaleY(p.K2)} 
                                 r="8" 
-                                fill="hsl(var(--destructive))" 
+                                fill="hsl(var(--secondary))" 
                                 stroke="white" 
                                 strokeWidth="3"/>
+                                
+                              {/* Labels for basins */}
                               <text 
-                                x={scaleX(p.K1/2)} 
-                                y={scaleY(p.K2/2)} 
-                                fontSize="13" 
-                                fill="hsl(var(--destructive))" 
-                                fontWeight="700" 
+                                x={scaleX(p.K1 * 0.7)} 
+                                y={scaleY(p.K2 * 0.2)} 
+                                fontSize="11" 
+                                fill="hsl(var(--primary))" 
+                                fontWeight="600" 
                                 textAnchor="middle">
-                                Bistability
+                                Species 1 Basin
+                              </text>
+                              <text 
+                                x={scaleX(p.K1 * 0.2)} 
+                                y={scaleY(p.K2 * 0.7)} 
+                                fontSize="11" 
+                                fill="hsl(var(--secondary))" 
+                                fontWeight="600" 
+                                textAnchor="middle">
+                                Species 2 Basin
+                              </text>
+                              <text 
+                                x={intersectionX + 15}
+                                y={intersectionY - 5}
+                                fontSize="10"
+                                fill="hsl(var(--destructive))"
+                                fontWeight="600">
+                                Unstable
                               </text>
                             </>
                           );

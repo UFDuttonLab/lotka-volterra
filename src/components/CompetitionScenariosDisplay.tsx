@@ -55,17 +55,17 @@ const competitionScenarios: CompetitionScenario[] = [
     condition: "2.2 > 0.67 and 0.4 < 1.5",
     outcome: "Species 2 excludes Species 1. Species 2 nullcline is visually dominant, forming the outer boundary of feasible region."
   },
-    {
-      label: "Bistability",
-      description: "α₁₂ > K₁/K₂ and α₂₁ > K₂/K₁",
-      parameters: {
-        r1: 1.0, r2: 0.8, K1: 120, K2: 80,
-        a12: 1.2, a21: 1.5, N1_0: 50, N2_0: 50,
-        a: 0.1, b: 0.075 // dummy predator-prey params
-      },
-      condition: "1.2 > 1.5 and 1.5 > 0.67",
-      outcome: "Winner depends on initial conditions. Both nullclines intersect, creating two alternative stable equilibria at the axes."
-    }
+  {
+    label: "Bistability",
+    description: "α₁₂ > K₁/K₂ and α₂₁ > K₂/K₁",
+    parameters: {
+      r1: 1.0, r2: 0.8, K1: 100, K2: 100,
+      a12: 1.8, a21: 1.8, N1_0: 50, N2_0: 50,
+      a: 0.1, b: 0.075 // dummy predator-prey params
+    },
+    condition: "1.8 > 1.0 and 1.8 > 1.0",
+    outcome: "Winner depends on initial conditions. Both nullclines intersect, creating two alternative stable equilibria at the axes. Shaded regions show stability basins."
+  }
 ];
 
 export default function CompetitionScenariosDisplay() {
