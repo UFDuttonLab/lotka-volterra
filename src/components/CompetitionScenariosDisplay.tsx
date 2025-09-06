@@ -128,6 +128,23 @@ export default function CompetitionScenariosDisplay() {
               the winner (bistability).
             </p>
           </div>
+          
+          <div className="mt-4 p-4 bg-gradient-to-r from-secondary/5 to-accent/5 rounded-lg border">
+            <h4 className="font-semibold text-sm mb-2">Understanding Stability Basins in Bistability</h4>
+            <p className="text-sm text-muted-foreground mb-3">
+              In the bistability scenario, the colored shaded regions represent <strong>stability basins</strong> - areas in the phase plane 
+              where different initial population combinations lead to predictable outcomes.
+            </p>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p><strong>Species 1 Basin (Blue):</strong> Initial conditions in this region lead to Species 1 excluding Species 2.</p>
+              <p><strong>Species 2 Basin (Red):</strong> Initial conditions in this region lead to Species 2 excluding Species 1.</p>
+              <p><strong>Separatrix:</strong> The boundary line between basins, representing the unstable interior equilibrium point where the system could tip either way.</p>
+            </div>
+            <p className="text-sm text-muted-foreground mt-3">
+              This demonstrates that in bistable competition, <em>history matters</em> - the winner depends not on intrinsic competitive ability alone, 
+              but on the starting population sizes of both species.
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
