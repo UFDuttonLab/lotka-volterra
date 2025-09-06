@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Play, Pause, RotateCcw, Settings } from "lucide-react";
+import OrganismRangeTooltip from "./OrganismRangeTooltip";
 
 interface SimulationControlsProps {
   modelType: "competition" | "predator-prey";
@@ -187,10 +188,12 @@ export default function SimulationControls({
               </h3>
               <div className="space-y-3">
                 <div>
-                  <label className="flex justify-between text-sm mb-2">
-                    <span>r₁ (Growth Rate)</span>
-                    <span className="font-mono">{parameters.r1.toFixed(2)}</span>
-                  </label>
+                  <OrganismRangeTooltip parameter="r" currentValue={parameters.r1}>
+                    <label className="flex justify-between text-sm mb-2">
+                      <span>r₁ (Growth Rate)</span>
+                      <span className="font-mono">{parameters.r1.toFixed(2)}</span>
+                    </label>
+                  </OrganismRangeTooltip>
                   <Slider
                     value={[parameters.r1]}
                     onValueChange={(value) => onParameterChange('r1', value[0])}
@@ -233,10 +236,12 @@ export default function SimulationControls({
               </h3>
               <div className="space-y-3">
                 <div>
-                  <label className="flex justify-between text-sm mb-2">
-                    <span>a (Predation Rate)</span>
-                    <span className="font-mono">{parameters.a!.toFixed(3)}</span>
-                  </label>
+                  <OrganismRangeTooltip parameter="a" currentValue={parameters.a!}>
+                    <label className="flex justify-between text-sm mb-2">
+                      <span>a (Predation Rate)</span>
+                      <span className="font-mono">{parameters.a!.toFixed(3)}</span>
+                    </label>
+                  </OrganismRangeTooltip>
                   <Slider
                     value={[parameters.a!]}
                     onValueChange={(value) => onParameterChange('a', value[0])}
@@ -247,10 +252,12 @@ export default function SimulationControls({
                   />
                 </div>
                 <div>
-                  <label className="flex justify-between text-sm mb-2">
-                    <span>b (Predator Efficiency)</span>
-                    <span className="font-mono">{parameters.b!.toFixed(3)}</span>
-                  </label>
+                  <OrganismRangeTooltip parameter="b" currentValue={parameters.b!}>
+                    <label className="flex justify-between text-sm mb-2">
+                      <span>b (Predator Efficiency)</span>
+                      <span className="font-mono">{parameters.b!.toFixed(3)}</span>
+                    </label>
+                  </OrganismRangeTooltip>
                   <Slider
                     value={[parameters.b!]}
                     onValueChange={(value) => onParameterChange('b', value[0])}

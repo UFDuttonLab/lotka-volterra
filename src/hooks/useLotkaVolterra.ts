@@ -67,7 +67,8 @@ export function useLotkaVolterra() {
   const [populationWarnings, setPopulationWarnings] = useState<{
     nearExtinction: boolean;
     unrealisticParameters: string[];
-  }>({ nearExtinction: false, unrealisticParameters: [] });
+    attoFoxProblem: boolean;
+  }>({ nearExtinction: false, unrealisticParameters: [], attoFoxProblem: false });
 
   const intervalRef = useRef<NodeJS.Timeout>();
   const timeStep = 0.05; // Integration time step - balanced for accuracy and visual speed
@@ -152,11 +153,14 @@ export function useLotkaVolterra() {
 
         // Check for population warnings
         const EXTINCTION_THRESHOLD = 0.001;
+        const FRACTIONAL_THRESHOLD = 1.0;
         const nearExtinction = newPops.N1 <= EXTINCTION_THRESHOLD * 1.1 || newPops.N2 <= EXTINCTION_THRESHOLD * 1.1;
+        const attoFoxProblem = newPops.N1 < FRACTIONAL_THRESHOLD || newPops.N2 < FRACTIONAL_THRESHOLD;
         
         setPopulationWarnings(prev => ({
           ...prev,
-          nearExtinction
+          nearExtinction,
+          attoFoxProblem: modelType === 'predator-prey' ? attoFoxProblem : false
         }));
         
         // Record data every step for maximum accuracy
@@ -224,7 +228,8 @@ export function useLotkaVolterra() {
     // Reset warnings
     setPopulationWarnings({
       nearExtinction: false,
-      unrealisticParameters: []
+      unrealisticParameters: [],
+      attoFoxProblem: false
     });
   }, [parameters.N1_0, parameters.N2_0, stopSimulation, modelType, calculateConservedQuantity]);
 

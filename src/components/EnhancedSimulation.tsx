@@ -12,6 +12,7 @@ import ParameterValidation from "./ParameterValidation";
 import ModelLimitations from "./ModelLimitations";
 import TechnicalDetails from "./TechnicalDetails";
 import { Play, RotateCcw, Lightbulb, Target, TrendingUp, Activity } from "lucide-react";
+import AttoFoxWarning from "./AttoFoxWarning";
 
 type ModelType = 'competition' | 'predator-prey';
 
@@ -62,6 +63,7 @@ interface EnhancedSimulationProps {
   populationWarnings?: {
     nearExtinction: boolean;
     unrealisticParameters: string[];
+    attoFoxProblem?: boolean;
   };
   updateParameter: (param: string, value: number) => void;
   setAllParameters: (newParams: Partial<Parameters>) => void;
@@ -330,6 +332,12 @@ export default function EnhancedSimulation({
           </p>
         </CardHeader>
       </Card>
+
+      {/* Atto-Fox Warning */}
+      <AttoFoxWarning 
+        currentPopulations={currentPopulations}
+        modelType={modelType}
+      />
 
       {/* Current Status */}
       <Card className="shadow-card">

@@ -6,6 +6,7 @@ import { useState } from "react";
 import ComparisonDiagram from "./ComparisonDiagram";
 import IsoclineDiagram from "./IsoclineDiagram";
 import CompetitionScenariosDisplay from "./CompetitionScenariosDisplay";
+import ParadoxCallout from "./ParadoxCallout";
 
 interface CompetitionParameters {
   r1: number;
@@ -321,6 +322,12 @@ export default function MathematicalFoundations({ parameters }: MathematicalFoun
                     {section.id === "competition-system" && (
                       <div className="space-y-4">
                         <CompetitionScenariosDisplay />
+                      </div>
+                    )}
+                    
+                    {section.id === "predator-prey-system" && (
+                      <div className="space-y-4">
+                        <ParadoxCallout />
                       </div>
                     )}
                     

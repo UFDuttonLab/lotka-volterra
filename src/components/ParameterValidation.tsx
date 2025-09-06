@@ -1,6 +1,7 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle, XCircle } from "lucide-react";
+import OrganismRangeTooltip from "./OrganismRangeTooltip";
 
 type ModelType = 'competition' | 'predator-prey';
 
@@ -23,6 +24,7 @@ interface ParameterValidationProps {
   populationWarnings?: {
     nearExtinction: boolean;
     unrealisticParameters: string[];
+    attoFoxProblem?: boolean;
   };
   currentPopulations?: { N1: number; N2: number };
 }
@@ -40,13 +42,19 @@ export default function ParameterValidation({
     
     if (modelType === 'predator-prey') {
       // Predator-prey specific validation
-      if (parameters.r1 > 2.0) warnings.push(`High prey growth rate (${parameters.r1.toFixed(2)}) - most organisms have r < 2.0`);
-      if (parameters.r2 > 2.0) warnings.push(`High predator death rate (${parameters.r2.toFixed(2)})`);
-      if (parameters.a! > 3.0) warnings.push(`Very high predation rate (${parameters.a!.toFixed(2)}) - may be unrealistic`);
-      if (parameters.b! > 3.0) warnings.push(`Very high predator efficiency (${parameters.b!.toFixed(2)})`);
+      if (parameters.r1 > 2.0) warnings.push(`High prey growth rate (${parameters.r1.toFixed(2)}) - most vertebrates have r < 2.0`);
+      if (parameters.r2 > 2.0) warnings.push(`High predator death rate (${parameters.r2.toFixed(2)}) - unusually high mortality`);
+      if (parameters.a! > 0.1) warnings.push(`High predation rate (${parameters.a!.toFixed(3)}) - very efficient hunting`);
+      if (parameters.b! > 0.2) warnings.push(`High predator efficiency (${parameters.b!.toFixed(3)}) - exceeds 10% ecological rule`);
       
-      if (parameters.r1 > 10) errors.push('Extremely unrealistic prey growth rate');
-      if (parameters.a! > 10) errors.push('Impossible predation efficiency');
+      // More detailed biological ranges
+      if (parameters.r1 > 20) errors.push('Extremely unrealistic prey growth - exceeds bacterial rates');
+      if (parameters.a! > 1.0) errors.push('Impossible predation rate - exceeds biological limits');
+      if (parameters.b! > 0.5) errors.push('Impossible conversion efficiency - violates energy conservation');
+      
+      // Biological realism checks
+      if (parameters.r1 < 0.05) warnings.push('Very slow prey growth - even large mammals grow faster');
+      if (parameters.b! < 0.001) warnings.push('Extremely low predator efficiency - below observed minimums');
     } else {
       // Competition specific validation
       if (parameters.r1 > 2.0 || parameters.r2 > 2.0) {
@@ -62,11 +70,17 @@ export default function ParameterValidation({
       if (parameters.r1 > 10 || parameters.r2 > 10) errors.push('Extremely unrealistic growth rates');
     }
 
-    // Population-specific warnings
+    // Population-specific warnings - enhanced atto-fox detection
     if (currentPopulations?.N1 || currentPopulations?.N2) {
+      const FRACTIONAL_THRESHOLD = 1.0;
       const EXTINCTION_THRESHOLD = 0.001;
-      if (currentPopulations.N1 <= EXTINCTION_THRESHOLD * 2 || currentPopulations.N2 <= EXTINCTION_THRESHOLD * 2) {
-        errors.push('Population near extinction threshold - biologically unrealistic recovery');
+      
+      if (currentPopulations.N1 < FRACTIONAL_THRESHOLD || currentPopulations.N2 < FRACTIONAL_THRESHOLD) {
+        warnings.push('Population below 1 individual - "atto-fox problem" detected');
+      }
+      
+      if (currentPopulations.N1 <= EXTINCTION_THRESHOLD || currentPopulations.N2 <= EXTINCTION_THRESHOLD) {
+        errors.push('Population near machine precision - biologically meaningless');
       }
     }
 
