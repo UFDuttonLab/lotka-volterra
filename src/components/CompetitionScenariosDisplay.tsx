@@ -129,6 +129,21 @@ export default function CompetitionScenariosDisplay() {
             </p>
           </div>
           
+          <div className="mt-4 p-4 bg-gradient-to-r from-accent/5 to-primary/5 rounded-lg border">
+            <h4 className="font-semibold text-sm mb-2">Stable Coexistence vs. Bistability: Key Differences</h4>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <div>
+                <p><strong>Stable Coexistence:</strong> Both species <em>always</em> coexist at a single stable interior equilibrium point, regardless of where they start. This occurs when competition coefficients are relatively weak (α₁₂ &lt; K₁/K₂ and α₂₁ &lt; K₂/K₁).</p>
+              </div>
+              <div>
+                <p><strong>Bistability:</strong> Either Species 1 <em>or</em> Species 2 wins (mutual exclusion), but which one depends entirely on initial population sizes. This occurs when competition coefficients are strong (α₁₂ &gt; K₁/K₂ and α₂₁ &gt; K₂/K₁).</p>
+              </div>
+              <div className="pt-2 border-t border-muted/20">
+                <p><strong>The Key Difference:</strong> Stable coexistence has <em>one predictable outcome</em> independent of initial conditions, while bistability has <em>two possible outcomes</em> that depend critically on where the populations start.</p>
+              </div>
+            </div>
+          </div>
+          
           <div className="mt-4 p-4 bg-gradient-to-r from-secondary/5 to-accent/5 rounded-lg border">
             <h4 className="font-semibold text-sm mb-2">Understanding Stability Basins in Bistability</h4>
             <p className="text-sm text-muted-foreground mb-3">
