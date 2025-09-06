@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -248,6 +248,11 @@ export default function EnhancedSimulation({
   
   const { toast } = useToast();
   const [loadedScenario, setLoadedScenario] = useState<string | null>(null);
+
+  // Clear loaded scenario when model type changes
+  useEffect(() => {
+    setLoadedScenario(null);
+  }, [modelType]);
 
   const loadPreset = (preset: PresetScenario) => {
     // Stop current simulation
