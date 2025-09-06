@@ -94,9 +94,6 @@ export default function Index() {
           </p>
         </div>
 
-        {/* Model Equation Display */}
-        <EquationDisplay modelType={modelType} onModelChange={switchModel} />
-
         {/* Main Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 h-auto p-1">
@@ -132,6 +129,7 @@ export default function Index() {
               {...hookValues} 
               activeExercise={activeExercise}
               onDismissExercise={() => setActiveExercise(null)}
+              onModelChange={switchModel}
             />
           </TabsContent>
 

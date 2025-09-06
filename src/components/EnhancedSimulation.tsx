@@ -13,6 +13,7 @@ import ModelLimitations from "./ModelLimitations";
 import TechnicalDetails from "./TechnicalDetails";
 import { Play, RotateCcw, Lightbulb, Target, TrendingUp, Activity } from "lucide-react";
 import AttoFoxWarning from "./AttoFoxWarning";
+import EquationDisplay from "./EquationDisplay";
 
 type ModelType = 'competition' | 'predator-prey';
 
@@ -77,6 +78,7 @@ interface EnhancedSimulationProps {
     question: ExerciseQuestion;
   } | null;
   onDismissExercise?: () => void;
+  onModelChange: (model: ModelType) => void;
 }
 
 interface PresetScenario {
@@ -244,6 +246,7 @@ export default function EnhancedSimulation({
   resetSimulation,
   activeExercise,
   onDismissExercise,
+  onModelChange,
 }: EnhancedSimulationProps) {
   
   const { toast } = useToast();
@@ -318,6 +321,9 @@ export default function EnhancedSimulation({
 
   return (
     <div className="space-y-6">
+      {/* Model Equation Display */}
+      <EquationDisplay modelType={modelType} onModelChange={onModelChange} />
+
       {/* Exercise Banner */}
       {activeExercise && onDismissExercise && (
         <ExerciseBanner
