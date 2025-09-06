@@ -49,10 +49,10 @@ const competitionScenarios: CompetitionScenario[] = [
     description: "α₁₂ > K₁/K₂ and α₂₁ < K₂/K₁",
     parameters: {
       r1: 1.0, r2: 0.8, K1: 100, K2: 80,
-      a12: 1.4, a21: 0.4, N1_0: 50, N2_0: 40,
+      a12: 1.5, a21: 0.3, N1_0: 50, N2_0: 40,
       a: 0.1, b: 0.075 // dummy predator-prey params
     },
-    condition: "1.4 > 1.25 and 0.4 < 0.8",
+    condition: "1.5 > 1.25 and 0.3 < 0.8",
     outcome: "Species 2 excludes Species 1. Species 2 is the superior competitor despite having a lower carrying capacity."
   },
     {
@@ -60,10 +60,10 @@ const competitionScenarios: CompetitionScenario[] = [
       description: "α₁₂ > K₁/K₂ and α₂₁ > K₂/K₁",
       parameters: {
         r1: 1.0, r2: 0.8, K1: 100, K2: 80,
-        a12: 1.3, a21: 1.3, N1_0: 50, N2_0: 40,
+        a12: 1.4, a21: 1.2, N1_0: 50, N2_0: 40,
         a: 0.1, b: 0.075 // dummy predator-prey params
       },
-      condition: "1.3 > 1.25 and 1.3 > 0.8",
+      condition: "1.4 > 1.25 and 1.2 > 0.8",
       outcome: "Winner depends on initial conditions. Both species are strong interspecific competitors, creating alternative stable states."
     }
 ];
