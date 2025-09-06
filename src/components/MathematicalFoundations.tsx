@@ -190,21 +190,22 @@ const mathSections: MathSection[] = [
     icon: Target,
     badge: "Advanced",
     content: {
-      introduction: "The conserved quantity H is one of the most important but least understood aspects of predator-prey dynamics. It acts like 'energy' in the ecological system.",
+      introduction: "Think of H as the 'signature' of your ecosystem - like a fingerprint that determines how dramatic the population ups and downs will be. It's like the total energy in a pendulum: once set, it controls how far the pendulum swings back and forth. H is why predator-prey cycles are so predictable and why they never just settle down to a steady state.",
       equations: [
         "H = r₂·ln(N₁) - b·N₁ + r₁·ln(N₂) - a·N₂",
         "dH/dt = 0 (H remains constant along any trajectory)",
         "Equilibrium point: N₁* = r₂/b, N₂* = r₁/a"
       ],
       explanations: [
-        "H is analogous to total energy in physical systems - it's conserved throughout population cycles",
-        "Each closed orbit in phase space has a unique H value that identifies that specific orbit",
-        "Initial conditions determine H value, which then constrains all future population dynamics",
-        "Higher H values correspond to larger amplitude oscillations between abundance and scarcity",
-        "H conservation explains why predator-prey orbits are closed (don't spiral inward like competition models)"
+        "H works like a roller coaster's total energy - it determines how high and low the 'ride' goes, but the total energy stays the same throughout",
+        "Every ecosystem cycle has its own unique H value, like a barcode that identifies exactly how extreme the population swings will be",
+        "When you start with certain population numbers, you 'lock in' the H value forever - the system remembers this initial state for all time",
+        "A higher H means more dramatic cycles: think 'feast or famine' vs. 'gentle ups and downs'. Lower H = mild fluctuations, higher H = extreme booms and crashes",
+        "H explains why these cycles go on forever in perfect loops, unlike competition where populations eventually settle down to a stable balance",
+        "The mathematical beauty: H acts like nature's accounting system - it keeps perfect track of the ecological 'energy budget' so nothing is ever lost or gained"
       ],
-      biologicalMeaning: "H represents the 'total ecological energy' of the predator-prey system. It shows why these systems maintain persistent cycles rather than reaching stable equilibrium. The conservation of H means the system has perfect memory - it remembers its initial state forever, leading to predictable cyclical behavior.",
-      examples: "In lynx-hare cycles, H determines whether populations swing between (500-5000 hares) or (50-50000 hares). Higher H means more extreme population crashes and booms. This explains why some regions show mild cycles while others show dramatic population swings."
+      biologicalMeaning: "H is nature's memory system - it's why predator-prey cycles are so persistent and predictable. Imagine you're watching a lynx-hare ecosystem: H determines whether you'll see gentle population waves or dramatic boom-bust cycles that swing from near-extinction to population explosions. The system never 'forgets' its starting conditions because H stays constant, creating the endless cycles we observe in nature. This is fundamentally different from competitive species, which eventually reach a stable balance and stop changing.",
+      examples: "Real-world impact: In Canadian forests, H determines whether lynx-hare cycles swing gently between 1,000-10,000 hares per region, or dramatically between 100-100,000 hares. Ecosystems with higher H values show those famous 'boom-bust' cycles where populations crash to near-zero then explode back. In agriculture, H explains why some pest-predator systems show mild fluctuations (easy to manage) while others create dramatic outbreaks followed by total pest crashes (harder to predict and control). Wildlife managers use H-like concepts to predict whether reintroduced predators will create stable, manageable cycles or extreme population swings."
     }
   },
   {
