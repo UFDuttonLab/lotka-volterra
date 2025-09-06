@@ -26,9 +26,11 @@ interface IsoclineDiagramProps {
   parameters?: CompetitionParameters & PredatorPreyParameters;
   className?: string;
   showEmbeddedLegend?: boolean;
+  scenarioLabel?: string;
+  scenarioDescription?: string;
 }
 
-export default function IsoclineDiagram({ type, parameters, className, showEmbeddedLegend = true }: IsoclineDiagramProps) {
+export default function IsoclineDiagram({ type, parameters, className, showEmbeddedLegend = true, scenarioLabel, scenarioDescription }: IsoclineDiagramProps) {
   // Default parameters that ensure meaningful diagrams
   const defaultParams = {
     r1: 1.0, r2: 0.8, K1: 100, K2: 80, a12: 0.8, a21: 0.6,
@@ -119,10 +121,10 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-semibold">
-            {type === 'competition' ? 'Competition Phase Plane Analysis' : 'Predator-Prey Phase Plane Analysis'}
+            {scenarioLabel || (type === 'competition' ? 'Competition Phase Plane Analysis' : 'Predator-Prey Phase Plane Analysis')}
           </CardTitle>
           <Badge variant={type === 'competition' ? 'secondary' : 'default'} className="text-xs">
-            {type === 'competition' ? 'Linear Nullclines' : 'Perpendicular Nullclines'}
+            {scenarioDescription || (type === 'competition' ? 'Linear Nullclines' : 'Perpendicular Nullclines')}
           </Badge>
         </div>
       </CardHeader>

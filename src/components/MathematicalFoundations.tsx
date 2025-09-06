@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import ComparisonDiagram from "./ComparisonDiagram";
 import IsoclineDiagram from "./IsoclineDiagram";
+import CompetitionScenariosDisplay from "./CompetitionScenariosDisplay";
 
 interface CompetitionParameters {
   r1: number;
@@ -310,10 +311,16 @@ export default function MathematicalFoundations({ parameters }: MathematicalFoun
                   <CardContent className="pt-0 space-y-6">
                     <p className="text-sm leading-relaxed">{section.content.introduction}</p>
                     
-                    {/* Add interactive visual diagrams for isoclines section */}
+                    {/* Add interactive visual diagrams for specific sections */}
                     {section.id === "isoclines-flow-fields" && (
                       <div className="space-y-4">
                         <ComparisonDiagram parameters={parameters} />
+                      </div>
+                    )}
+                    
+                    {section.id === "competition-system" && (
+                      <div className="space-y-4">
+                        <CompetitionScenariosDisplay />
                       </div>
                     )}
                     
