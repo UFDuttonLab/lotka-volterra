@@ -40,9 +40,9 @@ export function useLotkaVolterra() {
     K2: 100,
     a12: 0.8,
     a21: 1.2,
-    // Predator-prey parameters - realistic populations with biological dynamics
-    a: 0.1,   // predation efficiency - realistic for biological systems
-    b: 0.075, // conversion efficiency - realistic predator growth efficiency
+    // Predator-prey parameters - classic Lotka-Volterra for good conservation
+    a: 0.5,   // predation efficiency - balanced for conservation
+    b: 0.5,   // conversion efficiency - balanced for conservation
     N1_0: 80,
     N2_0: 20,
   });
@@ -76,8 +76,8 @@ export function useLotkaVolterra() {
 
   // Calculate conserved quantity H for predator-prey systems
   const calculateConservedQuantity = useCallback((N1: number, N2: number, params: Parameters): number => {
-    // H = r₂·ln(N₁) - b·N₁ + r₁·ln(N₂) - a·N₂
-    return params.r2 * Math.log(N1) - params.b * N1 + params.r1 * Math.log(N2) - params.a * N2;
+    // H = r₂·ln(N₁) - a·N₁ + r₁·ln(N₂) - b·N₂ (correct Lotka-Volterra first integral)
+    return params.r2 * Math.log(N1) - params.a * N1 + params.r1 * Math.log(N2) - params.b * N2;
   }, []);
 
   // Lotka-Volterra equations (both competition and predator-prey)
@@ -122,7 +122,7 @@ export function useLotkaVolterra() {
 
     // Mathematical accuracy: minimal floor to prevent log(0) while preserving conservation
     // Trade-off: Very small threshold maintains Lotka-Volterra conservation properties
-    const EXTINCTION_THRESHOLD = 1e-12;
+    const EXTINCTION_THRESHOLD = 1e-10; // Slightly larger to reduce numerical errors
     return {
       N1: newN1 > EXTINCTION_THRESHOLD ? newN1 : EXTINCTION_THRESHOLD,
       N2: newN2 > EXTINCTION_THRESHOLD ? newN2 : EXTINCTION_THRESHOLD,
@@ -163,13 +163,13 @@ export function useLotkaVolterra() {
           attoFoxProblem: modelType === 'predator-prey' ? attoFoxProblem : false
         }));
         
-        // Record data every step for maximum accuracy
+        // Record data every step for maximum accuracy - preserve precision for conservation
         if (true) {
           setData(prevData => {
             const newDataPoint = {
               time: Math.round(newTime * 100) / 100,
-              species1: Math.round(newPops.N1),
-              species2: Math.round(newPops.N2),
+              species1: newPops.N1, // Keep full precision for accurate conservation tracking
+              species2: newPops.N2, // Keep full precision for accurate conservation tracking
             };
             
             // Keep all data points to show full simulation history
@@ -284,8 +284,8 @@ export function useLotkaVolterra() {
         ...prev,
         r1: 1.0, // prey growth rate
         r2: 1.0, // predator death rate
-        a: 0.1,    // predation efficiency - realistic for biological systems  
-        b: 0.075,  // conversion efficiency - realistic predator growth efficiency
+        a: 0.5,  // predation efficiency - classic balanced parameters for conservation
+        b: 0.5,  // conversion efficiency - classic balanced parameters for conservation
         N1_0: 80, // initial prey - biologically meaningful population
         N2_0: 20,  // initial predators - biologically meaningful population
       }));
