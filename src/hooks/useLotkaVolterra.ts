@@ -40,11 +40,11 @@ export function useLotkaVolterra() {
     K2: 120,
     a12: 0.6,
     a21: 1.0,
-    // Predator-prey parameters - classic textbook values for positive H conservation
-    a: 0.1,   // predation efficiency - textbook value for stable oscillations
-    b: 0.075, // conversion efficiency - textbook value for positive H
-    N1_0: 40, // initial prey - balanced for positive conserved quantity
-    N2_0: 9,  // initial predators - balanced for positive conserved quantity
+    // Predator-prey parameters - based on realistic lynx-hare data
+    a: 0.008, // predation efficiency - realistic values from ecological data
+    b: 0.005, // conversion efficiency - realistic values from ecological data
+    N1_0: 120, // initial prey - realistic population size
+    N2_0: 30,  // initial predators - realistic population size
   });
 
   const [data, setData] = useState<DataPoint[]>([]);
