@@ -71,8 +71,9 @@ export function useLotkaVolterra() {
   }>({ nearExtinction: false, unrealisticParameters: [], attoFoxProblem: false });
 
   const intervalRef = useRef<NodeJS.Timeout>();
-  const timeStep = 0.01; // Integration time step - reduced for better conservation accuracy
+  const [timeStep, setTimeStep] = useState(0.005); // Adaptive time step for conservation accuracy
   const updateInterval = 50; // Update frequency in milliseconds
+  const [conservationDriftHistory, setConservationDriftHistory] = useState<number[]>([]);
 
   // Calculate conserved quantity H for predator-prey systems
   const calculateConservedQuantity = useCallback((N1: number, N2: number, params: Parameters): number => {
@@ -120,12 +121,17 @@ export function useLotkaVolterra() {
     const newN1 = N1 + (timeStep / 6) * (k1.dN1dt + 2 * k2.dN1dt + 2 * k3.dN1dt + k4.dN1dt);
     const newN2 = N2 + (timeStep / 6) * (k1.dN2dt + 2 * k2.dN2dt + 2 * k3.dN2dt + k4.dN2dt);
 
-    // Mathematical accuracy: minimal floor to prevent log(0) while preserving conservation
-    // Trade-off: Very small threshold maintains Lotka-Volterra conservation properties
-    const EXTINCTION_THRESHOLD = 1e-10; // Slightly larger to reduce numerical errors
+    // Improved extinction threshold: only apply when populations are truly approaching zero
+    // and derivatives indicate continued decline to prevent artificial conservation violations
+    const EXTINCTION_THRESHOLD = 1e-12; // Smaller threshold for better conservation
+    const derivatives = calculateDerivatives(newN1, newN2, params, model);
+    
+    const appliedN1 = (newN1 <= EXTINCTION_THRESHOLD && derivatives.dN1dt < 0) ? EXTINCTION_THRESHOLD : newN1;
+    const appliedN2 = (newN2 <= EXTINCTION_THRESHOLD && derivatives.dN2dt < 0) ? EXTINCTION_THRESHOLD : newN2;
+    
     return {
-      N1: newN1 > EXTINCTION_THRESHOLD ? newN1 : EXTINCTION_THRESHOLD,
-      N2: newN2 > EXTINCTION_THRESHOLD ? newN2 : EXTINCTION_THRESHOLD,
+      N1: Math.max(appliedN1, EXTINCTION_THRESHOLD),
+      N2: Math.max(appliedN2, EXTINCTION_THRESHOLD),
     };
   }, [calculateDerivatives]);
 
@@ -136,12 +142,30 @@ export function useLotkaVolterra() {
       setCurrentPopulations(prevPops => {
         const newPops = integrate(prevPops.N1, prevPops.N2, parameters, modelType);
         
-        // Update conserved quantity H for predator-prey systems
+        // Update conserved quantity H for predator-prey systems with adaptive time step
         if (modelType === 'predator-prey') {
           const currentH = calculateConservedQuantity(newPops.N1, newPops.N2, parameters);
           setConservedQuantity(prev => {
             const driftPercent = prev.initial !== 0 ? Math.abs((currentH - prev.initial) / prev.initial) * 100 : 0;
             const isConserved = driftPercent < 0.1; // 0.1% tolerance for accurate conservation
+            
+            // Track conservation drift history for adaptive time step
+            setConservationDriftHistory(history => {
+              const newHistory = [...history, driftPercent].slice(-10); // Keep last 10 values
+              
+              // Adaptive time step: reduce if conservation drift is increasing
+              if (newHistory.length >= 5) {
+                const avgRecentDrift = newHistory.slice(-5).reduce((a, b) => a + b) / 5;
+                if (avgRecentDrift > 0.5 && timeStep > 0.001) {
+                  setTimeStep(prev => Math.max(prev * 0.8, 0.001)); // Reduce time step
+                } else if (avgRecentDrift < 0.05 && timeStep < 0.01) {
+                  setTimeStep(prev => Math.min(prev * 1.1, 0.01)); // Increase time step if drift is low
+                }
+              }
+              
+              return newHistory;
+            });
+            
             return {
               current: currentH,
               initial: prev.initial === 0 ? currentH : prev.initial,
@@ -213,6 +237,10 @@ export function useLotkaVolterra() {
       species1: parameters.N1_0,
       species2: parameters.N2_0,
     }]);
+    
+    // Reset time step and conservation tracking
+    setTimeStep(0.005);
+    setConservationDriftHistory([]);
     
     // Reset conserved quantity
     if (modelType === 'predator-prey') {
