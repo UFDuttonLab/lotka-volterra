@@ -71,9 +71,8 @@ export function useLotkaVolterra() {
   }>({ nearExtinction: false, unrealisticParameters: [], attoFoxProblem: false });
 
   const intervalRef = useRef<NodeJS.Timeout>();
-  const [timeStep, setTimeStep] = useState(0.005); // Adaptive time step for conservation accuracy
+  const [timeStep, setTimeStep] = useState(0.01); // User-controllable time step
   const updateInterval = 50; // Update frequency in milliseconds
-  const [conservationDriftHistory, setConservationDriftHistory] = useState<number[]>([]);
 
   // Calculate conserved quantity H for predator-prey systems
   const calculateConservedQuantity = useCallback((N1: number, N2: number, params: Parameters): number => {
@@ -133,7 +132,7 @@ export function useLotkaVolterra() {
       N1: Math.max(appliedN1, EXTINCTION_THRESHOLD),
       N2: Math.max(appliedN2, EXTINCTION_THRESHOLD),
     };
-  }, [calculateDerivatives]);
+  }, [calculateDerivatives, timeStep]);
 
   const updateSimulation = useCallback(() => {
     setCurrentTime(prevTime => {
@@ -142,35 +141,18 @@ export function useLotkaVolterra() {
       setCurrentPopulations(prevPops => {
         const newPops = integrate(prevPops.N1, prevPops.N2, parameters, modelType);
         
-        // Update conserved quantity H for predator-prey systems with adaptive time step
+        // Update conserved quantity H for predator-prey systems
         if (modelType === 'predator-prey') {
           const currentH = calculateConservedQuantity(newPops.N1, newPops.N2, parameters);
           setConservedQuantity(prev => {
             const driftPercent = prev.initial !== 0 ? Math.abs((currentH - prev.initial) / prev.initial) * 100 : 0;
             const isConserved = driftPercent < 0.1; // 0.1% tolerance for accurate conservation
             
-            // Track conservation drift history for adaptive time step
-            setConservationDriftHistory(history => {
-              const newHistory = [...history, driftPercent].slice(-10); // Keep last 10 values
-              
-              // Adaptive time step: reduce if conservation drift is increasing
-              if (newHistory.length >= 5) {
-                const avgRecentDrift = newHistory.slice(-5).reduce((a, b) => a + b) / 5;
-                if (avgRecentDrift > 0.5 && timeStep > 0.001) {
-                  setTimeStep(prev => Math.max(prev * 0.8, 0.001)); // Reduce time step
-                } else if (avgRecentDrift < 0.05 && timeStep < 0.01) {
-                  setTimeStep(prev => Math.min(prev * 1.1, 0.01)); // Increase time step if drift is low
-                }
-              }
-              
-              return newHistory;
-            });
-            
             return {
               current: currentH,
               initial: prev.initial === 0 ? currentH : prev.initial,
-              isConserved: prev.initial === 0 ? true : isConserved,
-              driftPercent: prev.initial === 0 ? 0 : driftPercent
+              isConserved,
+              driftPercent,
             };
           });
         }
@@ -211,7 +193,7 @@ export function useLotkaVolterra() {
       
       return newTime;
     });
-  }, [integrate, parameters, modelType]);
+  }, [integrate, parameters, modelType, timeStep, calculateConservedQuantity]);
 
   const startSimulation = useCallback(() => {
     setIsRunning(true);
@@ -238,9 +220,8 @@ export function useLotkaVolterra() {
       species2: parameters.N2_0,
     }]);
     
-    // Reset time step and conservation tracking
-    setTimeStep(0.005);
-    setConservationDriftHistory([]);
+    // Reset time step to default
+    setTimeStep(0.01);
     
     // Reset conserved quantity
     if (modelType === 'predator-prey') {
@@ -346,6 +327,10 @@ export function useLotkaVolterra() {
     };
   }, []);
 
+  const updateTimeStep = useCallback((newTimeStep: number) => {
+    setTimeStep(newTimeStep);
+  }, []);
+
   return {
     modelType,
     parameters,
@@ -355,7 +340,9 @@ export function useLotkaVolterra() {
     currentTime,
     conservedQuantity,
     populationWarnings,
+    timeStep,
     updateParameter,
+    updateTimeStep,
     setAllParameters,
     switchModel,
     toggleSimulation,

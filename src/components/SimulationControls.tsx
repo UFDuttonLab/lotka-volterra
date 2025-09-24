@@ -18,7 +18,9 @@ interface SimulationControlsProps {
     N1_0: number;
     N2_0: number;
   };
+  timeStep: number;
   onParameterChange: (param: string, value: number) => void;
+  onTimeStepChange: (value: number) => void;
   isRunning: boolean;
   onPlayPause: () => void;
   onReset: () => void;
@@ -27,7 +29,9 @@ interface SimulationControlsProps {
 export default function SimulationControls({
   modelType,
   parameters,
+  timeStep,
   onParameterChange,
+  onTimeStepChange,
   isRunning,
   onPlayPause,
   onReset,
@@ -64,6 +68,28 @@ export default function SimulationControls({
           >
             <RotateCcw className="h-4 w-4" />
           </Button>
+        </div>
+
+        {/* Simulation Speed Control */}
+        <div className={`space-y-4 p-4 rounded-lg ${sectionBg}`}>
+          <h3 className={`text-sm font-medium ${iconColor} uppercase tracking-wide`}>
+            Simulation Speed
+          </h3>
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Slow</span>
+              <span className="font-mono">{timeStep.toFixed(3)}</span>
+              <span>Fast</span>
+            </div>
+            <Slider
+              value={[timeStep]}
+              onValueChange={(value) => onTimeStepChange(value[0])}
+              min={0.001}
+              max={0.05}
+              step={0.001}
+              className="w-full"
+            />
+          </div>
         </div>
 
         {modelType === 'competition' ? (

@@ -39,8 +39,23 @@ interface ExerciseQuestion {
 }
 
 export default function Index() {
-  const hookValues = useLotkaVolterra();
-  const { modelType, switchModel, setAllParameters } = hookValues;
+  const {
+    modelType,
+    parameters,
+    data,
+    isRunning,
+    currentPopulations,
+    currentTime,
+    conservedQuantity,
+    populationWarnings,
+    timeStep,
+    updateParameter,
+    updateTimeStep,
+    setAllParameters,
+    switchModel,
+    toggleSimulation,
+    resetSimulation,
+  } = useLotkaVolterra();
   const [activeTab, setActiveTab] = useState("simulate");
   
   // Apply subtle model-specific theming to main layout
@@ -125,8 +140,22 @@ export default function Index() {
           </TabsList>
 
           <TabsContent value="simulate" className="mt-8">
-            <EnhancedSimulation 
-              {...hookValues} 
+            <EnhancedSimulation
+              modelType={modelType}
+              parameters={parameters}
+              data={data}
+              isRunning={isRunning}
+              currentPopulations={currentPopulations}
+              currentTime={currentTime}
+              conservedQuantity={conservedQuantity}
+              populationWarnings={populationWarnings}
+              timeStep={timeStep}
+              updateParameter={updateParameter}
+              updateTimeStep={updateTimeStep}
+              setAllParameters={setAllParameters}
+              switchModel={switchModel}
+              toggleSimulation={toggleSimulation}
+              resetSimulation={resetSimulation}
               activeExercise={activeExercise}
               onDismissExercise={() => setActiveExercise(null)}
               onModelChange={switchModel}

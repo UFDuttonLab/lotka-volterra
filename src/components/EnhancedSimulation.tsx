@@ -66,7 +66,9 @@ interface EnhancedSimulationProps {
     unrealisticParameters: string[];
     attoFoxProblem?: boolean;
   };
+  timeStep: number;
   updateParameter: (param: string, value: number) => void;
+  updateTimeStep: (value: number) => void;
   setAllParameters: (newParams: Partial<Parameters>) => void;
   switchModel: (newModel: ModelType) => void;
   toggleSimulation: () => void;
@@ -239,7 +241,9 @@ export default function EnhancedSimulation({
   currentTime,
   conservedQuantity,
   populationWarnings,
+  timeStep,
   updateParameter,
+  updateTimeStep,
   setAllParameters,
   switchModel,
   toggleSimulation,
@@ -396,7 +400,9 @@ export default function EnhancedSimulation({
               <SimulationControls
                 modelType={modelType}
                 parameters={parameters}
+                timeStep={timeStep}
                 onParameterChange={updateParameter}
+                onTimeStepChange={updateTimeStep}
                 isRunning={isRunning}
                 onPlayPause={toggleSimulation}
                 onReset={resetSimulation}
@@ -515,7 +521,9 @@ export default function EnhancedSimulation({
             <SimulationControls
               modelType={modelType}
               parameters={parameters}
+              timeStep={timeStep}
               onParameterChange={updateParameter}
+              onTimeStepChange={updateTimeStep}
               isRunning={isRunning}
               onPlayPause={toggleSimulation}
               onReset={resetSimulation}
