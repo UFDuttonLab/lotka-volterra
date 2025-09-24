@@ -191,73 +191,99 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 </>
               )}
 
-              {modelType === 'competition' && isoclines && (
-                <>
-                  {/* N₁-nullcline: N₁ = K₁ - α₁₂*N₂ with enhanced styling */}
-                  <ReferenceLine 
-                    segment={[
-                      { x: 0, y: isoclines.K1 }, 
-                      { x: isoclines.K1 / isoclines.alpha12, y: 0 }
-                    ]}
-                    stroke="hsl(var(--accent))"
-                    strokeDasharray="12 6"
-                    strokeWidth={3}
-                    label={{
-                      value: `N₁-nullcline (dN₁/dt = 0)`,
-                      position: 'top',
-                      style: { 
-                        fontSize: '12px', 
-                        fill: 'hsl(var(--accent))',
-                        fontWeight: '600',
-                        textShadow: '1px 1px 2px hsl(var(--background))'
-                      }
-                    }}
-                  />
-                  {/* N₂-nullcline: N₂ = K₂ - α₂₁*N₁ with enhanced styling */}
-                  <ReferenceLine 
-                    segment={[
-                      { x: 0, y: isoclines.K2 }, 
-                      { x: isoclines.K2 / isoclines.alpha21, y: 0 }
-                    ]}
-                    stroke="hsl(var(--secondary))"
-                    strokeDasharray="12 6"
-                    strokeWidth={3}
-                    label={{
-                      value: `N₂-nullcline (dN₂/dt = 0)`,
-                      position: 'bottom',
-                      style: { 
-                        fontSize: '12px', 
-                        fill: 'hsl(var(--secondary))',
-                        fontWeight: '600',
-                        textShadow: '1px 1px 2px hsl(var(--background))'
-                      }
-                    }}
-                  />
-                  
-                  {/* Competition equilibrium point */}
-                  {(() => {
-                    const denominator = 1 - isoclines.alpha12 * isoclines.alpha21;
-                    if (Math.abs(denominator) > 0.001) {
-                      const eqN1 = (isoclines.K1 - isoclines.alpha12 * isoclines.K2) / denominator;
-                      const eqN2 = (isoclines.K2 - isoclines.alpha21 * isoclines.K1) / denominator;
-                      if (eqN1 > 0 && eqN2 > 0) {
-                        return (
-                          <ReferenceDot 
-                            x={eqN1} 
-                            y={eqN2} 
-                            r={6} 
-                            fill="hsl(var(--destructive))" 
-                            stroke="hsl(var(--background))"
-                            strokeWidth={2}
-                          />
-                        );
-                      }
-                    }
-                    return null;
-                  })()}
-                  
-                </>
-              )}
+              {modelType === 'competition' && isoclines && (() => {
+                // Calculate chart boundaries for proper nullcline display
+                const maxX = Math.max(...phaseData.map(d => d.prey), isoclines.K1 * 1.2);
+                const maxY = Math.max(...phaseData.map(d => d.predator), isoclines.K2 * 1.2);
+                
+                // N₁-nullcline: N₁ = K₁ - α₁₂*N₂ (rearranged: N₂ = (K₁ - N₁)/α₁₂)
+                const n1NullclineY0 = isoclines.K1; // Y-intercept when N₁ = 0
+                const n1NullclineX0 = isoclines.K1 / isoclines.alpha12; // X-intercept when N₂ = 0
+                
+                // N₂-nullcline: N₂ = K₂ - α₂₁*N₁
+                const n2NullclineY0 = isoclines.K2; // Y-intercept when N₁ = 0
+                const n2NullclineX0 = isoclines.K2 / isoclines.alpha21; // X-intercept when N₂ = 0
+                
+                // Competition equilibrium
+                const denominator = 1 - isoclines.alpha12 * isoclines.alpha21;
+                let equilibrium = null;
+                if (Math.abs(denominator) > 0.001) {
+                  const eqN1 = (isoclines.K1 - isoclines.alpha12 * isoclines.K2) / denominator;
+                  const eqN2 = (isoclines.K2 - isoclines.alpha21 * isoclines.K1) / denominator;
+                  if (eqN1 > 0 && eqN2 > 0 && eqN1 <= maxX && eqN2 <= maxY) {
+                    equilibrium = { x: eqN1, y: eqN2 };
+                  }
+                }
+                
+                return (
+                  <>
+                    {/* N₁-nullcline Y-intercept (carrying capacity when species 2 = 0) */}
+                    <ReferenceLine 
+                      y={n1NullclineY0}
+                      stroke="hsl(var(--accent))"
+                      strokeDasharray="8 4"
+                      strokeWidth={2.5}
+                      label={{
+                        value: `N₁-nullcline: N₂ = ${isoclines.K1} - ${isoclines.alpha12.toFixed(2)}N₁`,
+                        position: 'top',
+                        style: { 
+                          fontSize: '11px', 
+                          fill: 'hsl(var(--accent))',
+                          fontWeight: '600'
+                        }
+                      }}
+                    />
+                    
+                    {/* N₁-nullcline X-intercept */}
+                    <ReferenceLine 
+                      x={n1NullclineX0}
+                      stroke="hsl(var(--accent))"
+                      strokeDasharray="4 8"
+                      strokeWidth={2}
+                      strokeOpacity={0.6}
+                    />
+                    
+                    {/* N₂-nullcline Y-intercept (carrying capacity when species 1 = 0) */}
+                    <ReferenceLine 
+                      y={n2NullclineY0}
+                      stroke="hsl(var(--secondary))"
+                      strokeDasharray="8 4"
+                      strokeWidth={2.5}
+                      label={{
+                        value: `N₂-nullcline: N₂ = ${isoclines.K2} - ${isoclines.alpha21.toFixed(2)}N₁`,
+                        position: 'bottom',
+                        style: { 
+                          fontSize: '11px', 
+                          fill: 'hsl(var(--secondary))',
+                          fontWeight: '600'
+                        }
+                      }}
+                    />
+                    
+                    {/* N₂-nullcline X-intercept */}
+                    <ReferenceLine 
+                      x={n2NullclineX0}
+                      stroke="hsl(var(--secondary))"
+                      strokeDasharray="4 8"
+                      strokeWidth={2}
+                      strokeOpacity={0.6}
+                    />
+                    
+                    {/* Competition equilibrium point */}
+                    {equilibrium && (
+                      <ReferenceDot 
+                        x={equilibrium.x} 
+                        y={equilibrium.y} 
+                        r={7} 
+                        fill="hsl(var(--destructive))" 
+                        stroke="hsl(var(--background))"
+                        strokeWidth={2}
+                        fillOpacity={0.9}
+                      />
+                    )}
+                  </>
+                );
+              })()}
               
               {/* Equilibrium point for predator-prey */}
               {modelType === 'predator-prey' && equilibrium && (
