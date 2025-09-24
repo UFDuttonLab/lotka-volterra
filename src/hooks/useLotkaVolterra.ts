@@ -71,13 +71,13 @@ export function useLotkaVolterra() {
   }>({ nearExtinction: false, unrealisticParameters: [], attoFoxProblem: false });
 
   const intervalRef = useRef<NodeJS.Timeout>();
-  const timeStep = 0.05; // Integration time step - balanced for accuracy and visual speed
+  const timeStep = 0.01; // Integration time step - reduced for better conservation accuracy
   const updateInterval = 50; // Update frequency in milliseconds
 
   // Calculate conserved quantity H for predator-prey systems
   const calculateConservedQuantity = useCallback((N1: number, N2: number, params: Parameters): number => {
-    // H = r₂·ln(N₁) - a·N₁ + r₁·ln(N₂) - b·N₂ (correct Lotka-Volterra first integral)
-    return params.r2 * Math.log(N1) - params.a * N1 + params.r1 * Math.log(N2) - params.b * N2;
+    // H = r₂·ln(N₁) + r₁·ln(N₂) - a·N₁ - b·N₂ (correct Lotka-Volterra first integral)
+    return params.r2 * Math.log(N1) + params.r1 * Math.log(N2) - params.a * N1 - params.b * N2;
   }, []);
 
   // Lotka-Volterra equations (both competition and predator-prey)
@@ -141,7 +141,7 @@ export function useLotkaVolterra() {
           const currentH = calculateConservedQuantity(newPops.N1, newPops.N2, parameters);
           setConservedQuantity(prev => {
             const driftPercent = prev.initial !== 0 ? Math.abs((currentH - prev.initial) / prev.initial) * 100 : 0;
-            const isConserved = driftPercent < 1.0; // 1% tolerance for improved accuracy
+            const isConserved = driftPercent < 0.1; // 0.1% tolerance for accurate conservation
             return {
               current: currentH,
               initial: prev.initial === 0 ? currentH : prev.initial,

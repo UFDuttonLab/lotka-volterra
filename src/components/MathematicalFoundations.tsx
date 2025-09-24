@@ -173,7 +173,7 @@ const mathSections: MathSection[] = [
       equations: [
         "Prey: dN₁/dt = r₁N₁ - aN₁N₂",
         "Predator: dN₂/dt = -r₂N₂ + bN₁N₂",
-        "Conserved quantity: H = r₂·ln(N₁) - b·N₁ + r₁·ln(N₂) - a·N₂"
+        "Conserved quantity: H = r₂·ln(N₁) + r₁·ln(N₂) - a·N₁ - b·N₂"
       ],
       explanations: [
         "Prey grow exponentially (r₁N₁) but are consumed by predators (aN₁N₂)",
@@ -187,27 +187,27 @@ const mathSections: MathSection[] = [
   },
   {
     id: "conserved-quantity",
-    title: "The Conserved Quantity H: System's Memory",
+    title: "The Conserved Quantity H: Mathematical Invariant",
     icon: Target,
     badge: "Advanced",
     content: {
-      introduction: "Think of H as the 'signature' of your ecosystem - like a fingerprint that determines how dramatic the population ups and downs will be. It's like the total energy in a pendulum: once set, it controls how far the pendulum swings back and forth. H is why predator-prey cycles are so predictable and why they never just settle down to a steady state.",
+      introduction: "The conserved quantity H is a mathematical property of the idealized Lotka-Volterra equations that remains constant along any trajectory. H determines the amplitude of population oscillations and demonstrates the mathematical structure underlying predator-prey dynamics.",
       equations: [
-        "H = r₂·ln(N₁) - b·N₁ + r₁·ln(N₂) - a·N₂",
+        "H = r₂·ln(N₁) + r₁·ln(N₂) - a·N₁ - b·N₂",
         "dH/dt = 0 (H remains constant along any trajectory)",
         "Equilibrium point: N₁* = r₂/b, N₂* = r₁/a"
       ],
       explanations: [
-        "H works like a roller coaster's total energy - it determines how high and low the 'ride' goes, but the total energy stays the same throughout",
-        "Every ecosystem cycle has its own unique H value, like a barcode that identifies exactly how extreme the population swings will be",
-        "When you start with certain population numbers, you 'lock in' the H value forever - the system remembers this initial state for all time",
-        "A higher H means more dramatic cycles: think 'feast or famine' vs. 'gentle ups and downs'. Lower H = mild fluctuations, higher H = extreme booms and crashes",
-        "H explains why these cycles go on forever in perfect loops, unlike competition where populations eventually settle down to a stable balance",
-        "The mathematical beauty: H acts like nature's accounting system - it keeps perfect track of the ecological 'energy budget' so nothing is ever lost or gained"
+        "H is a mathematical constant of motion, analogous to energy conservation in physics, but does not represent physical energy",
+        "Each trajectory in phase space corresponds to a specific value of H, creating nested closed orbits around the equilibrium",
+        "The value of H is determined entirely by initial conditions (N₁₀, N₂₀) and remains constant throughout the trajectory",
+        "Larger |H| values correspond to orbits farther from equilibrium, producing greater amplitude oscillations",
+        "H conservation is a consequence of the special mathematical structure of the Lotka-Volterra equations",
+        "The perpetual cycles are an idealization - real systems experience perturbations that violate conservation"
       ],
-      biologicalMeaning: "H is nature's memory system - it's why predator-prey cycles are so persistent and predictable. Imagine you're watching a lynx-hare ecosystem: H determines whether you'll see gentle population waves or dramatic boom-bust cycles that swing from near-extinction to population explosions. The system never 'forgets' its starting conditions because H stays constant, creating the endless cycles we observe in nature. This is fundamentally different from competitive species, which eventually reach a stable balance and stop changing.",
-      examples: "Real-world impact: In Canadian forests, H determines whether lynx-hare cycles swing gently between 1,000-10,000 hares per region, or dramatically between 100-100,000 hares. Ecosystems with higher H values show those famous 'boom-bust' cycles where populations crash to near-zero then explode back. In agriculture, H explains why some pest-predator systems show mild fluctuations (easy to manage) while others create dramatic outbreaks followed by total pest crashes (harder to predict and control). Wildlife managers use H-like concepts to predict whether reintroduced predators will create stable, manageable cycles or extreme population swings.",
-      conservationImplications: "Can you change H? In theory no, in practice YES! While the pure mathematical model treats H as unchangeable (like energy conservation in physics), real ecosystems constantly experience 'H resets' from environmental disturbances. Disease outbreaks, habitat destruction, climate shifts, human intervention, migration events, and evolution all act like 'memory erasers' - they change the H value to something completely new. This is fantastic news for conservation! It means we can intervene to change problematic H values. If an ecosystem is stuck in extreme boom-bust cycles (high H) that threaten species survival, conservationists can strategically introduce changes to shift it toward gentler cycles (lower H). Examples include: habitat restoration to change carrying capacities, predator reintroduction programs, controlled hunting to reset population ratios, or creating wildlife corridors to allow migration. The key insight: H represents the current 'trajectory' of the ecosystem, but that trajectory can be changed through thoughtful intervention. This makes H a powerful tool for ecosystem management and restoration efforts."
+      biologicalMeaning: "H conservation explains why the idealized Lotka-Volterra model produces perpetual, undamped oscillations. However, this is structurally unstable - any small perturbation changes the system's trajectory. Real ecosystems don't exhibit perfect conservation because they're constantly subject to environmental variability, stochasticity, and parameter changes that 'reset' the system onto new trajectories.",
+      examples: "Mathematical significance: H creates the nested family of closed orbits characteristic of conservative systems. In applied contexts, deviations from H conservation indicate model limitations. Real predator-prey systems show cycles that gradually dampen toward equilibrium (adding density dependence) or grow unstably (in disturbed environments), rather than the perfect perpetual cycles predicted by pure Lotka-Volterra dynamics.",
+      conservationImplications: "Model limitations: The Lotka-Volterra model's structural instability means that perfect H conservation is unrealistic in nature. Environmental perturbations, seasonal variations, spatial heterogeneity, evolution, and stochasticity all cause real systems to deviate from ideal conservation. More realistic models incorporate density-dependent effects, environmental stochasticity, or spatial structure that lead to stable limit cycles or other attractors rather than the neutrally stable orbits of the basic model. Understanding H helps identify when and why the simple model breaks down."
     }
   },
   {
