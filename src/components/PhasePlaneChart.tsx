@@ -153,6 +153,59 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 strokeWidth={1}
               />
               
+              {/* Competition nullclines as scatter lines */}
+              {modelType === 'competition' && isoclines && (() => {
+                // Calculate chart boundaries for proper nullcline display
+                const maxX = Math.max(...phaseData.map(d => d.prey), Math.max(isoclines.K1, isoclines.K2 / isoclines.alpha21) * 1.1);
+                const maxY = Math.max(...phaseData.map(d => d.predator), Math.max(isoclines.K2, isoclines.K1 / isoclines.alpha12) * 1.1);
+                
+                // Generate nullcline coordinate data
+                const n1NullclineData = [];
+                const n2NullclineData = [];
+                
+                // N₁-nullcline: N₂ = (K₁ - N₁)/α₁₂
+                for (let i = 0; i <= 100; i++) {
+                  const x = (i / 100) * Math.min(isoclines.K1, maxX);
+                  const y = (isoclines.K1 - x) / isoclines.alpha12;
+                  if (y >= 0 && y <= maxY) {
+                    n1NullclineData.push({ prey: x, predator: y });
+                  }
+                }
+                
+                // N₂-nullcline: N₂ = K₂ - α₂₁*N₁
+                for (let i = 0; i <= 100; i++) {
+                  const x = (i / 100) * Math.min(isoclines.K2 / isoclines.alpha21, maxX);
+                  const y = isoclines.K2 - isoclines.alpha21 * x;
+                  if (y >= 0 && y <= maxY) {
+                    n2NullclineData.push({ prey: x, predator: y });
+                  }
+                }
+                
+                return (
+                  <>
+                    {/* N₁-nullcline as connected scatter points */}
+                    <Scatter
+                      data={n1NullclineData}
+                      fill="hsl(var(--accent))"
+                      stroke="hsl(var(--accent))"
+                      strokeWidth={3}
+                      line={{ stroke: 'hsl(var(--accent))', strokeWidth: 3, strokeDasharray: '12 6' }}
+                      shape={() => null}
+                    />
+                    
+                    {/* N₂-nullcline as connected scatter points */}
+                    <Scatter
+                      data={n2NullclineData}
+                      fill="hsl(var(--secondary))"
+                      stroke="hsl(var(--secondary))"
+                      strokeWidth={3}
+                      line={{ stroke: 'hsl(var(--secondary))', strokeWidth: 3, strokeDasharray: '12 6' }}
+                      shape={() => null}
+                    />
+                  </>
+                );
+              })()}
+              
               {/* Enhanced Isoclines with flow indicators */}
               {modelType === 'predator-prey' && isoclines && (
                 <>
@@ -196,10 +249,6 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
               )}
 
               {modelType === 'competition' && isoclines && (() => {
-                // Calculate chart boundaries for proper nullcline display
-                const maxX = Math.max(...phaseData.map(d => d.prey), Math.max(isoclines.K1, isoclines.K2 / isoclines.alpha21) * 1.1);
-                const maxY = Math.max(...phaseData.map(d => d.predator), Math.max(isoclines.K2, isoclines.K1 / isoclines.alpha12) * 1.1);
-                
                 // N₁-nullcline intercepts: N₂ = (K₁ - N₁)/α₁₂
                 const n1YIntercept = isoclines.K1 / isoclines.alpha12; // When N₁ = 0
                 const n1XIntercept = isoclines.K1; // When N₂ = 0
@@ -214,6 +263,8 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 if (Math.abs(denominator) > 0.001) {
                   const eqN1 = (isoclines.K1 - isoclines.alpha12 * isoclines.K2) / denominator;
                   const eqN2 = (isoclines.K2 - isoclines.alpha21 * isoclines.K1) / denominator;
+                  const maxX = Math.max(isoclines.K1, isoclines.K2 / isoclines.alpha21) * 1.1;
+                  const maxY = Math.max(isoclines.K2, isoclines.K1 / isoclines.alpha12) * 1.1;
                   if (eqN1 > 0 && eqN2 > 0 && eqN1 <= maxX && eqN2 <= maxY) {
                     equilibrium = { x: eqN1, y: eqN2 };
                   }
