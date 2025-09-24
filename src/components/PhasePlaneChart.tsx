@@ -216,7 +216,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                     strokeDasharray="12 6"
                     strokeWidth={3}
                     label={{
-                      value: `Prey nullcline: N₂ = ${isoclines.preyNullcline.toFixed(2)} (dN₁/dt = 0)`,
+                      value: `Prey nullcline: N₂ = ${isoclines.preyNullcline.toFixed(2)} (dN₂/dt = 0)`,
                       position: 'top',
                       style: { 
                         fontSize: '12px', 
@@ -233,7 +233,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                     strokeDasharray="12 6" 
                     strokeWidth={3}
                     label={{
-                      value: `Predator nullcline: N₁ = ${isoclines.predatorNullcline.toFixed(2)} (dN₂/dt = 0)`,
+                      value: `Predator nullcline: N₁ = ${isoclines.predatorNullcline.toFixed(2)} (dN₁/dt = 0)`,
                       position: 'top',
                       angle: -90,
                       style: { 
@@ -360,8 +360,8 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
               <div className="p-3 bg-muted/50 rounded-lg border">
                 <h5 className="font-medium text-foreground mb-2">Isoclines & Flow Pattern:</h5>
                 <ul className="space-y-1 text-muted-foreground">
-                  <li>• <span className="font-medium text-accent">Horizontal line (N₂ = r₁/a):</span> Prey nullcline - predator population where prey growth = 0</li>
-                  <li>• <span className="font-medium text-secondary">Vertical line (N₁ = r₂/b):</span> Predator nullcline - prey population where predator growth = 0</li>
+                  <li>• <span className="font-medium text-accent">Horizontal line (N₂ = r₁/a):</span> Prey nullcline - where prey growth rate is zero (dN₁/dt = 0)</li>
+                  <li>• <span className="font-medium text-secondary">Vertical line (N₁ = r₂/b):</span> Predator nullcline - where predator growth rate is zero (dN₂/dt = 0)</li>
                   <li>• <span className="font-medium">Clockwise flow:</span> Trajectories circulate around equilibrium intersection point</li>
                   <li>• <span className="font-medium">Conserved orbits:</span> Each starting point creates a unique closed loop</li>
                 </ul>
