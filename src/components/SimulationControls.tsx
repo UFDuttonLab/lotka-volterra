@@ -78,7 +78,7 @@ export default function SimulationControls({
           <div className="space-y-2">
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>Slow</span>
-              <span className="font-mono">{timeStep.toFixed(3)}</span>
+              <span className="font-mono">{timeStep?.toFixed(3) || '0.010'}</span>
               <span>Fast</span>
             </div>
             <Slider

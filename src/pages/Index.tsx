@@ -163,7 +163,7 @@ export default function Index() {
           </TabsContent>
 
           <TabsContent value="learn" className="mt-8">
-            <MathematicalFoundations parameters={hookValues.parameters} />
+            <MathematicalFoundations parameters={parameters} />
           </TabsContent>
 
           <TabsContent value="history" className="mt-8">
