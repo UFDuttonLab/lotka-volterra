@@ -197,16 +197,16 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
 
               {modelType === 'competition' && isoclines && (() => {
                 // Calculate chart boundaries for proper nullcline display
-                const maxX = Math.max(...phaseData.map(d => d.prey), isoclines.K1 * 1.2);
-                const maxY = Math.max(...phaseData.map(d => d.predator), isoclines.K2 * 1.2);
+                const maxX = Math.max(...phaseData.map(d => d.prey), Math.max(isoclines.K1, isoclines.K2 / isoclines.alpha21) * 1.1);
+                const maxY = Math.max(...phaseData.map(d => d.predator), Math.max(isoclines.K2, isoclines.K1 / isoclines.alpha12) * 1.1);
                 
-                // N₁-nullcline: N₁ = K₁ - α₁₂*N₂ (rearranged: N₂ = (K₁ - N₁)/α₁₂)
-                const n1NullclineY0 = isoclines.K1; // Y-intercept when N₁ = 0
-                const n1NullclineX0 = isoclines.K1 / isoclines.alpha12; // X-intercept when N₂ = 0
+                // N₁-nullcline intercepts: N₂ = (K₁ - N₁)/α₁₂
+                const n1YIntercept = isoclines.K1 / isoclines.alpha12; // When N₁ = 0
+                const n1XIntercept = isoclines.K1; // When N₂ = 0
                 
-                // N₂-nullcline: N₂ = K₂ - α₂₁*N₁
-                const n2NullclineY0 = isoclines.K2; // Y-intercept when N₁ = 0
-                const n2NullclineX0 = isoclines.K2 / isoclines.alpha21; // X-intercept when N₂ = 0
+                // N₂-nullcline intercepts: N₂ = K₂ - α₂₁*N₁  
+                const n2YIntercept = isoclines.K2; // When N₁ = 0
+                const n2XIntercept = isoclines.K2 / isoclines.alpha21; // When N₂ = 0
                 
                 // Competition equilibrium
                 const denominator = 1 - isoclines.alpha12 * isoclines.alpha21;
@@ -221,56 +221,48 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 
                 return (
                   <>
-                    {/* N₁-nullcline Y-intercept (carrying capacity when species 2 = 0) */}
-                    <ReferenceLine 
-                      y={n1NullclineY0}
+                    {/* N₁-nullcline Y-intercept marker */}
+                    <ReferenceDot 
+                      x={0} 
+                      y={n1YIntercept} 
+                      r={4} 
+                      fill="hsl(var(--accent))" 
                       stroke="hsl(var(--accent))"
-                      strokeDasharray="8 4"
-                      strokeWidth={2.5}
-                      label={{
-                        value: `N₁-nullcline: N₂ = ${isoclines.K1} - ${isoclines.alpha12.toFixed(2)}N₁`,
-                        position: 'top',
-                        style: { 
-                          fontSize: '11px', 
-                          fill: 'hsl(var(--accent))',
-                          fontWeight: '600'
-                        }
-                      }}
+                      strokeWidth={2}
+                      fillOpacity={0.8}
                     />
                     
-                    {/* N₁-nullcline X-intercept */}
-                    <ReferenceLine 
-                      x={n1NullclineX0}
+                    {/* N₁-nullcline X-intercept marker */}
+                    <ReferenceDot 
+                      x={n1XIntercept} 
+                      y={0} 
+                      r={4} 
+                      fill="hsl(var(--accent))" 
                       stroke="hsl(var(--accent))"
-                      strokeDasharray="4 8"
                       strokeWidth={2}
-                      strokeOpacity={0.6}
+                      fillOpacity={0.8}
                     />
                     
-                    {/* N₂-nullcline Y-intercept (carrying capacity when species 1 = 0) */}
-                    <ReferenceLine 
-                      y={n2NullclineY0}
+                    {/* N₂-nullcline Y-intercept marker */}
+                    <ReferenceDot 
+                      x={0} 
+                      y={n2YIntercept} 
+                      r={4} 
+                      fill="hsl(var(--secondary))" 
                       stroke="hsl(var(--secondary))"
-                      strokeDasharray="8 4"
-                      strokeWidth={2.5}
-                      label={{
-                        value: `N₂-nullcline: N₂ = ${isoclines.K2} - ${isoclines.alpha21.toFixed(2)}N₁`,
-                        position: 'bottom',
-                        style: { 
-                          fontSize: '11px', 
-                          fill: 'hsl(var(--secondary))',
-                          fontWeight: '600'
-                        }
-                      }}
+                      strokeWidth={2}
+                      fillOpacity={0.8}
                     />
                     
-                    {/* N₂-nullcline X-intercept */}
-                    <ReferenceLine 
-                      x={n2NullclineX0}
+                    {/* N₂-nullcline X-intercept marker */}
+                    <ReferenceDot 
+                      x={n2XIntercept} 
+                      y={0} 
+                      r={4} 
+                      fill="hsl(var(--secondary))" 
                       stroke="hsl(var(--secondary))"
-                      strokeDasharray="4 8"
                       strokeWidth={2}
-                      strokeOpacity={0.6}
+                      fillOpacity={0.8}
                     />
                     
                     {/* Competition equilibrium point */}
@@ -331,12 +323,12 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
           ) : (
             <div className="space-y-2 text-xs">
               <div className="p-3 bg-muted/50 rounded-lg border">
-                <h5 className="font-medium text-foreground mb-2">Isoclines & Competitive Outcome:</h5>
+                <h5 className="font-medium text-foreground mb-2">Nullclines & Competitive Outcome:</h5>
                 <ul className="space-y-1 text-muted-foreground">
-                  <li>• <span className="font-medium text-accent">N₁-nullcline (N₁ = K₁ - α₁₂N₂):</span> Species 1 stops growing on this line</li>
-                  <li>• <span className="font-medium text-secondary">N₂-nullcline (N₂ = K₂ - α₂₁N₁):</span> Species 2 stops growing on this line</li>
-                  <li>• <span className="font-medium">Flow direction:</span> Populations move toward lower-right (competitive exclusion) or intersection (coexistence)</li>
-                  <li>• <span className="font-medium">Intersection slopes:</span> Determine if coexistence is stable or unstable</li>
+                  <li>• <span className="font-medium text-accent">N₁-nullcline (diagonal):</span> N₂ = (K₁ - N₁)/α₁₂ - Species 1 stops growing along this line</li>
+                  <li>• <span className="font-medium text-secondary">N₂-nullcline (diagonal):</span> N₂ = K₂ - α₂₁N₁ - Species 2 stops growing along this line</li>
+                  <li>• <span className="font-medium">Colored dots:</span> Show where each diagonal nullcline intersects the axes</li>
+                  <li>• <span className="font-medium">Flow direction:</span> Populations move toward competitive exclusion or coexistence point</li>
                 </ul>
               </div>
               <p className="text-muted-foreground">
