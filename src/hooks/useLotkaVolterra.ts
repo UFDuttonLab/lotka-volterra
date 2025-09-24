@@ -36,10 +36,10 @@ export function useLotkaVolterra() {
     // Competition parameters - classic competitive exclusion
     r1: 1.0,
     r2: 0.8,
-    K1: 100,
-    K2: 100,
-    a12: 0.8,
-    a21: 1.2,
+    K1: 80,
+    K2: 120,
+    a12: 0.6,
+    a21: 1.0,
     // Predator-prey parameters - classic Lotka-Volterra for good conservation
     a: 0.5,   // predation efficiency - balanced for conservation
     b: 0.5,   // conversion efficiency - balanced for conservation
@@ -294,10 +294,10 @@ export function useLotkaVolterra() {
         ...prev,
         r1: 1.0, // growth rates for classic exclusion
         r2: 0.8,
-        K1: 100, // carrying capacities
-        K2: 100,
-        a12: 0.8, // asymmetric competition
-        a21: 1.2,
+        K1: 80, // carrying capacities
+        K2: 120,
+        a12: 0.6, // asymmetric competition
+        a21: 1.0,
         N1_0: 50, // start at half carrying capacity
         N2_0: 50,
       }));
