@@ -99,6 +99,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 fontSize={13}
                 fontWeight={500}
                 domain={modelType === 'competition' && parameters.K1 ? [0, Math.max(parameters.K1, parameters.K2 || 0) * 1.1] : ['dataMin - 5', 'dataMax + 5']}
+                tickFormatter={(value) => Number(value) % 1 === 0 ? value.toString() : value.toFixed(1)}
                 label={{ 
                   value: xLabel, 
                   position: 'insideBottom', 
@@ -114,6 +115,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 fontSize={13}
                 fontWeight={500}
                 domain={modelType === 'competition' && parameters.K2 ? [0, Math.max(parameters.K1 || 0, parameters.K2) * 1.1] : ['dataMin - 5', 'dataMax + 5']}
+                tickFormatter={(value) => Number(value) % 1 === 0 ? value.toString() : value.toFixed(1)}
                 label={{ 
                   value: yLabel, 
                   angle: -90, 
