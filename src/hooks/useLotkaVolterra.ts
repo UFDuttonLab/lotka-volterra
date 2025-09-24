@@ -40,11 +40,11 @@ export function useLotkaVolterra() {
     K2: 120,
     a12: 0.6,
     a21: 1.0,
-    // Predator-prey parameters - classic Lotka-Volterra for good conservation
-    a: 0.5,   // predation efficiency - balanced for conservation
-    b: 0.5,   // conversion efficiency - balanced for conservation
-    N1_0: 10, // initial prey - closer to equilibrium for better conservation
-    N2_0: 5,  // initial predators - closer to equilibrium for better conservation
+    // Predator-prey parameters - classic textbook values for positive H conservation
+    a: 0.1,   // predation efficiency - textbook value for stable oscillations
+    b: 0.075, // conversion efficiency - textbook value for positive H
+    N1_0: 40, // initial prey - balanced for positive conserved quantity
+    N2_0: 9,  // initial predators - balanced for positive conserved quantity
   });
 
   const [data, setData] = useState<DataPoint[]>([]);
@@ -284,10 +284,10 @@ export function useLotkaVolterra() {
         ...prev,
         r1: 1.0, // prey growth rate
         r2: 1.0, // predator death rate
-        a: 0.5,  // predation efficiency - classic balanced parameters for conservation
-        b: 0.5,  // conversion efficiency - classic balanced parameters for conservation
-        N1_0: 10, // initial prey - closer to equilibrium for much better conservation
-        N2_0: 5,  // initial predators - closer to equilibrium for much better conservation
+        a: 0.1,  // predation efficiency - textbook value for positive H
+        b: 0.075, // conversion efficiency - textbook value for positive H
+        N1_0: 40, // initial prey - balanced for positive conserved quantity
+        N2_0: 9,  // initial predators - balanced for positive conserved quantity
       }));
     } else {
       setParameters(prev => ({
