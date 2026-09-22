@@ -107,9 +107,9 @@ const competitionExercises: Exercise[] = [
         { id: "c", text: "Both species survive but at very low populations" },
         { id: "d", text: "The outcome depends on the initial population sizes" }
       ],
-      correctAnswer: "b",
-      explanation: "Species 2 wins because α₂₁ = 1.5 > K₂/K₁ = 1.25, but α₁₂ = 1.8 > K₁/K₂ = 0.8. When both species have strong competitive effects, the species with the higher carrying capacity (Species 2, K₂ = 100) typically wins.",
-      hint: "In mutual exclusion scenarios, compare carrying capacities and competitive strengths"
+      correctAnswer: "d",
+      explanation: "α₁₂ = 1.8 > K₁/K₂ = 0.8 and α₂₁ = 1.5 > K₂/K₁ = 1.25. Both coefficients exceed their thresholds, which is the bistable case: each species suppresses the other more than it suppresses itself, the interior equilibrium at (58.8, 11.8) is a saddle, and the two axis equilibria (80, 0) and (0, 100) are both stable. Which one the system reaches depends on which side of the separatrix the starting point lies. From (25, 30) species 2 wins; from (70, 5) species 1 wins. A higher carrying capacity does not decide the outcome.",
+      hint: "Check both thresholds. If α₁₂ and α₂₁ are both above them, neither species can invade the other when rare"
     }
   },
   {
@@ -167,20 +167,20 @@ const predatorPreyExercises: Exercise[] = [
     content: [
       "This system shows classic predator-prey oscillations",
       "Observe the population cycles of prey (Species 1) and predator (Species 2)",
-      "Count how long one complete cycle takes"
+      "Count how long one complete cycle takes, then compare it with 2π/√(r₁r₂)"
     ],
     question: {
       id: "oscillation-q1",
-      question: "What happens to the oscillation period if we increase the predator attack rate (parameter 'a')?",
+      question: "What happens to the period of small oscillations if we increase the predator attack rate (parameter 'a')?",
       options: [
         { id: "a", text: "The oscillation period becomes longer" },
         { id: "b", text: "The oscillation period becomes shorter" },
         { id: "c", text: "The oscillation period stays the same" },
         { id: "d", text: "The oscillations stop completely" }
       ],
-      correctAnswer: "b",
-      explanation: "Increasing the attack rate 'a' makes predators more efficient at catching prey, which intensifies the predator-prey interaction. This leads to faster population changes and shorter oscillation periods. The system becomes more 'tightly coupled'.",
-      hint: "Think about how more efficient predation affects the speed of population changes"
+      correctAnswer: "c",
+      explanation: "Linearising about the equilibrium (r₂/b, r₁/a) gives eigenvalues ±i√(r₁r₂), so the period of small oscillations is 2π/√(r₁r₂) = 7.02 time units here. Neither a nor b appears. Raising a lowers the predator equilibrium N₂* = r₁/a and so changes the amplitude, but not the period. For large-amplitude orbits the period does depend on which orbit the system is on, and with these initial conditions it lengthens rather than shortens: 8.95, 8.61, 8.90 and 10.52 time units at a = 0.05, 0.1, 0.2 and 0.4.",
+      hint: "Linearise about the equilibrium and read off which parameters appear in the eigenvalues"
     }
   },
   {

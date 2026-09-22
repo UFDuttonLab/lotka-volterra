@@ -51,10 +51,12 @@ export default function ComparisonDiagram({ parameters }: ComparisonDiagramProps
                 <DiagramLegend 
                   type="competition" 
                   competition={{
-                    coexistencePossible: parameters ? 
-                      ((parameters.K1 - parameters.a12 * parameters.K2 / parameters.a21) > 0 && 
-                       (parameters.K2 - parameters.a21 * parameters.K1 / parameters.a12) > 0) : 
-                      true
+                    // Stable coexistence requires a12 < K1/K2 and a21 < K2/K1,
+                    // i.e. both isocline numerators positive.
+                    coexistencePossible: parameters
+                      ? (parameters.K1 - parameters.a12 * parameters.K2) > 0 &&
+                        (parameters.K2 - parameters.a21 * parameters.K1) > 0
+                      : true
                   }} 
                 />
               </div>
@@ -101,7 +103,7 @@ export default function ComparisonDiagram({ parameters }: ComparisonDiagramProps
                   </div>
                   <div className="p-3 bg-muted/30 rounded-lg">
                     <h4 className="font-medium text-secondary">Flow Pattern:</h4>
-                    <p className="text-muted-foreground">Circular flows → closed orbits (cycles)</p>
+                    <p className="text-muted-foreground">Counterclockwise flows → closed orbits (cycles)</p>
                   </div>
                   <div className="p-3 bg-muted/30 rounded-lg">
                     <h4 className="font-medium text-destructive">Outcome:</h4>

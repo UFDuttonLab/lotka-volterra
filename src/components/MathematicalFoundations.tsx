@@ -134,7 +134,7 @@ const mathSections: MathSection[] = [
         "Competition nullclines: Both have negative slopes determined by competition coefficients α₁₂ and α₂₁",
         "Predator-prey nullclines: Always perpendicular (90°) regardless of parameter values",
         "Flow directions: Competition flows converge to equilibria; predator-prey flows circulate in closed orbits",
-        "Equilibrium stability: Competition can have stable points; predator-prey has neutral stability with persistent cycles",
+        "Equilibrium stability: competition equilibria have real eigenvalues, so the approach is never oscillatory; predator-prey equilibria are neutrally stable with persistent cycles",
         "Parameter dependence: Competition isocline positions depend on K₁, K₂, α₁₂, α₂₁; predator-prey positions depend only on r₁/a and r₂/b"
       ],
       biologicalMeaning: "The contrasting isocline geometries reflect fundamentally different ecological mechanisms. Competition's diagonal lines represent resource limitation—as one species increases, the other's carrying capacity decreases proportionally. Predator-prey's perpendicular lines represent consumer-resource dynamics—prey density affects predator growth independently of predator effects on prey mortality. This geometric distinction explains why competition leads to competitive exclusion or coexistence, while predator-prey systems maintain population cycles.",
@@ -173,13 +173,13 @@ const mathSections: MathSection[] = [
       equations: [
         "Prey: dN₁/dt = r₁N₁ - aN₁N₂",
         "Predator: dN₂/dt = -r₂N₂ + bN₁N₂",
-        "Conserved quantity: H = r₂·ln(N₁) + r₁·ln(N₂) - a·N₁ - b·N₂"
+        "Conserved quantity: H = r₂·ln(N₁) + r₁·ln(N₂) - b·N₁ - a·N₂"
       ],
       explanations: [
         "Prey grow exponentially (r₁N₁) but are consumed by predators (aN₁N₂)",
         "Predators die at rate r₂ but gain from consuming prey (bN₁N₂)",
         "The system produces closed orbits - populations oscillate indefinitely",
-        "The conserved quantity H determines the amplitude of oscillations"
+        "The conserved quantity H fixes which closed orbit the system follows, and so the amplitude. The period of small oscillations is 2π/√(r₁r₂), independent of a and b"
       ],
       biologicalMeaning: "Predator-prey dynamics create the famous population cycles observed in nature. When prey are abundant, predators increase; when predators are numerous, prey decline, leading to predator decline and prey recovery.",
       examples: "Lynx and snowshoe hare cycles in Canada (10-year cycles), plankton-fish dynamics in lakes, and pest-natural enemy cycles in agriculture."
@@ -193,7 +193,7 @@ const mathSections: MathSection[] = [
     content: {
       introduction: "The conserved quantity H is a mathematical property of the idealized Lotka-Volterra equations that remains constant along any trajectory. H determines the amplitude of population oscillations and demonstrates the mathematical structure underlying predator-prey dynamics.",
       equations: [
-        "H = r₂·ln(N₁) + r₁·ln(N₂) - a·N₁ - b·N₂",
+        "H = r₂·ln(N₁) + r₁·ln(N₂) - b·N₁ - a·N₂  (b multiplies N₁, a multiplies N₂)",
         "dH/dt = 0 (H remains constant along any trajectory)",
         "Equilibrium point: N₁* = r₂/b, N₂* = r₁/a"
       ],
@@ -201,7 +201,7 @@ const mathSections: MathSection[] = [
         "H is a mathematical constant of motion, analogous to energy conservation in physics, but does not represent physical energy",
         "Each trajectory in phase space corresponds to a specific value of H, creating nested closed orbits around the equilibrium",
         "The value of H is determined entirely by initial conditions (N₁₀, N₂₀) and remains constant throughout the trajectory",
-        "Larger |H| values correspond to orbits farther from equilibrium, producing greater amplitude oscillations",
+        "H reaches its maximum at the equilibrium (r₂/b, r₁/a) and decreases outward, so smaller H corresponds to orbits farther from equilibrium and larger amplitude oscillations",
         "H conservation is a consequence of the special mathematical structure of the Lotka-Volterra equations",
         "The perpetual cycles are an idealization - real systems experience perturbations that violate conservation"
       ],
@@ -224,9 +224,9 @@ const mathSections: MathSection[] = [
       ],
       explanations: [
         "Nullclines show where dN₁/dt = 0 or dN₂/dt = 0 (zero growth lines)",
-        "Competition: Four equilibrium outcomes based on α₁₂α₂₁ vs K₁/K₂ and K₂/K₁ relationships",
+        "Competition: four outcomes from comparing α₁₂ with K₁/K₂ and α₂₁ with K₂/K₁ separately",
         "Predator-prey: Single equilibrium surrounded by nested closed orbits",
-        "Orbit direction: Clockwise in predator-prey (prey peaks before predators)",
+        "Orbit direction: counterclockwise with N₁ on the horizontal axis, which is what puts the prey peak a quarter cycle before the predator peak",
         "Stability: Competition equilibria can be stable; predator-prey equilibria are neutrally stable"
       ],
       biologicalMeaning: "Phase planes show the 'landscape' of possible population dynamics. In competition, populations flow toward stable points. In predator-prey, populations flow in circles around the equilibrium, with the size of circles determined by initial conditions and conserved quantity H.",
@@ -241,7 +241,7 @@ const mathSections: MathSection[] = [
     content: {
       introduction: "Equilibrium analysis reveals the long-term behavior of both model types and their stability properties.",
       equations: [
-        "Competition equilibrium: N₁* = (K₁ - α₁₂K₂)/(1 - α₁₂α₂₁)",
+        "Competition equilibrium: N₁* = (K₁ - α₁₂K₂)/(1 - α₁₂α₂₁), N₂* = (K₂ - α₂₁K₁)/(1 - α₁₂α₂₁)",
         "Predator-prey equilibrium: N₁* = r₂/b, N₂* = r₁/a",
         "Stability: Competition can have stable points, predator-prey has neutral stability"
       ],

@@ -9,7 +9,7 @@ interface CompetitionParameters {
   K2: number; // Carrying capacity species 2
   a12: number; // Competition coefficient (effect of species 2 on species 1)
   a21: number; // Competition coefficient (effect of species 1 on species 2)
-  N1_0: number; // Initial population species 1  
+  N1_0: number; // Initial population species 1
   N2_0: number; // Initial population species 2
 }
 
@@ -17,7 +17,7 @@ interface PredatorPreyParameters {
   r1: number; // Prey intrinsic growth rate
   r2: number; // Predator death rate
   a: number; // Predation rate
-  b: number; // Predator efficiency
+  b: number; // Predator conversion efficiency
   N1_0: number; // Initial prey population
   N2_0: number; // Initial predator population
 }
@@ -30,21 +30,63 @@ interface DataPoint {
   species2: number;
 }
 
+// Integration step h, held fixed. Playback speed is a separate control
+// (steps per frame) so that changing speed never changes numerical
+// accuracy or the meaning of the time axis.
+const TIME_STEP = 0.01;
+const UPDATE_INTERVAL = 50; // ms per animation frame
+const MIN_SPEED = 1;
+const MAX_SPEED = 20;
+// Chart resolution cap. On overflow the series is halved in place, so the
+// full time span is always retained at progressively coarser resolution.
+// 800 samples is about one per pixel of chart width; more than that costs
+// render time without adding anything visible.
+const MAX_POINTS = 800;
+// The charts are the expensive part of a frame: a full redraw costs roughly
+// 65 ms, against a 50 ms frame. Publishing the series at most every
+// CHART_PUBLISH_MS leaves the integrator enough of the main thread to hold its
+// nominal step rate. The numeric readouts still update every frame.
+const CHART_PUBLISH_MS = 200;
+const EXTINCTION_THRESHOLD = 1e-9;
+const FRACTIONAL_THRESHOLD = 1.0;
+
+interface ConservedQuantityState {
+  current: number;
+  initial: number;
+  isConserved: boolean;
+  driftPercent: number;
+  absoluteDrift: number;
+}
+
+interface SimulationState {
+  time: number;
+  N1: number;
+  N2: number;
+  data: DataPoint[];
+  initialH: number;
+}
+
+// Keeps the most recent sample, so the chart head always tracks the simulation.
+function downsample(series: DataPoint[]): DataPoint[] {
+  const last = series.length - 1;
+  return series.filter((_, i) => (last - i) % 2 === 0);
+}
+
 export function useLotkaVolterra() {
   const [modelType, setModelType] = useState<ModelType>('predator-prey');
   const [parameters, setParameters] = useState<Parameters>({
-    // Competition parameters - classic competitive exclusion
+    // Competition parameters - weak mutual competition, gives coexistence
     r1: 1.0,
     r2: 0.8,
     K1: 80,
     K2: 120,
     a12: 0.6,
     a21: 1.0,
-    // Predator-prey parameters - based on realistic lynx-hare data
-    a: 0.008, // predation efficiency - realistic values from ecological data
-    b: 0.005, // conversion efficiency - realistic values from ecological data
-    N1_0: 120, // initial prey - realistic population size
-    N2_0: 30,  // initial predators - realistic population size
+    // Predator-prey parameters - equilibrium at (r2/b, r1/a) = (10.7, 10)
+    a: 0.1,
+    b: 0.075,
+    N1_0: 40,
+    N2_0: 9,
   });
 
   const [data, setData] = useState<DataPoint[]>([]);
@@ -54,193 +96,198 @@ export function useLotkaVolterra() {
     N1: parameters.N1_0,
     N2: parameters.N2_0,
   });
+  const [speed, setSpeed] = useState(1); // integration steps per frame
 
-  // Conservation quantity H for predator-prey systems with drift tracking
-  const [conservedQuantity, setConservedQuantity] = useState<{
-    current: number;
-    initial: number;
-    isConserved: boolean;
-    driftPercent: number;
-  }>({ current: 0, initial: 0, isConserved: true, driftPercent: 0 });
+  const [conservedQuantity, setConservedQuantity] = useState<ConservedQuantityState>({
+    current: NaN,
+    initial: NaN,
+    isConserved: true,
+    driftPercent: 0,
+    absoluteDrift: 0,
+  });
 
-  // Population warnings for biological realism
   const [populationWarnings, setPopulationWarnings] = useState<{
     nearExtinction: boolean;
-    unrealisticParameters: string[];
     attoFoxProblem: boolean;
-  }>({ nearExtinction: false, unrealisticParameters: [], attoFoxProblem: false });
+  }>({ nearExtinction: false, attoFoxProblem: false });
 
-  const intervalRef = useRef<NodeJS.Timeout>();
-  const [timeStep, setTimeStep] = useState(0.01); // User-controllable time step
-  const updateInterval = 50; // Update frequency in milliseconds
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastPublishRef = useRef(0);
+  const simRef = useRef<SimulationState>({
+    time: 0,
+    N1: parameters.N1_0,
+    N2: parameters.N2_0,
+    data: [],
+    initialH: NaN,
+  });
 
-  // Calculate conserved quantity H for predator-prey systems
-  const calculateConservedQuantity = useCallback((N1: number, N2: number, params: Parameters): number => {
-    // H = r₂·ln(N₁) + r₁·ln(N₂) - a·N₁ - b·N₂ (correct Lotka-Volterra first integral)
-    return params.r2 * Math.log(N1) + params.r1 * Math.log(N2) - params.a * N1 - params.b * N2;
-  }, []);
+  // First integral of the predator-prey system.
+  // For dN1/dt = r1*N1 - a*N1*N2 and dN2/dt = -r2*N2 + b*N1*N2,
+  // H = r2*ln(N1) + r1*ln(N2) - b*N1 - a*N2 satisfies dH/dt = 0.
+  // Note the pairing: b multiplies N1 and a multiplies N2.
+  const calculateConservedQuantity = useCallback(
+    (N1: number, N2: number, params: Parameters): number => {
+      if (N1 <= 0 || N2 <= 0) return NaN;
+      return params.r2 * Math.log(N1) + params.r1 * Math.log(N2) - params.b * N1 - params.a * N2;
+    },
+    []
+  );
 
-  // Lotka-Volterra equations (both competition and predator-prey)
-  const calculateDerivatives = useCallback((N1: number, N2: number, params: Parameters, model: ModelType) => {
-    if (model === 'competition') {
-      const dN1dt = params.r1 * N1 * (1 - (N1 + params.a12 * N2) / params.K1);
-      const dN2dt = params.r2 * N2 * (1 - (N2 + params.a21 * N1) / params.K2);
-      return { dN1dt, dN2dt };
-    } else {
-      // Predator-prey model: N1 = prey, N2 = predator
+  const calculateDerivatives = useCallback(
+    (N1: number, N2: number, params: Parameters, model: ModelType) => {
+      if (model === 'competition') {
+        const dN1dt = params.r1 * N1 * (1 - (N1 + params.a12 * N2) / params.K1);
+        const dN2dt = params.r2 * N2 * (1 - (N2 + params.a21 * N1) / params.K2);
+        return { dN1dt, dN2dt };
+      }
+      // Predator-prey: N1 = prey, N2 = predator
       const dN1dt = params.r1 * N1 - params.a * N1 * N2;
       const dN2dt = -params.r2 * N2 + params.b * N1 * N2;
       return { dN1dt, dN2dt };
+    },
+    []
+  );
+
+  // One classical Runge-Kutta 4th order step of size TIME_STEP.
+  const rk4Step = useCallback(
+    (N1: number, N2: number, params: Parameters, model: ModelType) => {
+      const h = TIME_STEP;
+      const k1 = calculateDerivatives(N1, N2, params, model);
+      const k2 = calculateDerivatives(N1 + (k1.dN1dt * h) / 2, N2 + (k1.dN2dt * h) / 2, params, model);
+      const k3 = calculateDerivatives(N1 + (k2.dN1dt * h) / 2, N2 + (k2.dN2dt * h) / 2, params, model);
+      const k4 = calculateDerivatives(N1 + k3.dN1dt * h, N2 + k3.dN2dt * h, params, model);
+
+      const newN1 = N1 + (h / 6) * (k1.dN1dt + 2 * k2.dN1dt + 2 * k3.dN1dt + k4.dN1dt);
+      const newN2 = N2 + (h / 6) * (k1.dN2dt + 2 * k2.dN2dt + 2 * k3.dN2dt + k4.dN2dt);
+
+      // A population that falls below the threshold is set to zero, which is an
+      // absorbing state for both models.
+      return {
+        N1: newN1 < EXTINCTION_THRESHOLD ? 0 : newN1,
+        N2: newN2 < EXTINCTION_THRESHOLD ? 0 : newN2,
+      };
+    },
+    [calculateDerivatives]
+  );
+
+  // Advances the simulation by `speed` steps and publishes one state update.
+  const tick = useCallback(() => {
+    const sim = simRef.current;
+    let { time, N1, N2 } = sim;
+    const appended: DataPoint[] = [];
+
+    for (let i = 0; i < speed; i++) {
+      const next = rk4Step(N1, N2, parameters, modelType);
+      N1 = next.N1;
+      N2 = next.N2;
+      time += TIME_STEP;
+      appended.push({ time, species1: N1, species2: N2 });
     }
-  }, []);
 
-  // Runge-Kutta 4th Order integration method
-  const integrate = useCallback((N1: number, N2: number, params: Parameters, model: ModelType) => {
-    // RK4 method for better accuracy with oscillatory systems
-    const k1 = calculateDerivatives(N1, N2, params, model);
-    const k2 = calculateDerivatives(
-      N1 + k1.dN1dt * timeStep / 2,
-      N2 + k1.dN2dt * timeStep / 2,
-      params,
-      model
+    let series = sim.data.concat(appended);
+    while (series.length > MAX_POINTS) {
+      series = downsample(series);
+    }
+
+    sim.time = time;
+    sim.N1 = N1;
+    sim.N2 = N2;
+    sim.data = series;
+
+    setCurrentTime(time);
+    setCurrentPopulations({ N1, N2 });
+
+    // Throttle only the chart series; the numeric readouts stay on every frame.
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const publish = now - lastPublishRef.current >= CHART_PUBLISH_MS;
+    if (publish) {
+      lastPublishRef.current = now;
+      setData(series);
+    }
+
+    if (modelType === 'predator-prey' && publish) {
+      const H = calculateConservedQuantity(N1, N2, parameters);
+      if (Number.isFinite(H)) {
+        const H0 = sim.initialH;
+        const absoluteDrift = Math.abs(H - H0);
+        // Relative to |H0| with a floor of 1, since H passes through zero.
+        const driftPercent = (absoluteDrift / Math.max(Math.abs(H0), 1)) * 100;
+        setConservedQuantity({
+          current: H,
+          initial: H0,
+          isConserved: driftPercent < 0.1,
+          driftPercent,
+          absoluteDrift,
+        });
+      }
+    }
+
+    const nearExtinction = N1 <= 0 || N2 <= 0;
+    const attoFoxProblem =
+      modelType === 'predator-prey' && (N1 < FRACTIONAL_THRESHOLD || N2 < FRACTIONAL_THRESHOLD);
+    setPopulationWarnings(prev =>
+      prev.nearExtinction === nearExtinction && prev.attoFoxProblem === attoFoxProblem
+        ? prev
+        : { nearExtinction, attoFoxProblem }
     );
-    const k3 = calculateDerivatives(
-      N1 + k2.dN1dt * timeStep / 2,
-      N2 + k2.dN2dt * timeStep / 2,
-      params,
-      model
-    );
-    const k4 = calculateDerivatives(
-      N1 + k3.dN1dt * timeStep,
-      N2 + k3.dN2dt * timeStep,
-      params,
-      model
-    );
+  }, [parameters, modelType, speed, rk4Step, calculateConservedQuantity]);
 
-    const newN1 = N1 + (timeStep / 6) * (k1.dN1dt + 2 * k2.dN1dt + 2 * k3.dN1dt + k4.dN1dt);
-    const newN2 = N2 + (timeStep / 6) * (k1.dN2dt + 2 * k2.dN2dt + 2 * k3.dN2dt + k4.dN2dt);
-
-    // Improved extinction threshold: only apply when populations are truly approaching zero
-    // and derivatives indicate continued decline to prevent artificial conservation violations
-    const EXTINCTION_THRESHOLD = 1e-12; // Smaller threshold for better conservation
-    const derivatives = calculateDerivatives(newN1, newN2, params, model);
-    
-    const appliedN1 = (newN1 <= EXTINCTION_THRESHOLD && derivatives.dN1dt < 0) ? EXTINCTION_THRESHOLD : newN1;
-    const appliedN2 = (newN2 <= EXTINCTION_THRESHOLD && derivatives.dN2dt < 0) ? EXTINCTION_THRESHOLD : newN2;
-    
-    return {
-      N1: Math.max(appliedN1, EXTINCTION_THRESHOLD),
-      N2: Math.max(appliedN2, EXTINCTION_THRESHOLD),
-    };
-  }, [calculateDerivatives, timeStep]);
-
-  const updateSimulation = useCallback(() => {
-    setCurrentTime(prevTime => {
-      const newTime = prevTime + timeStep;
-      
-      setCurrentPopulations(prevPops => {
-        const newPops = integrate(prevPops.N1, prevPops.N2, parameters, modelType);
-        
-        // Update conserved quantity H for predator-prey systems
-        if (modelType === 'predator-prey') {
-          const currentH = calculateConservedQuantity(newPops.N1, newPops.N2, parameters);
-          setConservedQuantity(prev => {
-            const driftPercent = prev.initial !== 0 ? Math.abs((currentH - prev.initial) / prev.initial) * 100 : 0;
-            const isConserved = driftPercent < 0.1; // 0.1% tolerance for accurate conservation
-            
-            return {
-              current: currentH,
-              initial: prev.initial === 0 ? currentH : prev.initial,
-              isConserved,
-              driftPercent,
-            };
-          });
-        }
-
-        // Check for population warnings
-        const BIOLOGICAL_THRESHOLD = 1e-6; // For near-extinction warning
-        const FRACTIONAL_THRESHOLD = 1.0;
-        const nearExtinction = newPops.N1 <= BIOLOGICAL_THRESHOLD || newPops.N2 <= BIOLOGICAL_THRESHOLD;
-        const attoFoxProblem = newPops.N1 < FRACTIONAL_THRESHOLD || newPops.N2 < FRACTIONAL_THRESHOLD;
-        
-        setPopulationWarnings(prev => ({
-          ...prev,
-          nearExtinction,
-          attoFoxProblem: modelType === 'predator-prey' ? attoFoxProblem : false
-        }));
-        
-        // Record data every step for maximum accuracy - preserve precision for conservation
-        if (true) {
-          setData(prevData => {
-            const newDataPoint = {
-              time: Math.round(newTime * 100) / 100,
-              species1: newPops.N1, // Keep full precision for accurate conservation tracking
-              species2: newPops.N2, // Keep full precision for accurate conservation tracking
-            };
-            
-            // Keep all data points to show full simulation history
-            const updatedData = [...prevData, newDataPoint];
-            // Sample data for performance if we have too many points (every 5th point after 2000)
-            if (updatedData.length > 2000 && updatedData.length % 5 !== 0) {
-              return prevData; // Skip this point
-            }
-            return updatedData;
-          });
-        }
-        
-        return newPops;
-      });
-      
-      return newTime;
-    });
-  }, [integrate, parameters, modelType, timeStep, calculateConservedQuantity]);
-
-  const startSimulation = useCallback(() => {
-    setIsRunning(true);
-    intervalRef.current = setInterval(updateSimulation, updateInterval);
-  }, [updateSimulation]);
+  // The interval calls through a ref, so parameter and speed changes take
+  // effect on the next frame instead of being frozen into the closure.
+  const savedTick = useRef(tick);
+  useEffect(() => {
+    savedTick.current = tick;
+  }, [tick]);
 
   const stopSimulation = useCallback(() => {
     setIsRunning(false);
-    if (intervalRef.current) {
+    if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
+  }, []);
+
+  const startSimulation = useCallback(() => {
+    if (intervalRef.current !== null) return; // guard against duplicate intervals
+    setIsRunning(true);
+    intervalRef.current = setInterval(() => savedTick.current(), UPDATE_INTERVAL);
   }, []);
 
   const resetSimulation = useCallback(() => {
     stopSimulation();
-    setCurrentTime(0);
-    setCurrentPopulations({
-      N1: parameters.N1_0,
-      N2: parameters.N2_0,
-    });
-    setData([{
+
+    const initialH =
+      modelType === 'predator-prey'
+        ? calculateConservedQuantity(parameters.N1_0, parameters.N2_0, parameters)
+        : NaN;
+
+    const firstPoint: DataPoint = {
       time: 0,
       species1: parameters.N1_0,
       species2: parameters.N2_0,
-    }]);
-    
-    // Reset time step to default
-    setTimeStep(0.01);
-    
-    // Reset conserved quantity
-    if (modelType === 'predator-prey') {
-      const initialH = calculateConservedQuantity(parameters.N1_0, parameters.N2_0, parameters);
-      setConservedQuantity({
-        current: initialH,
-        initial: initialH,
-        isConserved: true,
-        driftPercent: 0
-      });
-    }
+    };
 
-    // Reset warnings
-    setPopulationWarnings({
-      nearExtinction: false,
-      unrealisticParameters: [],
-      attoFoxProblem: false
+    simRef.current = {
+      time: 0,
+      N1: parameters.N1_0,
+      N2: parameters.N2_0,
+      data: [firstPoint],
+      initialH,
+    };
+
+    lastPublishRef.current = 0;
+    setCurrentTime(0);
+    setCurrentPopulations({ N1: parameters.N1_0, N2: parameters.N2_0 });
+    setData([firstPoint]);
+    setConservedQuantity({
+      current: initialH,
+      initial: initialH,
+      isConserved: true,
+      driftPercent: 0,
+      absoluteDrift: 0,
     });
-  }, [parameters.N1_0, parameters.N2_0, stopSimulation, modelType, calculateConservedQuantity]);
+    setPopulationWarnings({ nearExtinction: false, attoFoxProblem: false });
+  }, [parameters, modelType, stopSimulation, calculateConservedQuantity]);
 
   const toggleSimulation = useCallback(() => {
     if (isRunning) {
@@ -252,83 +299,58 @@ export function useLotkaVolterra() {
 
   const updateParameter = useCallback((param: string, value: number) => {
     setParameters(prev => ({ ...prev, [param]: value }));
-    
-    // Validate parameters for biological realism
-    const validateParameter = (paramName: string, paramValue: number) => {
-      const warnings: string[] = [];
-      
-      if (modelType === 'predator-prey') {
-        if (paramName === 'r1' && paramValue > 10) warnings.push('Extremely high prey growth rate (most organisms r < 2.0)');
-        if (paramName === 'r2' && paramValue > 10) warnings.push('Extremely high predator death rate');
-        if (paramName === 'a' && paramValue > 5) warnings.push('Unrealistically efficient predation');
-        if (paramName === 'b' && paramValue > 5) warnings.push('Extremely high predator efficiency');
-        if ((paramName === 'N1_0' || paramName === 'N2_0') && paramValue > 1000 && (parameters.r1 < 0.5 || parameters.r2 < 0.5)) {
-          warnings.push('Large populations with slow growth - may take very long to see dynamics');
-        }
-      } else {
-        if ((paramName === 'r1' || paramName === 'r2') && paramValue > 10) warnings.push('Extremely high growth rate (most organisms r < 2.0)');
-        if ((paramName === 'K1' || paramName === 'K2') && paramValue < 10) warnings.push('Very low carrying capacity');
-        if ((paramName === 'a12' || paramName === 'a21') && paramValue > 5) warnings.push('Extremely strong competition coefficient');
-      }
-      
-      return warnings;
-    };
-
-    const warnings = validateParameter(param, value);
-    setPopulationWarnings(prev => ({
-      ...prev,
-      unrealisticParameters: warnings
-    }));
-  }, [modelType, parameters]);
+  }, []);
 
   const setAllParameters = useCallback((newParams: Partial<Parameters>) => {
     setParameters(prev => ({ ...prev, ...newParams }));
   }, []);
 
+  const updateSpeed = useCallback((newSpeed: number) => {
+    setSpeed(Math.min(MAX_SPEED, Math.max(MIN_SPEED, Math.round(newSpeed))));
+  }, []);
+
   const switchModel = useCallback((newModel: ModelType) => {
     setModelType(newModel);
-    // Reset to classic scenario parameters with clear visual differences
     if (newModel === 'predator-prey') {
       setParameters(prev => ({
         ...prev,
         r1: 1.0, // prey growth rate
         r2: 1.0, // predator death rate
-        a: 0.1,  // predation efficiency - textbook value for positive H
-        b: 0.075, // conversion efficiency - textbook value for positive H
-        N1_0: 40, // initial prey - balanced for positive conserved quantity
-        N2_0: 9,  // initial predators - balanced for positive conserved quantity
+        a: 0.1, // predation rate
+        b: 0.075, // conversion efficiency
+        N1_0: 40, // equilibrium is (r2/b, r1/a) = (13.3, 10)
+        N2_0: 9,
       }));
     } else {
       setParameters(prev => ({
         ...prev,
-        r1: 1.0, // growth rates for classic exclusion
+        r1: 1.0,
         r2: 0.8,
-        K1: 80, // carrying capacities
+        K1: 80,
         K2: 120,
-        a12: 0.6, // asymmetric competition
+        // a12 = 0.6 < K1/K2 = 0.67 and a21 = 1.0 < K2/K1 = 1.5, so these
+        // defaults give stable coexistence.
+        a12: 0.6,
         a21: 1.0,
-        N1_0: 50, // start at half carrying capacity
+        N1_0: 50,
         N2_0: 50,
       }));
     }
   }, []);
 
-  // Initialize data on mount and parameter changes
+  // Reset whenever the parameters or the model change. resetSimulation carries
+  // `parameters` in its dependency list, so the baseline H is never computed
+  // from a previous parameter set.
   useEffect(() => {
     resetSimulation();
-  }, [parameters, resetSimulation]);
+  }, [resetSimulation]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (intervalRef.current) {
+      if (intervalRef.current !== null) {
         clearInterval(intervalRef.current);
       }
     };
-  }, []);
-
-  const updateTimeStep = useCallback((newTimeStep: number) => {
-    setTimeStep(newTimeStep);
   }, []);
 
   return {
@@ -340,9 +362,12 @@ export function useLotkaVolterra() {
     currentTime,
     conservedQuantity,
     populationWarnings,
-    timeStep,
+    timeStep: TIME_STEP,
+    speed,
+    minSpeed: MIN_SPEED,
+    maxSpeed: MAX_SPEED,
     updateParameter,
-    updateTimeStep,
+    updateSpeed,
     setAllParameters,
     switchModel,
     toggleSimulation,

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   LineChart,
@@ -25,10 +26,11 @@ interface SimulationChartProps {
     initial: number;
     isConserved: boolean;
     driftPercent: number;
+    absoluteDrift: number;
   };
 }
 
-export default function SimulationChart({ data, isRunning, modelType = "competition", conservedQuantity }: SimulationChartProps) {
+function SimulationChart({ data, isRunning, modelType = "competition", conservedQuantity }: SimulationChartProps) {
   // Apply model-specific theming - teal/emerald for competition, indigo for predator-prey
   const isCompetition = modelType === 'competition';
   const cardBg = isCompetition ? 'bg-emerald-50/70 border-emerald-300' : 'bg-indigo-50/70 border-indigo-300';
@@ -111,25 +113,29 @@ export default function SimulationChart({ data, isRunning, modelType = "competit
           <div className="mt-4 p-3 bg-muted/30 rounded-lg border">
             <div className="text-sm space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-medium">Conservation Quantity (H):</span>
-                <span className="font-mono">{conservedQuantity.current.toFixed(4)}</span>
+                <span className="font-medium">Conserved quantity H:</span>
+                <span className="font-mono">
+                  {Number.isFinite(conservedQuantity.current) ? conservedQuantity.current.toFixed(4) : 'n/a'}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Initial H:</span>
-                <span className="font-mono text-muted-foreground">{conservedQuantity.initial.toFixed(4)}</span>
+                <span className="font-mono text-muted-foreground">
+                  {Number.isFinite(conservedQuantity.initial) ? conservedQuantity.initial.toFixed(4) : 'n/a'}
+                </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Conservation Drift:</span>
+                <span className="text-muted-foreground">Integration drift |ΔH|:</span>
                 <span className={`font-mono text-xs ${
-                  conservedQuantity.driftPercent < 0.1 ? 'text-green-600' : 
+                  conservedQuantity.driftPercent < 0.1 ? 'text-green-600' :
                   conservedQuantity.driftPercent < 1.0 ? 'text-yellow-600' : 'text-red-600'
                 }`}>
-                  {conservedQuantity.driftPercent.toFixed(3)}%
+                  {conservedQuantity.absoluteDrift.toExponential(2)}
                 </span>
               </div>
               <div className="text-xs text-muted-foreground">
-                Small drift (&lt;0.1%) indicates excellent numerical accuracy. 
-                H should be perfectly constant in theory.
+                H = r₂·ln(N₁) + r₁·ln(N₂) - b·N₁ - a·N₂ is constant along every exact trajectory,
+                so any change is integration error. RK4 keeps it near 1e-7.
               </div>
             </div>
           </div>
@@ -138,3 +144,7 @@ export default function SimulationChart({ data, isRunning, modelType = "competit
     </Card>
   );
 }
+
+// Re-renders only when its own props change, so a running simulation does not
+// redraw the series on every integration frame.
+export default memo(SimulationChart);

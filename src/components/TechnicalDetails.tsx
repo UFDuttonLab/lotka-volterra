@@ -13,15 +13,18 @@ interface TechnicalDetailsProps {
     initial: number;
     isConserved: boolean;
     driftPercent: number;
+    absoluteDrift: number;
   };
   timeStep?: number;
+  speed?: number;
   currentTime?: number;
 }
 
 export default function TechnicalDetails({
   modelType,
   conservedQuantity,
-  timeStep = 0.05,
+  timeStep = 0.01,
+  speed = 1,
   currentTime = 0,
 }: TechnicalDetailsProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,8 +66,8 @@ export default function TechnicalDetails({
                 <div className="text-sm space-y-2">
                   <div className="font-medium">Runge-Kutta 4th Order (RK4)</div>
                   <div className="text-muted-foreground">
-                    Using 4th-order Runge-Kutta integration with fixed step size for superior accuracy with oscillatory systems. 
-                    This method achieves O(h⁴) global error compared to O(h) for simple Euler integration.
+                    Fourth-order Runge-Kutta with a fixed step size. Global error is O(h⁴) against O(h) for explicit Euler.
+                    The step size is held constant at h = {timeStep}; the speed control changes how many steps run per frame, not h.
                   </div>
                   <div className="grid grid-cols-2 gap-4 mt-3 pt-3 border-t border-primary/20">
                     <div>
@@ -72,8 +75,8 @@ export default function TechnicalDetails({
                       <div className="font-mono">{timeStep} units</div>
                     </div>
                     <div>
-                      <div className="text-xs text-muted-foreground">Update Frequency</div>
-                      <div className="font-mono">50ms (20 FPS)</div>
+                      <div className="text-xs text-muted-foreground">Steps per frame</div>
+                      <div className="font-mono">{speed} (50ms frames, 20 FPS)</div>
                     </div>
                   </div>
                 </div>
@@ -104,23 +107,27 @@ export default function TechnicalDetails({
                     <div className="grid grid-cols-3 gap-4 mt-3 pt-3 border-t border-secondary/20">
                       <div>
                         <div className="text-xs text-muted-foreground">Initial H</div>
-                        <div className="font-mono text-sm">{conservedQuantity.initial.toFixed(6)}</div>
+                        <div className="font-mono text-sm">
+                          {Number.isFinite(conservedQuantity.initial) ? conservedQuantity.initial.toFixed(6) : 'n/a'}
+                        </div>
                       </div>
                       <div>
                         <div className="text-xs text-muted-foreground">Current H</div>
-                        <div className="font-mono text-sm">{conservedQuantity.current.toFixed(6)}</div>
+                        <div className="font-mono text-sm">
+                          {Number.isFinite(conservedQuantity.current) ? conservedQuantity.current.toFixed(6) : 'n/a'}
+                        </div>
                       </div>
                       <div>
-                        <div className="text-xs text-muted-foreground">Drift</div>
+                        <div className="text-xs text-muted-foreground">Drift |ΔH|</div>
                         <div className={`font-mono text-sm ${conservedQuantity.driftPercent < 0.1 ? 'text-green-600' : conservedQuantity.driftPercent < 1.0 ? 'text-yellow-600' : 'text-red-600'}`}>
-                          {conservedQuantity.driftPercent.toFixed(3)}%
+                          {conservedQuantity.absoluteDrift.toExponential(2)}
                         </div>
                       </div>
                     </div>
 
                     <div className="text-xs text-muted-foreground mt-2">
-                      <span className="font-medium">Interpretation:</span> Small drift (&lt;0.1%) indicates excellent numerical approximation. 
-                      In theory, H should be perfectly constant, so any change represents computational approximation error.
+                      <span className="font-medium">Interpretation:</span> H is constant along every exact trajectory, so |ΔH| measures integration error alone.
+                      RK4 at h = {timeStep} holds it below 1e-6 over hundreds of time units. The relative figure is {conservedQuantity.driftPercent.toFixed(6)}% of |H₀|, floored at 1 because H passes through zero.
                     </div>
                   </div>
                 </div>
@@ -171,18 +178,19 @@ export default function TechnicalDetails({
                   <div className="font-medium mb-2">Biological Parameter Ranges:</div>
                   {modelType === 'predator-prey' ? (
                     <div className="space-y-1 text-xs">
-                      <div>• <strong>Prey growth rate (r₁):</strong> 0.1-2.0 (most organisms r &lt; 2.0)</div>
-                      <div>• <strong>Predator death rate (r₂):</strong> 0.1-2.0</div>
-                      <div>• <strong>Predation rate (a):</strong> 0.1-3.0</div>
-                      <div>• <strong>Predator efficiency (b):</strong> 0.1-3.0</div>
-                      <div>• <strong>Initial populations:</strong> 0.1-1000 (depends on scale)</div>
+                      <div>• <strong>Prey growth rate (r₁):</strong> slider 0.1-4.0; most vertebrates sit below 2.0</div>
+                      <div>• <strong>Predator death rate (r₂):</strong> slider 0.1-3.0</div>
+                      <div>• <strong>Predation rate (a):</strong> slider 0.0005-0.5</div>
+                      <div>• <strong>Conversion efficiency (b):</strong> slider 0.0005-0.3</div>
+                      <div>• <strong>Initial populations:</strong> slider 1-300</div>
+                      <div className="pt-1">a and b are per-capita rate coefficients with units of 1/(individual · time), so their numerical size depends on the population scale. The scale-free check is b/a, the number of predators produced per prey consumed, which must be below 1.</div>
                     </div>
                   ) : (
                     <div className="space-y-1 text-xs">
-                      <div>• <strong>Growth rates (r₁, r₂):</strong> 0.1-2.0 (most organisms r &lt; 2.0)</div>
-                      <div>• <strong>Carrying capacities (K₁, K₂):</strong> 10-10,000</div>
-                      <div>• <strong>Competition coefficients (a₁₂, a₂₁):</strong> 0.1-2.0</div>
-                      <div>• <strong>Initial populations:</strong> 1-1000</div>
+                      <div>• <strong>Growth rates (r₁, r₂):</strong> slider 0.1-3.0; most organisms sit below 2.0</div>
+                      <div>• <strong>Carrying capacities (K₁, K₂):</strong> slider 10-500</div>
+                      <div>• <strong>Competition coefficients (α₁₂, α₂₁):</strong> slider 0-3.0, dimensionless</div>
+                      <div>• <strong>Initial populations:</strong> slider 1-300</div>
                     </div>
                   )}
                 </div>

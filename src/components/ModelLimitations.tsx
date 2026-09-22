@@ -24,20 +24,24 @@ export default function ModelLimitations({ modelType, currentPopulations }: Mode
     const issues: string[] = [];
     
     if (currentPopulations) {
-      // Check for fractional individuals
-      const hasFractionalN1 = currentPopulations.N1 % 1 !== 0 && currentPopulations.N1 > 0.001;
-      const hasFractionalN2 = currentPopulations.N2 % 1 !== 0 && currentPopulations.N2 > 0.001;
-      
-      if (hasFractionalN1 || hasFractionalN2) {
-        issues.push(`Model predicts ${currentPopulations.N1.toFixed(2)} and ${currentPopulations.N2.toFixed(2)} individuals - fractional organisms don't exist`);
+      // Every continuous model yields non-integer values, so flag this only
+      // where rounding to whole individuals would actually change the dynamics.
+      const FRACTIONAL_MATTERS_BELOW = 10;
+      const isFractional = (n: number) =>
+        n > 0 && n < FRACTIONAL_MATTERS_BELOW && Math.abs(n - Math.round(n)) > 1e-6;
+
+      if (isFractional(currentPopulations.N1) || isFractional(currentPopulations.N2)) {
+        issues.push(`Model predicts ${currentPopulations.N1.toFixed(2)} and ${currentPopulations.N2.toFixed(2)} individuals; below about 10, rounding to whole organisms changes the trajectory`);
       }
 
-      // Check for very small populations
-      if (currentPopulations.N1 < 50 && currentPopulations.N1 > 0.001) {
+      if (currentPopulations.N1 > 0 && currentPopulations.N1 < 50) {
         issues.push('Population 1 below minimum viable size (~50-100 individuals)');
       }
-      if (currentPopulations.N2 < 50 && currentPopulations.N2 > 0.001) {
+      if (currentPopulations.N2 > 0 && currentPopulations.N2 < 50) {
         issues.push('Population 2 below minimum viable size (~50-100 individuals)');
+      }
+      if (currentPopulations.N1 <= 0 || currentPopulations.N2 <= 0) {
+        issues.push('A population has reached zero and cannot recover in this model');
       }
     }
 

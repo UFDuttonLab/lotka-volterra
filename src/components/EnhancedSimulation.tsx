@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import SimulationChart from "./SimulationChart";
 import SimulationControls from "./SimulationControls";
 import ExerciseBanner from "./ExerciseBanner";
@@ -60,15 +61,18 @@ interface EnhancedSimulationProps {
     initial: number;
     isConserved: boolean;
     driftPercent: number;
+    absoluteDrift: number;
   };
   populationWarnings?: {
     nearExtinction: boolean;
-    unrealisticParameters: string[];
     attoFoxProblem?: boolean;
   };
   timeStep: number;
+  speed: number;
+  minSpeed: number;
+  maxSpeed: number;
   updateParameter: (param: string, value: number) => void;
-  updateTimeStep: (value: number) => void;
+  updateSpeed: (value: number) => void;
   setAllParameters: (newParams: Partial<Parameters>) => void;
   switchModel: (newModel: ModelType) => void;
   toggleSimulation: () => void;
@@ -102,7 +106,7 @@ const competitionScenarios: PresetScenario[] = [
       r1: 0.8, r2: 0.6, K1: 150, K2: 180,
       a12: 0.4, a21: 0.3, N1_0: 75, N2_0: 90
     },
-    explanation: "Realistic growth rates (r < 1.0) and moderate competition coefficients based on field studies. Both species can coexist because neither has overwhelming competitive advantage.",
+    explanation: "α₁₂ = 0.4 < K₁/K₂ = 0.83 and α₂₁ = 0.3 < K₂/K₁ = 1.2, so interspecific competition is weaker than intraspecific competition for both species and they coexist at (102.3, 149.3).",
     biologicalExample: "Two bird species feeding at different tree levels with overlapping but not identical niches."
   },
   {
@@ -113,7 +117,7 @@ const competitionScenarios: PresetScenario[] = [
       r1: 0.5, r2: 2.5, K1: 100, K2: 300,
       a12: 2.0, a21: 0.2, N1_0: 80, N2_0: 20
     },
-    explanation: "Species 2 has 5x higher growth rate and strong competitive advantage. The dramatic parameter differences create rapid, visible exclusion within seconds.",
+    explanation: "α₁₂ = 2.0 > K₁/K₂ = 0.33 and α₂₁ = 0.2 < K₂/K₁ = 3.0, the condition for species 2 to exclude species 1. A growth rate 5x higher (2.5 against 0.5) makes the exclusion fast.",
     biologicalExample: "Invasive kudzu vines rapidly outcompeting native plants with explosive growth rates and aggressive competition."
   },
   {
@@ -124,18 +128,18 @@ const competitionScenarios: PresetScenario[] = [
       r1: 1.0, r2: 1.0, K1: 200, K2: 200,
       a12: 0.3, a21: 0.3, N1_0: 50, N2_0: 50
     },
-    explanation: "Perfectly symmetric parameters with weak interspecific competition create smooth convergence to stable coexistence. Both species settle at exactly 140 individuals.",
+    explanation: "Symmetric parameters with weak interspecific competition give stable coexistence. Each species settles at (K₁ - α₁₂K₂)/(1 - α₁₂α₂₁) = 140/0.91 = 153.8 individuals.",
     biologicalExample: "Two similar bird species feeding at different heights in the same tree, minimizing direct competition."
   },
   {
-    name: "Oscillating Competition",
-    description: "Unstable dynamics with overshooting",
+    name: "Lopsided Coexistence",
+    description: "Coexistence with one species far outnumbering the other",
     outcome: "Coexistence",
     parameters: {
       r1: 2.0, r2: 1.5, K1: 150, K2: 180,
       a12: 0.8, a21: 0.6, N1_0: 200, N2_0: 150
     },
-    explanation: "High growth rates with starting populations above carrying capacity create dramatic oscillations before settling into equilibrium.",
+    explanation: "Both coefficients sit just below their thresholds (α₁₂ = 0.8 < K₁/K₂ = 0.83, α₂₁ = 0.6 < K₂/K₁ = 1.2), so the outcome is a strongly asymmetric coexistence at (11.5, 173.1). The approach is monotonic: this model's Jacobian has real eigenvalues for any positive competition coefficients, so it cannot overshoot.",
     biologicalExample: "Boom-bust cycles in competing rodent populations that overshoot their environment's capacity."
   },
   {
@@ -146,7 +150,7 @@ const competitionScenarios: PresetScenario[] = [
       r1: 0.2, r2: 0.1, K1: 400, K2: 200,
       a12: 0.1, a21: 0.8, N1_0: 50, N2_0: 100
     },
-    explanation: "Very slow growth rates (10x smaller) create gentle, long-term competitive dynamics. Species 1 eventually wins but takes much longer to see.",
+    explanation: "α₁₂ = 0.1 < K₁/K₂ = 2.0 and α₂₁ = 0.8 > K₂/K₁ = 0.5, so species 1 excludes species 2. Growth rates of 0.2 and 0.1 make the approach slow; raise the playback speed to reach the outcome.",
     biologicalExample: "Competition between large tree species in old-growth forests, where changes occur over decades."
   },
 ];
@@ -161,7 +165,7 @@ const predatorPreyScenarios: PresetScenario[] = [
       r1: 1.2, r2: 0.8, a: 0.008, b: 0.005,
       N1_0: 120, N2_0: 30
     },
-    explanation: "Parameters approximating real lynx-hare dynamics. Moderate prey growth (1.2) with realistic predation efficiency (0.4) creates stable 8-10 year cycles similar to historical fur trade records.",
+    explanation: "Parameters approximating real lynx-hare dynamics. Equilibrium is N₁* = r₂/b = 160 prey and N₂* = r₁/a = 150 predators. Starting at (120, 30) puts the system on a wide orbit, giving the large-amplitude cycles seen in the fur trade records.",
     biologicalExample: "The famous lynx-hare cycles documented by Hudson Bay Company fur traders from 1845-1935, showing remarkably consistent 9-10 year population cycles."
   },
   {
@@ -172,7 +176,7 @@ const predatorPreyScenarios: PresetScenario[] = [
       r1: 1.5, r2: 0.6, a: 0.015, b: 0.012,
       N1_0: 60, N2_0: 15
     },
-    explanation: "Starting with small but viable populations (60 prey, 15 predators) demonstrates conservation thresholds. Populations below 50-100 face extinction from genetic bottlenecks and environmental stochasticity.",
+    explanation: "Equilibrium is N₁* = r₂/b = 50, N₂* = r₁/a = 100. Starting at (60, 15) is far below N₂*, so prey fall to about 1.4 individuals at the trough. Populations below 50-100 face extinction from genetic bottlenecks and environmental stochasticity.",
     biologicalExample: "California condors dropped to 27 individuals in 1987, requiring intensive conservation efforts. Most viable populations need 50-100+ breeding individuals."
   },
   {
@@ -183,7 +187,7 @@ const predatorPreyScenarios: PresetScenario[] = [
       r1: 1.0, r2: 1.0, a: 0.012, b: 0.008,
       N1_0: 80, N2_0: 20
     },
-    explanation: "The original 1925 equations scaled for realistic populations. Balanced parameters create visible oscillations with equilibrium at N1*≈83, N2*≈125, maintaining the classic 4:1 prey-to-predator ratio.",
+    explanation: "The original 1925 equations scaled for realistic populations. Equilibrium is N₁* = r₂/b = 125 prey and N₂* = r₁/a = 83.3 predators, a prey-to-predator ratio of 1.5:1. The linearised cycle period is 2π/√(r₁r₂) = 6.28 time units.",
     biologicalExample: "The theoretical foundation for all predator-prey models - represents idealized conditions with perfect balance between growth, predation, and efficiency."
   },
   {
@@ -194,7 +198,7 @@ const predatorPreyScenarios: PresetScenario[] = [
       r1: 1.2, r2: 0.5, a: 0.005, b: 0.007,
       N1_0: 100, N2_0: 40
     },
-    explanation: "Higher prey growth (1.2) with reduced predation rate (0.4) and efficiency (0.6) ensures prey can always recover. Mathematical equilibrium at N1*=0.83, N2*=3.0 creates gentle, sustained cycles.",
+    explanation: "A low predation rate (a = 0.005) sets a high predator equilibrium: N₁* = r₂/b = 71.4 prey and N₂* = r₁/a = 240 predators. Starting at (100, 40) is far below N₂*, so the predator population climbs through a wide first cycle before settling onto a repeating orbit.",
     biologicalExample: "Stable predator-prey relationships in mature ecosystems like wolves and deer in protected areas with clear but gentle population cycles."
   },
   {
@@ -205,7 +209,7 @@ const predatorPreyScenarios: PresetScenario[] = [
       r1: 4.0, r2: 1.5, a: 0.015, b: 0.010,
       N1_0: 80, N2_0: 80
     },
-    explanation: "Extremely high prey growth rate (4.0) with moderate predation creates many fast, small cycles that complete in seconds.",
+    explanation: "A high prey growth rate (r₁ = 4.0) shortens the linearised period to 2π/√(r₁r₂) = 2.57 time units. Equilibrium is N₁* = 150, N₂* = 266.7, and (80, 80) is well outside it, so the cycles are fast and wide.",
     biologicalExample: "Bacteria and bacteriophage viruses - ultra-rapid reproduction creating multiple generations within hours."
   },
   {
@@ -216,7 +220,7 @@ const predatorPreyScenarios: PresetScenario[] = [
       r1: 0.15, r2: 0.1, a: 0.001, b: 0.0015,
       N1_0: 150, N2_0: 30
     },
-    explanation: "All parameters 10-20x smaller create cycles that take much longer to complete, like watching in slow motion with large populations.",
+    explanation: "Small rate constants stretch the linearised period to 2π/√(r₁r₂) = 51.3 time units. Equilibrium is N₁* = r₂/b = 66.7, N₂* = r₁/a = 150. Raise the playback speed to reach a full cycle.",
     biologicalExample: "Moose and wolf populations in Yellowstone - large mammals with multi-year population cycles."
   },
   {
@@ -227,7 +231,7 @@ const predatorPreyScenarios: PresetScenario[] = [
       r1: 1.8, r2: 1.0, a: 0.025, b: 0.028,
       N1_0: 80, N2_0: 160
     },
-    explanation: "Moderate prey growth (1.8) just barely outpaces high predator efficiency (2.2) during recovery phases. Populations crash to extremely low levels but mathematical equilibrium ensures they don't go extinct.",
+    explanation: "Equilibrium is N₁* = r₂/b = 35.7, N₂* = r₁/a = 72. Starting at (80, 160) is more than twice the equilibrium on both axes, so the orbit is wide and prey fall to about 4.5 individuals at the trough. The model never reaches zero, but a real population at that density would be at risk of extinction.",
     biologicalExample: "Specialist predators like lynx and snowshoe hares in harsh environments - cycles crash to near-extinction levels where just a few individuals survive to restart the cycle."
   }
 ];
@@ -242,8 +246,11 @@ export default function EnhancedSimulation({
   conservedQuantity,
   populationWarnings,
   timeStep,
+  speed,
+  minSpeed,
+  maxSpeed,
   updateParameter,
-  updateTimeStep,
+  updateSpeed,
   setAllParameters,
   switchModel,
   toggleSimulation,
@@ -255,6 +262,9 @@ export default function EnhancedSimulation({
   
   const { toast } = useToast();
   const [loadedScenario, setLoadedScenario] = useState<string | null>(null);
+  // Tailwind's lg breakpoint. Only the matching layout is mounted, so the
+  // charts are not built twice on every frame.
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   // Clear loaded scenario when model type changes
   useEffect(() => {
@@ -284,15 +294,23 @@ export default function EnhancedSimulation({
 
   const getCurrentOutcome = () => {
     if (modelType === 'predator-prey') {
-      // For predator-prey, we can analyze cycle characteristics
-      if (data.length > 50) {
-        const recentData = data.slice(-30);
-        const preyValues = recentData.map(d => d.species1);
+      // Classify over one full cycle of model time rather than a fixed number
+      // of samples. The linearised period of the Lotka-Volterra system is
+      // 2*pi/sqrt(r1*r2), independent of a and b.
+      const period = (2 * Math.PI) / Math.sqrt(Math.max(parameters.r1 * parameters.r2, 1e-9));
+      const tEnd = data.length > 0 ? data[data.length - 1].time : 0;
+
+      if (data.length > 10 && tEnd >= period) {
+        const window = data.filter(d => d.time >= tEnd - period);
+        const preyValues = window.map(d => d.species1);
         const avgPrey = preyValues.reduce((a, b) => a + b, 0) / preyValues.length;
-        const maxPrey = Math.max(...preyValues);
-        const minPrey = Math.min(...preyValues);
+        const maxPrey = preyValues.reduce((a, b) => Math.max(a, b), -Infinity);
+        const minPrey = preyValues.reduce((a, b) => Math.min(a, b), Infinity);
         const amplitude = maxPrey - minPrey;
-        
+
+        if (avgPrey <= 0) {
+          return { type: "Extinct", color: "bg-red-100 text-red-800 border-red-200" };
+        }
         if (amplitude < avgPrey * 0.1) {
           return { type: "Near Equilibrium", color: "bg-green-100 text-green-800 border-green-200" };
         } else if (amplitude > avgPrey * 0.8) {
@@ -304,15 +322,18 @@ export default function EnhancedSimulation({
       return { type: "Analyzing...", color: "bg-gray-100 text-gray-800 border-gray-200" };
     } else {
       // Competition model logic
+      // Species 1 excludes species 2 when a12 < K1/K2 and a21 > K2/K1;
+      // species 2 excludes species 1 under the reverse pair; both below the
+      // thresholds gives stable coexistence, both above gives founder control.
       const { K1, K2, a12, a21 } = parameters;
-      const alpha12_threshold = K1! / K2!;
-      const alpha21_threshold = K2! / K1!;
-      
-      if (a12! < alpha12_threshold && a21! < alpha21_threshold) {
+      const alpha12_threshold = K1 / K2;
+      const alpha21_threshold = K2 / K1;
+
+      if (a12 < alpha12_threshold && a21 < alpha21_threshold) {
         return { type: "Coexistence", color: "bg-green-100 text-green-800 border-green-200" };
-      } else if (a12! > alpha12_threshold && a21! < alpha21_threshold) {
+      } else if (a12 > alpha12_threshold && a21 < alpha21_threshold) {
         return { type: "Species 2 Wins", color: "bg-blue-100 text-blue-800 border-blue-200" };
-      } else if (a12! < alpha12_threshold && a21! > alpha21_threshold) {
+      } else if (a12 < alpha12_threshold && a21 > alpha21_threshold) {
         return { type: "Species 1 Wins", color: "bg-purple-100 text-purple-800 border-purple-200" };
       } else {
         return { type: "Bistable", color: "bg-orange-100 text-orange-800 border-orange-200" };
@@ -395,14 +416,18 @@ export default function EnhancedSimulation({
 
         <TabsContent value="simulation" className="space-y-6">
           {/* Desktop Layout */}
-          <div className="hidden lg:grid lg:grid-cols-3 gap-6">
+          {isDesktop && (
+          <div className="grid grid-cols-3 gap-6">
             <div className="space-y-6">
               <SimulationControls
                 modelType={modelType}
                 parameters={parameters}
+                speed={speed}
+                minSpeed={minSpeed}
+                maxSpeed={maxSpeed}
                 timeStep={timeStep}
                 onParameterChange={updateParameter}
-                onTimeStepChange={updateTimeStep}
+                onSpeedChange={updateSpeed}
                 isRunning={isRunning}
                 onPlayPause={toggleSimulation}
                 onReset={resetSimulation}
@@ -443,18 +468,19 @@ export default function EnhancedSimulation({
                         {outcome.type === "Stable Cycles" && "The system shows stable oscillations where predator peaks follow prey peaks with a natural delay."}
                         {outcome.type === "Large Oscillations" && "High amplitude cycles suggest strong predator-prey interactions that could risk population crashes."}
                         {outcome.type === "Near Equilibrium" && "Populations are approaching steady states, suggesting weak predator-prey interactions."}
-                        {outcome.type === "Analyzing..." && "Run the simulation longer to analyze the cyclical patterns and stability."}
+                        {outcome.type === "Analyzing..." && "Run the simulation for at least one full cycle to analyse the pattern."}
+                        {outcome.type === "Extinct" && "The prey population has reached zero, so the predator population decays to zero as well."}
                       </p>
                         <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                         <div className="text-center">
                           <div className="text-lg math-formula unicode-math font-bold text-primary">
-                            {parameters.a!.toFixed(3)}
+                            {parameters.a.toFixed(3)}
                           </div>
                           <div className="text-xs text-muted-foreground">Predation Rate</div>
                         </div>
                         <div className="text-center">
                           <div className="text-lg math-formula unicode-math font-bold text-secondary">
-                            {parameters.b!.toFixed(3)}
+                            {parameters.b.toFixed(3)}
                           </div>
                           <div className="text-xs text-muted-foreground">Pred. Efficiency</div>
                         </div>
@@ -472,13 +498,13 @@ export default function EnhancedSimulation({
                       <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                         <div className="text-center">
                           <div className="text-lg font-mono font-bold text-primary">
-                            {(parameters.a12! / (parameters.K1! / parameters.K2!)).toFixed(2)}
+                            {(parameters.a12 / (parameters.K1 / parameters.K2)).toFixed(2)}
                           </div>
                           <div className="text-xs text-muted-foreground math-formula unicode-math">α₁₂ / (K₁/K₂)</div>
                         </div>
                         <div className="text-center">
                           <div className="text-lg font-mono font-bold text-secondary">
-                            {(parameters.a21! / (parameters.K2! / parameters.K1!)).toFixed(2)}
+                            {(parameters.a21 / (parameters.K2 / parameters.K1)).toFixed(2)}
                           </div>
                           <div className="text-xs text-muted-foreground math-formula unicode-math">α₂₁ / (K₂/K₁)</div>
                         </div>
@@ -498,14 +524,18 @@ export default function EnhancedSimulation({
               <TechnicalDetails 
                 modelType={modelType}
                 conservedQuantity={conservedQuantity}
-                timeStep={0.05}
+                timeStep={timeStep}
+                speed={speed}
                 currentTime={currentTime}
               />
             </div>
           </div>
 
+          )}
+
           {/* Mobile Layout */}
-          <div className="lg:hidden space-y-6">
+          {!isDesktop && (
+          <div className="space-y-6">
             <SimulationChart 
               data={data} 
               isRunning={isRunning} 
@@ -521,9 +551,12 @@ export default function EnhancedSimulation({
             <SimulationControls
               modelType={modelType}
               parameters={parameters}
+              speed={speed}
+              minSpeed={minSpeed}
+              maxSpeed={maxSpeed}
               timeStep={timeStep}
               onParameterChange={updateParameter}
-              onTimeStepChange={updateTimeStep}
+              onSpeedChange={updateSpeed}
               isRunning={isRunning}
               onPlayPause={toggleSimulation}
               onReset={resetSimulation}
@@ -539,6 +572,7 @@ export default function EnhancedSimulation({
               currentPopulations={currentPopulations}
             />
           </div>
+          )}
         </TabsContent>
 
         <TabsContent value="presets" className="space-y-4">

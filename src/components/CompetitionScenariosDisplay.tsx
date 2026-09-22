@@ -151,9 +151,9 @@ export default function CompetitionScenariosDisplay() {
               where different initial population combinations lead to predictable outcomes.
             </p>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p><strong>Species 1 Basin (Blue):</strong> Initial conditions in this region lead to Species 1 excluding Species 2.</p>
-              <p><strong>Species 2 Basin (Red):</strong> Initial conditions in this region lead to Species 2 excluding Species 1.</p>
-              <p><strong>Separatrix:</strong> The boundary line between basins, representing the unstable interior equilibrium point where the system could tip either way.</p>
+              <p><strong>Species 1 basin:</strong> shaded in the species 1 nullcline colour. Initial conditions in this region lead to Species 1 excluding Species 2.</p>
+              <p><strong>Species 2 basin:</strong> shaded in the species 2 nullcline colour. Initial conditions in this region lead to Species 2 excluding Species 1.</p>
+              <p><strong>Separatrix:</strong> the boundary between the basins. It passes through the unstable interior equilibrium, the saddle point where the system can tip either way. The shading here is schematic; the true separatrix is curved.</p>
             </div>
             <p className="text-sm text-muted-foreground mt-3">
               This demonstrates that in bistable competition, <em>history matters</em> - the winner depends not on intrinsic competitive ability alone, 

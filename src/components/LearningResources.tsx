@@ -3,11 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
 import { BookOpen, Globe, Users, Beaker, TreePine, Fish, Bird, Zap, Waves, FileText } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface ResourceSection {
   id: string;
   title: string;
-  icon: any;
+  icon: LucideIcon;
   resources: Resource[];
 }
 
@@ -49,9 +50,6 @@ interface Resource {
   recommendedReading?: string[];
 }
 
-interface LearningResourcesProps {
-  // No props needed anymore - exercises moved to separate tab
-}
 
 const learningResources: ResourceSection[] = [
   {
@@ -223,7 +221,7 @@ const typeIcons = {
   reading: BookOpen
 };
 
-export default function LearningResources({}: LearningResourcesProps) {
+export default function LearningResources() {
   return (
     <div className="space-y-6">
       <Card className="shadow-card">

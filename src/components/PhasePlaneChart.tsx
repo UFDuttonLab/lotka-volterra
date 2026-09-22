@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceDot, ReferenceLine } from 'recharts';
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +25,7 @@ interface PhasePlaneChartProps {
   isRunning: boolean;
 }
 
-export default function PhasePlaneChart({ data, modelType, parameters, isRunning }: PhasePlaneChartProps) {
+function PhasePlaneChart({ data, modelType, parameters, isRunning }: PhasePlaneChartProps) {
   // Calculate equilibrium point
   const equilibrium = modelType === "predator-prey" 
     ? { x: parameters.r2 / parameters.b, y: parameters.r1 / parameters.a }
@@ -49,13 +50,19 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
       }
     : null;
 
-  // Transform data for phase plane (species1 vs species2)
-  const phaseData = data.map((point, index) => ({
-    prey: point.species1,
-    predator: point.species2,
-    time: point.time,
-    index: index
-  }));
+  // Transform data for phase plane (species1 vs species2). Each sample becomes
+  // a DOM node, so the trajectory is decimated to MAX_PHASE_POINTS; the newest
+  // sample is always kept so the head of the trajectory tracks the simulation.
+  const MAX_PHASE_POINTS = 250;
+  const stride = Math.max(1, Math.ceil(data.length / MAX_PHASE_POINTS));
+  const phaseData = data
+    .filter((_, i) => (data.length - 1 - i) % stride === 0)
+    .map((point, index) => ({
+      prey: point.species1,
+      predator: point.species2,
+      time: point.time,
+      index: index
+    }));
 
   const chartTitle = modelType === 'predator-prey' 
     ? 'Phase Plane: Predator vs Prey' 
@@ -216,7 +223,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                     strokeDasharray="12 6"
                     strokeWidth={3}
                     label={{
-                      value: `Prey nullcline: N₂ = ${isoclines.preyNullcline.toFixed(2)} (dN₂/dt = 0)`,
+                      value: `Prey nullcline: N₂ = r₁/a = ${isoclines.preyNullcline.toFixed(2)} (dN₁/dt = 0)`,
                       position: 'top',
                       style: { 
                         fontSize: '12px', 
@@ -233,7 +240,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                     strokeDasharray="12 6" 
                     strokeWidth={3}
                     label={{
-                      value: `Predator nullcline: N₁ = ${isoclines.predatorNullcline.toFixed(2)} (dN₁/dt = 0)`,
+                      value: `Predator nullcline: N₁ = r₂/b = ${isoclines.predatorNullcline.toFixed(2)} (dN₂/dt = 0)`,
                       position: 'top',
                       angle: -90,
                       style: { 
@@ -362,7 +369,7 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
                 <ul className="space-y-1 text-muted-foreground">
                   <li>• <span className="font-medium text-accent">Horizontal line (N₂ = r₁/a):</span> Prey nullcline - where prey growth rate is zero (dN₁/dt = 0)</li>
                   <li>• <span className="font-medium text-secondary">Vertical line (N₁ = r₂/b):</span> Predator nullcline - where predator growth rate is zero (dN₂/dt = 0)</li>
-                  <li>• <span className="font-medium">Clockwise flow:</span> Trajectories circulate around equilibrium intersection point</li>
+                  <li>• <span className="font-medium">Counterclockwise flow:</span> East of the equilibrium dN₂/dt &gt; 0, so trajectories run east, north, west, south around the intersection</li>
                   <li>• <span className="font-medium">Conserved orbits:</span> Each starting point creates a unique closed loop</li>
                 </ul>
               </div>
@@ -392,3 +399,5 @@ export default function PhasePlaneChart({ data, modelType, parameters, isRunning
     </Card>
   );
 }
+
+export default memo(PhasePlaneChart);

@@ -49,8 +49,11 @@ export default function Index() {
     conservedQuantity,
     populationWarnings,
     timeStep,
+    speed,
+    minSpeed,
+    maxSpeed,
     updateParameter,
-    updateTimeStep,
+    updateSpeed,
     setAllParameters,
     switchModel,
     toggleSimulation,
@@ -150,8 +153,11 @@ export default function Index() {
               conservedQuantity={conservedQuantity}
               populationWarnings={populationWarnings}
               timeStep={timeStep}
+              speed={speed}
+              minSpeed={minSpeed}
+              maxSpeed={maxSpeed}
               updateParameter={updateParameter}
-              updateTimeStep={updateTimeStep}
+              updateSpeed={updateSpeed}
               setAllParameters={setAllParameters}
               switchModel={switchModel}
               toggleSimulation={toggleSimulation}

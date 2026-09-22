@@ -80,7 +80,7 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
     // Equilibrium point (if it exists and is positive)
     equilibrium: (() => {
       const denom = 1 - p.a12 * p.a21;
-      if (denom === 0) return null;
+      if (Math.abs(denom) < 1e-9) return null;
       const n1_eq = (p.K1 - p.a12 * p.K2) / denom;
       const n2_eq = (p.K2 - p.a21 * p.K1) / denom;
       return (n1_eq > 0 && n2_eq > 0) ? 
@@ -555,7 +555,7 @@ export default function IsoclineDiagram({ type, parameters, className, showEmbed
                      Equilibrium
                    </text>
                   
-                  {/* Clockwise orbital flow arrows */}
+                  {/* Counterclockwise orbital flow arrows: east -> north -> west -> south */}
                   <g opacity="0.9">
                     <path 
                       d={`M ${predatorPrey.equilibrium.x + 50} ${predatorPrey.equilibrium.y} 

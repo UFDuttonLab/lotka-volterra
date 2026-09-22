@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Files staged for manual deletion (Claude could not delete them directly)
+_to_delete/
+dist-new*
+dist-n*
