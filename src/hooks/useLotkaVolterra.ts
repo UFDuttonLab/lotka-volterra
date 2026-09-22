@@ -37,10 +37,15 @@ const TIME_STEP = 0.01;
 const UPDATE_INTERVAL = 50; // ms per animation frame
 const MIN_SPEED = 1;
 const MAX_SPEED = 20;
-// Chart resolution cap. On overflow the series is halved in place, so the
-// full time span is always retained at progressively coarser resolution.
-// 800 samples is about one per pixel of chart width; more than that costs
-// render time without adding anything visible.
+// Samples retained at full resolution. 8000 steps of h = 0.01 is 80 time
+// units, roughly ten predator-prey cycles. Older samples scroll off the left
+// rather than being thinned: thinning progressively, as an overflow-and-halve
+// scheme does, strips the peaks out of a sharp population spike and draws the
+// early part of a run as a smooth glide that never happened.
+const RAW_WINDOW = 8000;
+// Samples handed to the chart. The window is decimated by one constant stride,
+// so spacing on the time axis stays uniform across the whole plot. 800 is about
+// one sample per pixel of chart width.
 const MAX_POINTS = 800;
 // The charts are the expensive part of a frame: a full redraw costs roughly
 // 65 ms, against a 50 ms frame. Publishing the series at most every
@@ -59,17 +64,29 @@ interface ConservedQuantityState {
 }
 
 interface SimulationState {
+  steps: number;
   time: number;
   N1: number;
   N2: number;
-  data: DataPoint[];
+  raw: DataPoint[];
   initialH: number;
 }
 
-// Keeps the most recent sample, so the chart head always tracks the simulation.
-function downsample(series: DataPoint[]): DataPoint[] {
+// Both models are autonomous, so t never enters the derivatives and is only an
+// axis coordinate. Deriving it from an integer step count instead of summing h
+// keeps the error from accumulating, and rounding gives axis labels that read
+// as 0.06 rather than 0.060000000000000005.
+function stepTime(steps: number): number {
+  return Math.round(steps * TIME_STEP * 1e6) / 1e6;
+}
+
+// Decimates by one constant stride, counting back from the end so the newest
+// sample is always kept and the chart head tracks the simulation.
+function decimate(series: DataPoint[], maxPoints: number): DataPoint[] {
+  if (series.length <= maxPoints) return series;
+  const stride = Math.ceil(series.length / maxPoints);
   const last = series.length - 1;
-  return series.filter((_, i) => (last - i) % 2 === 0);
+  return series.filter((_, i) => (last - i) % stride === 0);
 }
 
 export function useLotkaVolterra() {
@@ -114,10 +131,11 @@ export function useLotkaVolterra() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastPublishRef = useRef(0);
   const simRef = useRef<SimulationState>({
+    steps: 0,
     time: 0,
     N1: parameters.N1_0,
     N2: parameters.N2_0,
-    data: [],
+    raw: [],
     initialH: NaN,
   });
 
@@ -173,26 +191,28 @@ export function useLotkaVolterra() {
   // Advances the simulation by `speed` steps and publishes one state update.
   const tick = useCallback(() => {
     const sim = simRef.current;
-    let { time, N1, N2 } = sim;
+    let { steps, N1, N2 } = sim;
     const appended: DataPoint[] = [];
 
     for (let i = 0; i < speed; i++) {
       const next = rk4Step(N1, N2, parameters, modelType);
       N1 = next.N1;
       N2 = next.N2;
-      time += TIME_STEP;
-      appended.push({ time, species1: N1, species2: N2 });
+      steps += 1;
+      appended.push({ time: stepTime(steps), species1: N1, species2: N2 });
+    }
+    const time = stepTime(steps);
+
+    let raw = sim.raw.concat(appended);
+    if (raw.length > RAW_WINDOW) {
+      raw = raw.slice(raw.length - RAW_WINDOW);
     }
 
-    let series = sim.data.concat(appended);
-    while (series.length > MAX_POINTS) {
-      series = downsample(series);
-    }
-
+    sim.steps = steps;
     sim.time = time;
     sim.N1 = N1;
     sim.N2 = N2;
-    sim.data = series;
+    sim.raw = raw;
 
     setCurrentTime(time);
     setCurrentPopulations({ N1, N2 });
@@ -202,7 +222,7 @@ export function useLotkaVolterra() {
     const publish = now - lastPublishRef.current >= CHART_PUBLISH_MS;
     if (publish) {
       lastPublishRef.current = now;
-      setData(series);
+      setData(decimate(raw, MAX_POINTS));
     }
 
     if (modelType === 'predator-prey' && publish) {
@@ -268,10 +288,11 @@ export function useLotkaVolterra() {
     };
 
     simRef.current = {
+      steps: 0,
       time: 0,
       N1: parameters.N1_0,
       N2: parameters.N2_0,
-      data: [firstPoint],
+      raw: [firstPoint],
       initialH,
     };
 

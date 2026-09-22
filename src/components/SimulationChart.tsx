@@ -59,8 +59,19 @@ function SimulationChart({ data, isRunning, modelType = "competition", conserved
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis
                 dataKey="time"
+                // A numeric axis places each sample at its actual time. The
+                // series is downsampled as it grows, so samples are not evenly
+                // spaced, and an index-based category axis would stretch the
+                // recent, denser part of the run across more width than the
+                // older part.
+                type="number"
+                domain={['dataMin', 'dataMax']}
                 stroke="hsl(var(--muted-foreground))"
                 fontSize={12}
+                tickFormatter={(value) => {
+                  const t = Number(value);
+                  return t >= 100 ? t.toFixed(0) : t.toFixed(1);
+                }}
                 label={{ value: 'Time', position: 'insideBottom', offset: -5 }}
               />
               <YAxis
@@ -76,6 +87,8 @@ function SimulationChart({ data, isRunning, modelType = "competition", conserved
                   fontSize: "12px",
                 }}
                 labelStyle={{ color: "hsl(var(--foreground))" }}
+                labelFormatter={(value) => `Time: ${Number(value).toFixed(2)}`}
+                formatter={(value: number | string) => Number(value).toFixed(2)}
               />
               <Legend />
               <Line
